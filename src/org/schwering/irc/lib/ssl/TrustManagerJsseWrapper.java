@@ -5,7 +5,7 @@ import java.security.cert.X509Certificate;
 /**
  * Wraps a <code>SSLTrustManager</code> in a 
  * <code>com.sun.net.ssl.X509TrustManager</code>.
- * @author Christoph Schwering &lt;ch@schwering.org&gt;
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 1.05
  * @version 1.00
  * @see SSLTrustManager

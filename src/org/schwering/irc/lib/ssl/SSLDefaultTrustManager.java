@@ -25,7 +25,7 @@ import java.security.cert.X509Certificate;
  * <code>SSLTrustManager</code>. For examle if you write an IRC client for human
  * users, you may want to ask the user whether he accepts the server's 
  * certificate or not.
- * @author Christoph Schwering &lt;ch@schwering.org&gt;
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @version 2.00
  * @see SSLIRCConnection
  * @see SSLTrustManager

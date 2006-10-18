@@ -13,7 +13,7 @@ import javax.net.ssl.SSLException;
  * creates this object using exclusively the <code>javax.net.ssl.*</code> 
  * classes and then tries to do so using the <code>javax.net.ssl.*</code> 
  * classes plus the <code>com.sun.net.ssl.*</code> classes.
- * @author Christoph Schwering &lt;ch@schwering.org&gt;
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 1.05
  * @version 1.00
  * @see SSLIRCConnection
@@ -73,6 +73,20 @@ class SSLSocketFactoryFactory {
 	
 //	------------------------------
 	
+	/**
+	 * Creates a new <code>SSLSocketFactory</code> using the 
+	 * <code>javax.net.ssl.*</code> classes.
+	 * @param tm The trustmanagers.
+	 * @return A <code>javax.net.ssl.SSLSocketFactory</code>.
+	 * @throws ClassNotFoundException If the classes could not be loaded and 
+	 * accessed properly
+	 * @throws NoSuchMethodException If the classes could not be loaded and 
+	 * accessed properly
+	 * @throws InvocationTargetException If the classes could not be loaded and 
+	 * accessed properly
+	 * @throws IllegalAccessException If the classes could not be loaded and 
+	 * accessed properly
+	 */
 	private static SSLSocketFactory createJava14SSLSocketFactory(SSLTrustManager[] tm) 
 	throws ClassNotFoundException, NoSuchMethodException, 
 	InvocationTargetException, IllegalAccessException {
@@ -110,6 +124,20 @@ class SSLSocketFactoryFactory {
 	
 //	------------------------------
 
+	/**
+	 * Creates a new <code>SSLSocketFactory</code> using the 
+	 * <code>com.sun.net.ssl.*</code> and <code>javax.net.ssl.*</code> classes.
+	 * @param tm The trustmanagers.
+	 * @return A <code>javax.net.ssl.SSLSocketFactory</code>.
+	 * @throws ClassNotFoundException If the classes could not be loaded and 
+	 * accessed properly
+	 * @throws NoSuchMethodException If the classes could not be loaded and 
+	 * accessed properly
+	 * @throws InvocationTargetException If the classes could not be loaded and 
+	 * accessed properly
+	 * @throws IllegalAccessException If the classes could not be loaded and 
+	 * accessed properly
+	 */
 	private static SSLSocketFactory createJsseSSLSocketFactory(SSLTrustManager[] tm) 
 	throws ClassNotFoundException, NoSuchMethodException, 
 	InvocationTargetException, IllegalAccessException {

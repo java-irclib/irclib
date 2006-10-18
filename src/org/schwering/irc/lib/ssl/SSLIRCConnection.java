@@ -88,7 +88,7 @@ import org.schwering.irc.lib.IRCConnection;
  * are set until then, an 
  * {@link org.schwering.irc.lib.ssl.SSLDefaultTrustManager} is set 
  * automatically. It accepts all X509 certificates.
- * @author Christoph Schwering &lt;ch@schwering.org&gt;
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 1.05
  * @version 2.00
  * @see org.schwering.irc.lib.IRCConnection

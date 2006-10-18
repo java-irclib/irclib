@@ -45,7 +45,7 @@ import java.util.EventListener;
  * </ul>
  * <p>
  * For other, unkown events there's the <code>unknown</code>-method.
- * @author Christoph Schwering &lt;ch@schwering.org&gt;
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @version 1.64
  * @see IRCEventAdapter
  * @see IRCConnection

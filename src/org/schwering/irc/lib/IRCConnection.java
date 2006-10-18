@@ -66,7 +66,7 @@ import java.net.SocketException;
  * <p>
  * The serverpassword isn't needed in most cases. You can give 
  * <code>null</code> or <code>""</code> instead as done in this example.
- * @author Christoph Schwering &lt;ch@schwering.org&gt;
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @version 3.05
  * @see IRCEventListener
  * @see IRCParser

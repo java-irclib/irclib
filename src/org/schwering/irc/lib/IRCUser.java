@@ -17,7 +17,7 @@ package org.schwering.irc.lib;
  * Holds variables for the nick, username and host of a user.
  * <p>
  * It's used to pack these information in one object.
- * @author Christoph Schwering &lt;ch@schwering.org&gt;
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @version 1.02
  * @see IRCEventListener
  * @see IRCParser
@@ -90,7 +90,7 @@ public class IRCUser {
 //	------------------------------
 	
 	/** 
-	 * Returns the username of the person who sent the line.<br />
+	 * Returns the username of the person who sent the line. <br />
 	 * If the username is not specified, this method returns <code>null</code>.
 	 * @return The username of the line; <code>null</code> if it's not given.
 	 * @see #getNick()
@@ -103,7 +103,7 @@ public class IRCUser {
 //	------------------------------
 	
 	/** 
-	 * Returns the host of the person who sent the line.<br />
+	 * Returns the host of the person who sent the line. <br />
 	 * If the host is not specified, this method returns <code>null</code>.
 	 * @return The host of the line; <code>null</code> if it's not given.
 	 * @see #getNick()

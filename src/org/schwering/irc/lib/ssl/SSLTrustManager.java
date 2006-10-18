@@ -4,7 +4,7 @@ import java.security.cert.X509Certificate;
 
 /**
  * A trust manager decides whether the server is trusted or not.
- * @author Christoph Schwering &lt;ch@schwering.org&gt;
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 1.05
  * @version 1.00
  * @see SSLIRCConnection
@@ -12,7 +12,7 @@ import java.security.cert.X509Certificate;
  */
 public interface SSLTrustManager {
 	/**
-	 * Checks whether the server is trusted or not.<br />
+	 * Checks whether the server is trusted or not. <br />
 	 * Given the partial or complete certificate chain provided by the peer,
 	 * build a certificate path to a trusted root and return true if it can 
 	 * be validated and is trusted for server SSL authentication.

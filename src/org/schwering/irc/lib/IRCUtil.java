@@ -20,7 +20,7 @@ import java.util.Vector;
  * <p>
  * The most description of the numeric errors and numeric replies are copied
  * from RFC1459.
- * @author Christoph Schwering &lt;ch@schwering.org&gt;
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @author Normton &lt;normton@latinmail.com&gt;
  * @version 2.03
  * @see IRCConnection

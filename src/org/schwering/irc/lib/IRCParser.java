@@ -77,7 +77,7 @@ package org.schwering.irc.lib;
  * &lt;crlf&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::=
  * CR LF<br />
  * </code></blockquote>
- * @author Christoph Schwering &lt;ch@schwering.org&gt;
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @version 3.22
  * @see IRCConnection
  */

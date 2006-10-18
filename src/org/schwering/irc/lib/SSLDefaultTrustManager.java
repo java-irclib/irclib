@@ -20,6 +20,9 @@ import java.security.cert.X509Certificate;
  * The default <code>TrustManager</code> of the 
  * <code>SSLIRCConnection</code>.
  * <p>
+ * Note that this class is <b>deprecated</b>. The SSL supporting classes moved 
+ * to <code>org.schwering.irc.lib.ssl</code> since IRClib 1.05.
+ * <p>
  * It automatically accepts the X509 certificate.
  * <p>
  * In many cases you should change the <code>SSLIRCConnection</code>'s 
@@ -31,7 +34,7 @@ import java.security.cert.X509Certificate;
  * accept the certification or not.
  * @deprecated This class has been replaced with 
  * <code>org.schwering.irc.lib.ssl.SSLDefaultTrustManager</code>.
- * @author Christoph Schwering &lt;ch@schwering.org&gt;
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @version 1.13
  * @see SSLIRCConnection
  * @see com.sun.net.ssl.TrustManager

@@ -39,7 +39,7 @@ package org.schwering.irc.lib;
  * These are all channel-modes defined in RFC1459. Nevertheless, most 
  * networks provide more channel-modes. This class can handle all modes; it's 
  * not restricted to the rights defined in RFC1459.
- * @author Christoph Schwering &lt;ch@schwering.org&gt;
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @version 1.22
  * @see IRCEventListener
  */
@@ -115,7 +115,7 @@ public class IRCModeParser {
 	
 	/** 
 	 * Parses the modes into two <code>char</code>-arrays and one 
-	 * <code>String</code>-array.<br />
+	 * <code>String</code>-array. <br />
 	 * The first one contains the operator of the mode (<code>+</code> or 
 	 * </code>-</code>) and the second one the mode (<code>w</code>, 
 	 * <code>i</code>, <code>s</code>, <code>o</code> or any other mode). 

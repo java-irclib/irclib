@@ -29,6 +29,9 @@ import javax.net.ssl.SSLSocketFactory;
 /**
  * The SSL extension of the <code>IRCConnection</code> class.
  * <p>
+ * Note that this class is <b>deprecated</b>. The SSL supporting classes moved 
+ * to <code>org.schwering.irc.lib.ssl</code> since IRClib 1.05.
+ * <p>
  * The IRC server you want to connect to must accept SSL connections. 
  * Otherwise you cannot connect to it with an instance of 
  * <code>SSLIRCConnection</code>. IRC servers which accept SSL connections are 
@@ -93,7 +96,7 @@ import javax.net.ssl.SSLSocketFactory;
  * set automatically. It accepts all X509 certificates.
  * @deprecated This class has been replaced with 
  * <code>org.schwering.irc.lib.ssl.SSLDefaultTrustManager</code>.
- * @author Christoph Schwering &lt;ch@schwering.org&gt;
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @version 1.33
  * @see IRCConnection
  * @see SSLDefaultTrustManager
