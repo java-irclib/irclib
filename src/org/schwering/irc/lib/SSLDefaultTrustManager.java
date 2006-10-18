@@ -29,6 +29,8 @@ import java.security.cert.X509Certificate;
  * <code>SSLDefaultTrustManager</code> class and overrides the 
  * <code>checkServerTrusted</code> method and asks the user whether he wants to
  * accept the certification or not.
+ * @deprecated This class has been replaced with 
+ * <code>org.schwering.irc.lib.ssl.SSLDefaultTrustManager</code>.
  * @author Christoph Schwering &lt;ch@schwering.org&gt;
  * @version 1.13
  * @see SSLIRCConnection

@@ -91,6 +91,8 @@ import javax.net.ssl.SSLSocketFactory;
  * <code>connect</code> method is invoked. If no <code>TrustManager</code>s are
  * set until then, an {@link org.schwering.irc.lib.SSLDefaultTrustManager} is 
  * set automatically. It accepts all X509 certificates.
+ * @deprecated This class has been replaced with 
+ * <code>org.schwering.irc.lib.ssl.SSLDefaultTrustManager</code>.
  * @author Christoph Schwering &lt;ch@schwering.org&gt;
  * @version 1.33
  * @see IRCConnection
