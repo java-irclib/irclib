@@ -50,7 +50,7 @@ import java.util.EventListener;
  * @see IRCEventAdapter
  * @see IRCConnection
  */
-public interface IRCEventListener extends EventListener {
+public interface IRCEventListener extends EventListener, IRCConstants {
 	
 	/** 
 	 * Fired when the own connection is successfully established. 
