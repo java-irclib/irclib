@@ -170,7 +170,7 @@ public class IRCConnection extends Thread {
 //	------------------------------
 	
 	/**
-	 * Creates a new IRC connection.<br />
+	 * Creates a new IRC connection. <br />
 	 * The difference to the other constructor is, that it transmits the ports in
 	 * an <code>int[]</code>. Thus, also ports like 1024, 2048, 6667 and 
 	 * 6669 can be selected.<br /><br />
@@ -211,7 +211,7 @@ public class IRCConnection extends Thread {
 //	------------------------------
 	
 	/**
-	 * Creates a new IRC connection.<br />
+	 * Creates a new IRC connection. <br />
 	 * The difference to the other constructor is, that it transmits the ports as
 	 * two <code>int</code>s. Thus, only a portrange from port <code>x</code> to
 	 * port <code>y</code> like from port 6667 to 6669 can be selected.<br />
@@ -271,7 +271,7 @@ public class IRCConnection extends Thread {
 //	------------------------------
 	
 	/** 
-	 * Establish a connection to the server.<br />
+	 * Establish a connection to the server. <br />
 	 * This method must be invoked to start a connection; the constructor doesn't 
 	 * do that!<br />
 	 * It tries all set ports until one is open. If all ports fail it throws an 
@@ -311,7 +311,7 @@ public class IRCConnection extends Thread {
 	
 	/**
 	 * Invoked by the <code>connect</code> method, this method prepares the 
-	 * connection.<br />
+	 * connection. <br />
 	 * It initializes the class-vars for the inputstream and the outputstream of 
 	 * the socket, starts the registration of at the IRC server by calling 
 	 * <code>register()</code> and starts the receiving of lines from the server 
@@ -340,7 +340,7 @@ public class IRCConnection extends Thread {
 //	------------------------------
 	
 	/** 
-	 * Registers the connection with the IRC server.<br />
+	 * Registers the connection with the IRC server. <br />
 	 * In fact, it sends a password (if set, else nothing), the nickname and the 
 	 * user, the realname and the host which we're connecting to.<br />
 	 * The action synchronizes <code>code> so that no important messages 
@@ -576,7 +576,7 @@ public class IRCConnection extends Thread {
 //	------------------------------
 	
 	/** 
-	 * Close down the connection *brutally*! <br />
+	 * Close down the connection brutally. <br />
 	 * It does *NOT* send the proper IRC command <code>QUIT</code>. You should 
 	 * always use the <code>doQuit</code> methods or <code>send("QUIT")</code> 
 	 * instead of this method. <br />
@@ -1021,7 +1021,7 @@ public class IRCConnection extends Thread {
 //	------------------------------
 	
 	/** 
-	 * Sends a mode to the server.<br />
+	 * Sends a mode to the server. <br />
 	 * The first argument is a nickname (user-mode) or a channel (channel-mode). 
 	 * <code>String mode</code> must contain the operators (+/-), the modes 
 	 * (o/v/i/k/l/p/s/w) and the possibly values (nicks/banmask/limit/key). 
