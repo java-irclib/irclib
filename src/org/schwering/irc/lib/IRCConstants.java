@@ -43,20 +43,20 @@ public interface IRCConstants {
 	public static final int ERR_NOSUCHNICK = 401;
 	
 	/**
-	 * Format: "&lt;server name&gt; No such server".<br />
+	 * Format: "&lt;server name&gt; No such server". <br />
 	 * Used to indicate the server name given currently
 	 * doesn't exist.
 	 */
 	public static final int ERR_NOSUCHSERVER = 402;
 	
 	/**
-	 * Format: "&lt;channel name&gt; No such channel".<br />
+	 * Format: "&lt;channel name&gt; No such channel". <br />
 	 * Used to indicate the given channel name is invalid.
 	 */
 	public static final int ERR_NOSUCHCHANNEL = 403;
 	
 	/**
-	 * Format: "&lt;channel name&gt; Cannot send to channel".<br />
+	 * Format: "&lt;channel name&gt; Cannot send to channel". <br />
 	 * Sent to a user who is either (a) not on a channel
 	 * which is mode +n or (b) not a chanop (or mode +v) on
 	 * a channel which has mode +m set and is trying to send
@@ -66,7 +66,7 @@ public interface IRCConstants {
 	
 	/**
 	 * Format: "&lt;channel name&gt; You have joined too many
-	 * channels".<br />
+	 * channels". <br />
 	 * Sent to a user when they have joined the maximum
 	 * number of allowed channels and they try to join
 	 * another channel.
@@ -74,7 +74,7 @@ public interface IRCConstants {
 	public static final int ERR_TOOMANYCHANNELS = 405;
 	
 	/**
-	 * Format: "&lt;nickname&gt; There was no such nickname".<br />
+	 * Format: "&lt;nickname&gt; There was no such nickname". <br />
 	 * Returned by WHOWAS to indicate there is no history
 	 * information for that nickname.
 	 */
@@ -82,7 +82,7 @@ public interface IRCConstants {
 	
 	
 	/**
-	 * Format: "&lt;target&gt; Duplicate recipients. No message delivered".<br />
+	 * Format: "&lt;target&gt; Duplicate recipients. No message delivered". <br />
 	 * Returned to a client which is attempting to send a PRIVMSG/NOTICE using 
 	 * the user@host destination format and for a user@host which has several 
 	 * occurrences.
@@ -90,7 +90,7 @@ public interface IRCConstants {
 	public static final int ERR_TOOMANYTARGETS = 407;
 	
 	/**
-	 * Format: "No origin specified".<br />
+	 * Format: "No origin specified". <br />
 	 * PING or PONG message missing the originator parameter
 	 * which is required since these commands must work
 	 * without valid prefixes.
@@ -103,7 +103,7 @@ public interface IRCConstants {
 	public static final int ERR_NORECIPIENT = 411;
 	
 	/**
-	 * Format: "No text to send".<br />
+	 * Format: "No text to send". <br />
 	 * 412 - 414 are returned by PRIVMSG to indicate that
 	 * the message wasn't delivered for some reason.
 	 * ERR_NOTOPLEVEL and ERR_WILDTOPLEVEL are errors that
@@ -113,7 +113,7 @@ public interface IRCConstants {
 	public static final int ERR_NOTEXTTOSEND = 412;
 	
 	/**
-	 * Format: "&lt;mask&gt; No toplevel domain specified".<br />
+	 * Format: "&lt;mask&gt; No toplevel domain specified". <br />
 	 * 412 - 414 are returned by PRIVMSG to indicate that
 	 * the message wasn't delivered for some reason.
 	 * ERR_NOTOPLEVEL and ERR_WILDTOPLEVEL are errors that
@@ -123,7 +123,7 @@ public interface IRCConstants {
 	public static final int ERR_NOTOPLEVEL = 413;
 	
 	/**
-	 * Format: "&lt;mask&gt; Wildcard in toplevel domain".<br />
+	 * Format: "&lt;mask&gt; Wildcard in toplevel domain". <br />
 	 * 412 - 414 are returned by PRIVMSG to indicate that
 	 * the message wasn't delivered for some reason.
 	 * ERR_NOTOPLEVEL and ERR_WILDTOPLEVEL are errors that
@@ -133,20 +133,20 @@ public interface IRCConstants {
 	public static final int ERR_WILDTOPLEVEL = 414;
 	
 	/**
-	 * Format: "&lt;command&gt; Unknown command".<br />
+	 * Format: "&lt;command&gt; Unknown command". <br />
 	 * Returned to a registered client to indicate that the
 	 * command sent is unknown by the server.
 	 */
 	public static final int ERR_UNKNOWNCOMMAND = 421;
 	
 	/**
-	 * Format: "MOTD File is missing".<br />
+	 * Format: "MOTD File is missing". <br />
 	 * Server's MOTD file could not be opened by the server.
 	 */
 	public static final int ERR_NOMOTD = 422;
 	
 	/**
-	 * Format: "&lt;server&gt; No administrative info available".<br />
+	 * Format: "&lt;server&gt; No administrative info available". <br />
 	 * Returned by a server in response to an ADMIN message
 	 * when there is an error in finding the appropriate
 	 * information.
@@ -154,21 +154,21 @@ public interface IRCConstants {
 	public static final int ERR_NOADMININFO = 423;
 	
 	/**
-	 * Format: "File error doing &lt;file op&gt; on &lt;file&gt;".<br />
+	 * Format: "File error doing &lt;file op&gt; on &lt;file&gt;". <br />
 	 * Generic error message used to report a failed file
 	 * operation during the processing of a message.
 	 */
 	public static final int ERR_FILEERROR = 424;
 	
 	/**
-	 * Format: "No nickname given".<br />
+	 * Format: "No nickname given". <br />
 	 * Returned when a nickname parameter expected for a
 	 * command and isn't found.
 	 */
 	public static final int ERR_NONICKNAMEGIVEN = 431;
 	
 	/**
-	 * Format: "&lt;nick&gt; Erroneus nickname".<br />
+	 * Format: "&lt;nick&gt; Erroneus nickname". <br />
 	 * Returned after receiving a NICK message which contains
 	 * characters which do not fall in the defined set.  See
 	 * section x.x.x for details on valid nicknames.
@@ -176,7 +176,7 @@ public interface IRCConstants {
 	public static final int ERR_ERRONEUSNICKNAME = 432;
 	
 	/**
-	 * Format: "&lt;nick&gt; Nickname is already in use".<br />
+	 * Format: "&lt;nick&gt; Nickname is already in use". <br />
 	 * Returned when a NICK message is processed that results
 	 * in an attempt to change to a currently existing
 	 * nickname.
@@ -184,7 +184,7 @@ public interface IRCConstants {
 	public static final int ERR_NICKNAMEINUSE = 433;
 	
 	/**
-	 * Format: "&lt;nick&gt; Nickname collision KILL".<br />
+	 * Format: "&lt;nick&gt; Nickname collision KILL". <br />
 	 * Returned by a server to a client when it detects a
 	 * nickname collision (registered of a NICK that
 	 * already exists by another server).
@@ -192,14 +192,14 @@ public interface IRCConstants {
 	public static final int ERR_NICKCOLLISION = 436;
 	
 	/**
-	 * Format: "&lt;nick&gt; &lt;channel&gt; They aren't on that channel".<br />
+	 * Format: "&lt;nick&gt; &lt;channel&gt; They aren't on that channel". <br />
 	 * Returned by the server to indicate that the target
 	 * user of the command is not on the given channel.
 	 */
 	public static final int ERR_USERNOTINCHANNEL = 441;
 	
 	/**
-	 * Format: "&lt;channel&gt; You're not on that channel".<br />
+	 * Format: "&lt;channel&gt; You're not on that channel". <br />
 	 * Returned by the server whenever a client tries to
 	 * perform a channel effecting command for which the
 	 * client isn't a member.
@@ -207,14 +207,14 @@ public interface IRCConstants {
 	public static final int ERR_NOTONCHANNEL = 442;
 	
 	/**
-	 * Format: "&lt;user&gt; &lt;channel&gt; is already on channel".<br />
+	 * Format: "&lt;user&gt; &lt;channel&gt; is already on channel". <br />
 	 * Returned when a client tries to invite a user to a
 	 * channel they are already on.
 	 */
 	public static final int ERR_USERONCHANNEL = 443;
 	
 	/**
-	 * Format: "&lt;user&gt; User not logged in".<br />
+	 * Format: "&lt;user&gt; User not logged in". <br />
 	 * Returned by the summon after a SUMMON command for a
 	 * user was unable to be performed since they were not
 	 * logged in.
@@ -222,21 +222,21 @@ public interface IRCConstants {
 	public static final int ERR_NOLOGIN = 444;
 	
 	/**
-	 * Format: "SUMMON has been disabled".<br />
+	 * Format: "SUMMON has been disabled". <br />
 	 * Returned as a response to the SUMMON command.  Must be
 	 * returned by any server which does not implement it.
 	 */
 	public static final int ERR_SUMMONDISABLED = 445;
 	
 	/**
-	 * Format: "USERS has been disabled".<br />
+	 * Format: "USERS has been disabled". <br />
 	 * Returned as a response to the USERS command.  Must be
 	 * returned by any server which does not implement it.
 	 */
 	public static final int ERR_USERSDISABLED = 446;
 	
 	/**
-	 * Format: "You have not registered".<br /> 
+	 * Format: "You have not registered". <br /> 
 	 * Returned by the server to indicate that the client
 	 * must be registered before the server will allow it
 	 * to be parsed in detail.
@@ -244,7 +244,7 @@ public interface IRCConstants {
 	public static final int ERR_NOTREGISTERED = 451;
 	
 	/**
-	 * Format: "&lt;command&gt; Not enough parameters".<br />
+	 * Format: "&lt;command&gt; Not enough parameters". <br />
 	 * Returned by the server by numerous commands to
 	 * indicate to the client that it didn't supply enough
 	 * parameters.
@@ -252,7 +252,7 @@ public interface IRCConstants {
 	public static final int ERR_NEEDMOREPARAMS = 461;
 	
 	/**
-	 * Format: "You may not reregister".<br />
+	 * Format: "You may not reregister". <br />
 	 * Returned by the server to any link which tries to
 	 * change part of the registered details (such as
 	 * password or user details from second USER message).
@@ -260,7 +260,7 @@ public interface IRCConstants {
 	public static final int ERR_ALREADYREGISTRED = 462;
 	
 	/**
-	 * Format: "Your host isn't among the privileged".<br />
+	 * Format: "Your host isn't among the privileged". <br />
 	 * Returned to a client which attempts to register with
 	 * a server which does not been setup to allow
 	 * connections from the host the attempted connection
@@ -269,7 +269,7 @@ public interface IRCConstants {
 	public static final int ERR_NOPERMFORHOST = 463;
 	
 	/**
-	 * Format: "Password incorrect".<br />
+	 * Format: "Password incorrect". <br />
 	 * Returned to indicate a failed attempt at registering
 	 * a connection for which a password was required and
 	 * was either not given or incorrect.
@@ -277,7 +277,7 @@ public interface IRCConstants {
 	public static final int ERR_PASSWDMISMATCH = 464;
 	
 	/**
-	 * Format: "You are banned from this server".<br />
+	 * Format: "You are banned from this server". <br />
 	 * Returned after an attempt to connect and register
 	 * yourself with a server which has been setup to
 	 * explicitly deny connections to you.
@@ -323,7 +323,7 @@ public interface IRCConstants {
 	public static final int ERR_NOPRIVILEGES = 481;
 	
 	/**
-	 * Format: "&lt;channel&gt; You're not channel operator".<br />
+	 * Format: "&lt;channel&gt; You're not channel operator". <br />
 	 * Any command requiring 'chanop' privileges (such as
 	 * MODE messages) must return this error if the client
 	 * making the attempt is not a chanop on the specified
@@ -332,7 +332,7 @@ public interface IRCConstants {
 	public static final int ERR_CHANOPRIVSNEEDED = 482;
 	
 	/**
-	 * Format: "You cant kill a server!".<br />
+	 * Format: "You cant kill a server!". <br />
 	 * Any attempts to use the KILL command on a server
 	 * are to be refused and this error returned directly
 	 * to the client.
@@ -340,7 +340,7 @@ public interface IRCConstants {
 	public static final int ERR_CANTKILLSERVER = 483;
 	
 	/**
-	 * Format: "No O-lines for your host".<br />
+	 * Format: "No O-lines for your host". <br />
 	 * If a client sends an OPER message and the server has
 	 * not been configured to allow connections from the
 	 * client's host as an operator, this error must be
@@ -349,7 +349,7 @@ public interface IRCConstants {
 	public static final int ERR_NOOPERHOST = 491;
 	
 	/**
-	 * Format: "Unknown MODE flag".<br />
+	 * Format: "Unknown MODE flag". <br />
 	 * Returned by the server to indicate that a MODE
 	 * message was sent with a nickname parameter and that
 	 * the a mode flag sent was not recognized.
@@ -357,7 +357,7 @@ public interface IRCConstants {
 	public static final int ERR_UMODEUNKNOWNFLAG = 501;
 	
 	/**
-	 * Format: "Cant change mode for other users".<br />
+	 * Format: "Cant change mode for other users". <br />
 	 * Error sent to any user trying to view or change the
 	 * user mode for a user other than themselves.
 	 */
@@ -369,7 +369,7 @@ public interface IRCConstants {
 	public static final int RPL_NONE = 300;
 	
 	/**
-	 * Format: "[&lt;reply&gt;{&lt;space&gt;&lt;reply&gt;}]".<br />
+	 * Format: "[&lt;reply&gt;{&lt;space&gt;&lt;reply&gt;}]". <br />
 	 * Reply format used by USERHOST to list replies to
 	 * the query list.  The reply string is composed as
 	 * follows:<br />
@@ -383,7 +383,7 @@ public interface IRCConstants {
 	public static final int RPL_USERHOST = 302;
 	
 	/**
-	 * Format: "[&lt;nick&gt; {&lt;space&gt;&lt;nick&gt;}]".<br />
+	 * Format: "[&lt;nick&gt; {&lt;space&gt;&lt;nick&gt;}]". <br />
 	 * Reply format used by ISON to list replies to the
 	 * query list.
 	 */
@@ -400,7 +400,7 @@ public interface IRCConstants {
 	public static final int RPL_UNAWAY = 305;
 	
 	/**
-	 * Format: "You have been marked as being away".<br />
+	 * Format: "You have been marked as being away". <br />
 	 * These replies are used with the AWAY command (if
 	 * allowed).  RPL_AWAY is sent to any client sending a
 	 * PRIVMSG to a client which is away.  RPL_AWAY is only
@@ -431,7 +431,7 @@ public interface IRCConstants {
 	public static final int RPL_WHOISUSER = 311;
 	
 	/**
-	 * Format: "&lt;nick&gt; &lt;server&gt; &lt;server info&gt;".<br />
+	 * Format: "&lt;nick&gt; &lt;server&gt; &lt;server info&gt;". <br />
 	 * Replies 311 - 313, 317 - 319 are all replies
 	 * generated in response to a WHOIS message.  Given that
 	 * there are enough parameters present, the answering
@@ -450,7 +450,7 @@ public interface IRCConstants {
 	public static final int RPL_WHOISSERVER = 312;
 	
 	/**
-	 * Format: "&lt;nick&gt; is an IRC operator".<br />
+	 * Format: "&lt;nick&gt; is an IRC operator". <br />
 	 * Replies 311 - 313, 317 - 319 are all replies
 	 * generated in response to a WHOIS message.  Given that
 	 * there are enough parameters present, the answering
@@ -469,7 +469,7 @@ public interface IRCConstants {
 	public static final int RPL_WHOISOPERATOR = 313;
 	
 	/**
-	 * Format: "&lt;nick&gt; &lt;integer&gt; seconds idle".<br />
+	 * Format: "&lt;nick&gt; &lt;integer&gt; seconds idle". <br />
 	 * Replies 311 - 313, 317 - 319 are all replies
 	 * generated in response to a WHOIS message.  Given that
 	 * there are enough parameters present, the answering
@@ -488,7 +488,7 @@ public interface IRCConstants {
 	public static final int RPL_WHOISIDLE = 317;
 	
 	/**
-	 * Format: "&lt;nick&gt; End of /WHOIS list".<br />
+	 * Format: "&lt;nick&gt; End of /WHOIS list". <br />
 	 * Replies 311 - 313, 317 - 319 are all replies
 	 * generated in response to a WHOIS message.  Given that
 	 * there are enough parameters present, the answering
@@ -507,7 +507,7 @@ public interface IRCConstants {
 	public static final int RPL_ENDOFWHOIS = 318;
 	
 	/**
-	 * Format: "&lt;nick&gt; {[@|+]&lt;channel&gt;&lt;space&gt;}".<br />
+	 * Format: "&lt;nick&gt; {[@|+]&lt;channel&gt;&lt;space&gt;}". <br />
 	 * Replies 311 - 313, 317 - 319 are all replies
 	 * generated in response to a WHOIS message.  Given that
 	 * there are enough parameters present, the answering
@@ -531,7 +531,7 @@ public interface IRCConstants {
 	public static final int RPL_WHOWASUSER = 314;
 	
 	/**
-	 * Format: "&lt;nick&gt; End of WHOWAS".<br />
+	 * Format: "&lt;nick&gt; End of WHOWAS". <br />
 	 * When replying to a WHOWAS message, a server must use
 	 * the replies RPL_WHOWASUSER, RPL_WHOISSERVER or
 	 * ERR_WASNOSUCHNICK for each nickname in the presented
@@ -542,7 +542,7 @@ public interface IRCConstants {
 	public static final int RPL_ENDOFWHOWAS = 369;
 	
 	/**
-	 * Format: "Channel Users  Name".<br />
+	 * Format: "Channel Users  Name". <br />
 	 * Replies RPL_LISTSTART, RPL_LIST, RPL_LISTEND mark
 	 * the start, actual replies with data and end of the
 	 * server's response to a LIST command.  If there are
@@ -552,7 +552,7 @@ public interface IRCConstants {
 	public static final int RPL_LISTSTART = 321;
 	
 	/**
-	 * Format: "&lt;channel&gt; &lt;# visible&gt; &lt;topic&gt;".<br />
+	 * Format: "&lt;channel&gt; &lt;# visible&gt; &lt;topic&gt;". <br />
 	 * Replies RPL_LISTSTART, RPL_LIST, RPL_LISTEND mark
 	 * the start, actual replies with data and end of the
 	 * server's response to a LIST command.  If there are
@@ -562,7 +562,7 @@ public interface IRCConstants {
 	public static final int RPL_LIST = 322;
 	
 	/**
-	 * Format: "End of /LIST".<br />
+	 * Format: "End of /LIST". <br />
 	 * Replies RPL_LISTSTART, RPL_LIST, RPL_LISTEND mark
 	 * the start, actual replies with data and end of the
 	 * server's response to a LIST command.  If there are
@@ -572,7 +572,7 @@ public interface IRCConstants {
 	public static final int RPL_LISTEND = 323;
 	
 	/**
-	 * Format: "&lt;channel&gt; &lt;mode&gt; &lt;mode params&gt;".<br />
+	 * Format: "&lt;channel&gt; &lt;mode&gt; &lt;mode params&gt;". <br />
 	 */
 	public static final int RPL_CHANNELMODEIS = 324;
 	
@@ -583,7 +583,7 @@ public interface IRCConstants {
 	public static final int RPL_AUTHNAME = 333;
 	
 	/**
-	 * Format: "&lt;channel&gt; No topic is set".<br />
+	 * Format: "&lt;channel&gt; No topic is set". <br />
 	 * When sending a TOPIC message to determine the
 	 * channel topic, one of two replies is sent.  If
 	 * the topic is set, RPL_TOPIC is sent back else
@@ -592,7 +592,7 @@ public interface IRCConstants {
 	public static final int RPL_NOTOPIC = 331;
 	
 	/**
-	 * Format: "&lt;channel&gt; &lt;topic&gt;".<br />
+	 * Format: "&lt;channel&gt; &lt;topic&gt;". <br />
 	 * When sending a TOPIC message to determine the
 	 * channel topic, one of two replies is sent.  If
 	 * the topic is set, RPL_TOPIC is sent back else
@@ -608,7 +608,7 @@ public interface IRCConstants {
 	public static final int RPL_TOPICINFO = 333;
 	
 	/**
-	 * Format: "&lt;channel&gt; &lt;nick&gt;".<br />
+	 * Format: "&lt;channel&gt; &lt;nick&gt;". <br />
 	 * Returned by the server to indicate that the
 	 * attempted INVITE message was successful and is
 	 * being passed onto the end client.
@@ -616,7 +616,7 @@ public interface IRCConstants {
 	public static final int RPL_INVITING = 341;
 	
 	/**
-	 * Format: "&lt;user&gt; Summoning user to IRC".<br />
+	 * Format: "&lt;user&gt; Summoning user to IRC". <br />
 	 * Returned by a server answering a SUMMON message to
 	 * indicate that it is summoning that user.
 	 */
@@ -624,12 +624,12 @@ public interface IRCConstants {
 	
 	/**
 	 * Format: "&lt;version&gt;.&lt;debuglevel&gt; &lt;server&gt; 
-	 * &lt;comments&gt;".<br />
+	 * &lt;comments&gt;". <br />
 	 * Reply by the server showing its version details.
 	 * The &lt;version&gt; is the version of the software being
 	 * used (including any patchlevel revisions) and the
 	 * &lt;debuglevel&gt; is used to indicate if the server is
-	 * running in "debug mode".<br />
+	 * running in "debug mode". <br />
 	 * The "comments" field may contain any comments about
 	 * the version or further version details.
 	 */
@@ -637,7 +637,7 @@ public interface IRCConstants {
 	
 	/**
 	 * Format: "&lt;channel&gt; &lt;user&gt; &lt;host&gt; &lt;server&gt; 
-	 * &lt;nick&gt; &lt;H|G&gt;[*][@|+] &lt;hopcount&gt; &lt;real name&gt;".<br />
+	 * &lt;nick&gt; &lt;H|G&gt;[*][@|+] &lt;hopcount&gt; &lt;real name&gt;". <br />
 	 * The RPL_WHOREPLY and RPL_ENDOFWHO pair are used
 	 * to answer a WHO message.  The RPL_WHOREPLY is only
 	 * sent if there is an appropriate match to the WHO
@@ -649,7 +649,7 @@ public interface IRCConstants {
 	public static final int RPL_WHOREPLY = 352;
 	
 	/**
-	 * Format: "&lt;name&gt; End of /WHO list".<br />
+	 * Format: "&lt;name&gt; End of /WHO list". <br />
 	 * The RPL_WHOREPLY and RPL_ENDOFWHO pair are used
 	 * to answer a WHO message.  The RPL_WHOREPLY is only
 	 * sent if there is an appropriate match to the WHO
@@ -662,7 +662,7 @@ public interface IRCConstants {
 	
 	/**
 	 * Format: "&lt;channel&gt; [[@|+]&lt;nick&gt; [[@|+]&lt;nick&gt; 
-	 * [...]]]".<br />
+	 * [...]]]". <br />
 	 * To reply to a NAMES message, a reply pair consisting
 	 * of RPL_NAMREPLY and RPL_ENDOFNAMES is sent by the
 	 * server back to the client.  If there is no channel
@@ -676,7 +676,7 @@ public interface IRCConstants {
 	public static final int RPL_NAMREPLY = 353;
 	
 	/**
-	 * Format: "&lt;channel&gt; End of /NAMES list".<br />
+	 * Format: "&lt;channel&gt; End of /NAMES list". <br />
 	 * To reply to a NAMES message, a reply pair consisting
 	 * of RPL_NAMREPLY and RPL_ENDOFNAMES is sent by the
 	 * server back to the client.  If there is no channel
@@ -699,7 +699,7 @@ public interface IRCConstants {
 	public static final int RPL_LINKS = 364;
 	
 	/**
-	 * Format: "&lt;mask&gt; End of /LINKS list".<br />
+	 * Format: "&lt;mask&gt; End of /LINKS list". <br />
 	 * In replying to the LINKS message, a server must send
 	 * replies back using the RPL_LINKS numeric and mark the
 	 * end of the list using an RPL_ENDOFLINKS reply.
@@ -707,7 +707,7 @@ public interface IRCConstants {
 	public static final int RPL_ENDOFLINKS = 365;
 	
 	/**
-	 * Format: "&lt;channel&gt; &lt;banid&gt;".<br />
+	 * Format: "&lt;channel&gt; &lt;banid&gt;". <br />
 	 * When listing the active 'bans' for a given channel,
 	 * a server is required to send the list back using the
 	 * RPL_BANLIST and RPL_ENDOFBANLIST messages.  A separate
@@ -718,7 +718,7 @@ public interface IRCConstants {
 	public static final int RPL_BANLIST = 367;
 	
 	/**
-	 * Format: "&lt;channel&gt; End of channel ban list".<br />
+	 * Format: "&lt;channel&gt; End of channel ban list". <br />
 	 * When listing the active 'bans' for a given channel,
 	 * a server is required to send the list back using the
 	 * RPL_BANLIST and RPL_ENDOFBANLIST messages.  A separate
