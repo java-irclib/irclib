@@ -21,6 +21,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 
+import org.schwering.irc.lib.ssl.SSLIRCConnection;
+
 /**
  * Creates a new connection to an IRC server. It's the main class of the
  * IRClib, the point everything starts.
@@ -586,7 +588,7 @@ public class IRCConnection extends Thread {
 	 * @see #doQuit
 	 * @see #doQuit(String)
 	 */
-	public void close() {
+	public synchronized void close() {
 		try {
 			interrupt();
 		} catch (Exception exc) {
