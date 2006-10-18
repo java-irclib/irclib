@@ -695,7 +695,7 @@ public class IRCConnection extends Thread {
 //	------------------------------
 	
 	/** 
-	 * Changes the character encoding used to talk to the server.
+	 * Changes the character encoding used to talk to the server. 
 	 * This can be ISO-8859-1 or UTF-8 for example.
 	 * This property must be set before a call to the <code>connect()</code> 
 	 * method.
@@ -724,7 +724,7 @@ public class IRCConnection extends Thread {
 //	------------------------------
 	
 	/** 
-	 * Tells whether there's a connection to the IRC network or not.<br />
+	 * Tells whether there's a connection to the IRC network or not. <br />
 	 * If <code>connect</code> wasn't called yet, it returns <code>false</code>.
 	 * @return The status of the connection; <code>true</code> if it's connected. 
 	 * @see #connect()
@@ -844,7 +844,7 @@ public class IRCConnection extends Thread {
 //	------------------------------
 	
 	/**
-	 * Returns the timeout of the socket.<br />
+	 * Returns the timeout of the socket. <br />
 	 * If an error occurs, which is never the case, <code>-1</code> is returned.
 	 * @return The timeout.
 	 */
