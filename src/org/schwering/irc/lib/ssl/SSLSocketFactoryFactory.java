@@ -59,19 +59,14 @@ class SSLSocketFactoryFactory {
 		try {
 			return createJsseSSLSocketFactory(tm);
 		} catch (ClassNotFoundException cnfe) {
-			javax.swing.JOptionPane.showMessageDialog(null, "Failed");
 			throw exception;
 		} catch (NoSuchMethodException nsme) {
-			javax.swing.JOptionPane.showMessageDialog(null, "Failed");
 			throw exception;
 		} catch (InvocationTargetException ite) {
-			javax.swing.JOptionPane.showMessageDialog(null, "Failed");
 			throw exception;
 		} catch (IllegalAccessException eae) {
-			javax.swing.JOptionPane.showMessageDialog(null, "Failed");
 			throw exception;
 		} catch (Exception exc) {
-			javax.swing.JOptionPane.showMessageDialog(null, "Failed");
 			throw createSSLException(exc);
 		}
 	}
