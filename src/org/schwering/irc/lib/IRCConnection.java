@@ -588,22 +588,26 @@ public class IRCConnection extends Thread {
 	 */
 	public synchronized void close() {
 		try {
-			interrupt();
+			if (isAlive())
+				interrupt();
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
 		try {
-			socket.close();
+			if (socket != null)
+				socket.close();
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
 		try {
-			out.close();
+			if (out != null)
+				out.close();
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
 		try {
-			in.close();
+			if (in != null)
+				in.close();
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
