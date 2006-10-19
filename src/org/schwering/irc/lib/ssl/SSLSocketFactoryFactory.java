@@ -26,7 +26,7 @@ class SSLSocketFactoryFactory {
 	private SSLSocketFactoryFactory() {
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Creates a new <code>SSLSocketFactory</code>. This method first tries to 
@@ -94,7 +94,7 @@ class SSLSocketFactoryFactory {
 		}
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Creates a new <code>SSLSocketFactory</code> using the 
@@ -143,7 +143,7 @@ class SSLSocketFactoryFactory {
 		return (SSLSocketFactory)socketFactory;
 	}
 	
-//	------------------------------
+// ------------------------------
 
 	/**
 	 * Creates a new <code>SSLSocketFactory</code> using the 

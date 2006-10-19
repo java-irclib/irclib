@@ -51,7 +51,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when the own connection is successfully established. 
@@ -66,7 +66,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when the own connection is broken.
@@ -75,7 +75,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when an <code>ERROR</code> command is received.
@@ -85,7 +85,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when a numeric error is received.
@@ -99,7 +99,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when somebody is invited to a channel.
@@ -112,7 +112,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when somebody joins a channel.
@@ -123,7 +123,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when somebody is kicked from a channel.
@@ -140,7 +140,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when an operator changes the modes of a channel. 
@@ -157,7 +157,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when somebody changes somebody's usermodes. 
@@ -173,7 +173,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when somebody changes his nickname successfully.
@@ -185,7 +185,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when somebody sends a <code>NOTICE</code> to a user or a group. 
@@ -199,7 +199,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when somebody parts from a channel.
@@ -213,7 +213,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when a <code>PING</code> comes in. 
@@ -225,7 +225,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when a user sends a <code>PRIVMSG</code> to a user or to a
@@ -240,7 +240,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when somebody quits from the network.
@@ -252,7 +252,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when a numeric reply is received. 
@@ -269,7 +269,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when the topic is changed by operators. 
@@ -284,7 +284,7 @@ public class IRCEventAdapter implements IRCEventListener {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * This event is fired when the incoming line can not be identified as a known
@@ -298,5 +298,4 @@ public class IRCEventAdapter implements IRCEventListener {
 			String trailing) {
 		// nothing
 	}
-	
 }

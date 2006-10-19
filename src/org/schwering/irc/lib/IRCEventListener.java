@@ -63,14 +63,14 @@ public interface IRCEventListener extends EventListener, IRCConstants {
 	 */
 	public void onRegistered();
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when the own connection is broken.
 	 */
 	public void onDisconnected();
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when an <code>ERROR</code> command is received.
@@ -78,7 +78,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
 	 */
 	public void onError(String msg);
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when a numeric error is received.
@@ -90,7 +90,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
 	 */
 	public void onError(int num, String msg);
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when somebody is invited to a channel.
@@ -101,7 +101,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
 	 */
 	public void onInvite(String chan, IRCUser user, String passiveNick);
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when somebody joins a channel.
@@ -110,7 +110,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
 	 */
 	public void onJoin(String chan, IRCUser user);
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when somebody is kicked from a channel.
@@ -124,7 +124,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
 	 */
 	public void onKick(String chan, IRCUser user, String passiveNick, String msg);
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when an operator changes the modes of a channel. 
@@ -139,7 +139,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
 	 */
 	public void onMode(String chan, IRCUser user, IRCModeParser modeParser);
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when somebody changes somebody's usermodes. 
@@ -153,7 +153,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
 	 */
 	public void onMode(IRCUser user, String passiveNick, String mode);
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when somebody changes his nickname successfully.
@@ -163,7 +163,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
 	 */
 	public void onNick(IRCUser user, String newNick);
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when somebody sends a <code>NOTICE</code> to a user or a group. 
@@ -175,7 +175,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
 	 */
 	public void onNotice(String target, IRCUser user, String msg);
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when somebody parts from a channel.
@@ -187,7 +187,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
 	 */
 	public void onPart(String chan, IRCUser user, String msg);
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when a <code>PING</code> comes in. 
@@ -197,7 +197,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
 	 */
 	public void onPing(String ping);
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when a user sends a <code>PRIVMSG</code> to a user or to a
@@ -210,7 +210,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
 	 */
 	public void onPrivmsg(String target, IRCUser user, String msg);
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when somebody quits from the network.
@@ -220,7 +220,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
 	 */
 	public void onQuit(IRCUser user, String msg);
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when a numeric reply is received. 
@@ -235,7 +235,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
 	 */
 	public void onReply(int num, String value, String msg);
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Fired when the topic is changed by operators. 
@@ -248,7 +248,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
 	 */
 	public void onTopic(String chan, IRCUser user, String topic);
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * This event is fired when the incoming line can not be identified as a known

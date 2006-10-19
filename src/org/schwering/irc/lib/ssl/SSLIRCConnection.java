@@ -107,7 +107,7 @@ public class SSLIRCConnection extends IRCConnection {
 	 */
 	private Vector trustManagers = new Vector(1);
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Creates a new IRC connection with secure sockets (SSL). <br />
@@ -144,7 +144,7 @@ public class SSLIRCConnection extends IRCConnection {
 		super(host, ports, pass, nick, username, realname);
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Creates a new IRC connection with secure sockets (SSL). <br />
@@ -182,7 +182,7 @@ public class SSLIRCConnection extends IRCConnection {
 		super(host, portMin, portMax, pass, nick, username, realname);
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Establish a connection to the server. <br />
@@ -238,7 +238,7 @@ public class SSLIRCConnection extends IRCConnection {
 		prepare(s);
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Adds a new <code>SSLTrustManager</code>.
@@ -251,7 +251,7 @@ public class SSLIRCConnection extends IRCConnection {
 		trustManagers.add(trustManager);
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Removes one <code>SSLTrustManager</code>.
@@ -265,7 +265,7 @@ public class SSLIRCConnection extends IRCConnection {
 		return trustManagers.remove(trustManager);
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Returns the set <code>SSLTrustManager</code>s. The default 
@@ -282,7 +282,4 @@ public class SSLIRCConnection extends IRCConnection {
 		trustManagers.copyInto(tm);
 		return tm;
 	}
-	
-//	------------------------------
-	
 }

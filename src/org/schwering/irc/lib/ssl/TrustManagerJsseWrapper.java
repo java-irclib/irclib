@@ -17,7 +17,7 @@ class TrustManagerJsseWrapper implements com.sun.net.ssl.X509TrustManager {
 	 */
 	private SSLTrustManager trustManager;
 	
-//	------------------------------
+// ------------------------------
 
 	public static TrustManagerJsseWrapper[] wrap(SSLTrustManager[] tm) {
 		TrustManagerJsseWrapper[] w = new TrustManagerJsseWrapper[tm.length];
@@ -27,7 +27,7 @@ class TrustManagerJsseWrapper implements com.sun.net.ssl.X509TrustManager {
 		return w;
 	}
 	
-//	------------------------------
+// ------------------------------
 
 	/**
 	 * Creates a new trust manager wrapper.
@@ -41,7 +41,7 @@ class TrustManagerJsseWrapper implements com.sun.net.ssl.X509TrustManager {
 		this.trustManager = trustManager;
 	}
 
-//	------------------------------
+// ------------------------------
 
 	/**
 	 * Always returns <code>false</code>.
@@ -52,7 +52,7 @@ class TrustManagerJsseWrapper implements com.sun.net.ssl.X509TrustManager {
 		return false;
 	}
 
-//	------------------------------
+// ------------------------------
 
 	/**
 	 * Returns <code>true</code> if the server is trusted. This decision is 
@@ -63,7 +63,7 @@ class TrustManagerJsseWrapper implements com.sun.net.ssl.X509TrustManager {
 		return trustManager.isTrusted(chain);
 	}
 	
-//	------------------------------
+// ------------------------------
 
 	/**
 	 * Return an array of certificate authority certificates which are trusted 

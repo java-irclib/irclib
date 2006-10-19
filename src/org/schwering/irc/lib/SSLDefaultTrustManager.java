@@ -46,7 +46,7 @@ public class SSLDefaultTrustManager implements X509TrustManager {
 	 */
 	protected X509Certificate[] accepted = new X509Certificate[0];
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Creates a new instance of the <code>SSLDefaultTrustManager</code> class.
@@ -55,7 +55,7 @@ public class SSLDefaultTrustManager implements X509TrustManager {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Does nothing. This method would check whether we (the server) trust the 
@@ -68,7 +68,7 @@ public class SSLDefaultTrustManager implements X509TrustManager {
 		return false;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Invoked when the client should check whether he trusts the server or not.
@@ -82,7 +82,7 @@ public class SSLDefaultTrustManager implements X509TrustManager {
 		return true;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Returns the accepted certificates. They are set in the 
@@ -93,7 +93,4 @@ public class SSLDefaultTrustManager implements X509TrustManager {
 	public X509Certificate[] getAcceptedIssuers() {
 		return accepted;
 	}
-	
-//	------------------------------
-	
 }

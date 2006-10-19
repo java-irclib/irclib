@@ -16,6 +16,9 @@ public class SSLNotSupportedException extends RuntimeException {
 	public SSLNotSupportedException() {
 		super();
 	}
+	
+// ------------------------------
+
 	/**
 	 * Creates an exception with description.
 	 * @param s The description.

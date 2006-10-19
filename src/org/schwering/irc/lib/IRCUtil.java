@@ -73,7 +73,7 @@ public class IRCUtil implements IRCConstants {
 	 */ 
 	public static char actionIndicator = 1; // ASCII code
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * This is an empty constructor, it does nothing. Nobody may instantiate this
@@ -83,7 +83,7 @@ public class IRCUtil implements IRCConstants {
 		// nothing
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * According to RFC2812 the channel's name may and must start with one of the
@@ -104,7 +104,7 @@ public class IRCUtil implements IRCConstants {
 		&& ((c = str.charAt(0)) == 35 || c == 38 || c == 33 || c == 43);
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Parses a <code>String</code> to an <code>int</code> via
@@ -122,7 +122,7 @@ public class IRCUtil implements IRCConstants {
 		}
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Erases the mIRC colorcodes from a String. 
@@ -138,7 +138,7 @@ public class IRCUtil implements IRCConstants {
 		return parseColors(new StringBuffer(str)).toString();
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Erases the mIRC colorcodes from a String. 
@@ -193,7 +193,7 @@ public class IRCUtil implements IRCConstants {
 		return buf;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Splits a string into substrings. 
@@ -232,7 +232,7 @@ public class IRCUtil implements IRCConstants {
 		return result;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Splits a string into substrings. This method is totally equal to 
@@ -245,7 +245,4 @@ public class IRCUtil implements IRCConstants {
 	public static String[] split(String str, int delim) {
 		return split(str, delim, null);
 	}
-	
-//	------------------------------
-	
 }

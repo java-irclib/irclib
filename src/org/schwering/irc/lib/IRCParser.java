@@ -122,7 +122,7 @@ public class IRCParser {
 	 */
 	private String[] parameters;
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Parses the line after erasing all mIRC color codes.
@@ -133,7 +133,7 @@ public class IRCParser {
 		this(line, false);
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * The main constructor. 
@@ -182,7 +182,7 @@ public class IRCParser {
 		this.trailing = (trailing != null) ?  trailing : "";
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Searches for a char in the <code>StringBuffer buf</code> from a given index
@@ -198,7 +198,7 @@ public class IRCParser {
 		return -1;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Searches for a string in the <code>StringBuffer buf</code> from a given 
@@ -220,7 +220,7 @@ public class IRCParser {
 		return -1;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Searches for a given char in the <code>StringBuffer buf</code>. <br />
@@ -247,7 +247,7 @@ public class IRCParser {
 		return -1;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Initializes the <code>parameters[]</code>. 
@@ -262,7 +262,7 @@ public class IRCParser {
 		parameters = IRCUtil.split(middle, ' ', trailing);
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Returns the line's prefix. A prefix is the part which contains information
@@ -274,7 +274,7 @@ public class IRCParser {
 		return prefix;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Returns the line's command.
@@ -284,7 +284,7 @@ public class IRCParser {
 		return command;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Returns the line's middle.
@@ -294,7 +294,7 @@ public class IRCParser {
 		return middle;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Returns the line's trailing.
@@ -304,7 +304,7 @@ public class IRCParser {
 		return trailing;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Returns the unparsed line. It looks exacttly as the server sent it, but
@@ -316,7 +316,7 @@ public class IRCParser {
 		return buf.toString();
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Returns the line's parameters which consists of the middle and the 
@@ -329,7 +329,7 @@ public class IRCParser {
 		trailing;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Returns the nickname of the person who sent the line 
@@ -362,7 +362,7 @@ public class IRCParser {
 		return (prefix.length() != 0) ? prefix : null;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Returns the servername of the server which sent the line 
@@ -390,7 +390,7 @@ public class IRCParser {
 		return getNick();
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Returns the username of the person who sent the line.<br />
@@ -420,7 +420,7 @@ public class IRCParser {
 		return null;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Returns the host of the person who sent the line.<br />
@@ -448,7 +448,7 @@ public class IRCParser {
 		return null;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Returns a new <code>IRCUser</code> object.
@@ -466,7 +466,7 @@ public class IRCParser {
 		return new IRCUser(getNick(), getUsername(), getHost());
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Gets count of parameters.
@@ -480,7 +480,7 @@ public class IRCParser {
 		return parameters.length;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Get one parameter of the line.
@@ -501,7 +501,7 @@ public class IRCParser {
 			return "";
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Grabs the line's parameters from the <code>i</code>th to the last 
@@ -521,7 +521,7 @@ public class IRCParser {
 		return params.toString();
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Grabs the line's parameters from the first to the <code>i</code>th 
@@ -543,7 +543,7 @@ public class IRCParser {
 		return params.toString();
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Generates a <code>String</code> with some information about the instance of
@@ -555,7 +555,4 @@ public class IRCParser {
 		return getClass().getName() +"["+ prefix +","+ command +","+ middle +","+ 
 		trailing +"]";
 	}
-	
-//	------------------------------
-	
 }

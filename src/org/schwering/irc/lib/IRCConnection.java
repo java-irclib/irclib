@@ -167,7 +167,7 @@ public class IRCConnection extends Thread {
 	 */
 	private String username;
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Creates a new IRC connection. <br />
@@ -208,7 +208,7 @@ public class IRCConnection extends Thread {
 		this.realname = realname;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Creates a new IRC connection. <br />
@@ -244,7 +244,7 @@ public class IRCConnection extends Thread {
 				realname);
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Converts a portrange which starts with a given <code>int</code> and ends 
@@ -268,7 +268,7 @@ public class IRCConnection extends Thread {
 		return ports;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Establish a connection to the server. <br />
@@ -307,7 +307,7 @@ public class IRCConnection extends Thread {
 		prepare(s);
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Invoked by the <code>connect</code> method, this method prepares the 
@@ -337,7 +337,7 @@ public class IRCConnection extends Thread {
 		register();
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Registers the connection with the IRC server. <br />
@@ -357,7 +357,7 @@ public class IRCConnection extends Thread {
 				+" :"+ realname); 
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * The <code>Thread</code> is started by the <code>connect</code> method.
@@ -379,7 +379,7 @@ public class IRCConnection extends Thread {
 		}
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Sends a String to the server. 
@@ -403,7 +403,7 @@ public class IRCConnection extends Thread {
 		}
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Just parses a String given as the only argument with the help of the 
@@ -572,7 +572,7 @@ public class IRCConnection extends Thread {
 		}
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Close down the connection brutally. <br />
@@ -621,7 +621,7 @@ public class IRCConnection extends Thread {
 		listeners = new IRCEventListener[0];
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Adds a new {@link org.schwering.irc.lib.IRCEventListener} which listens 
@@ -641,7 +641,7 @@ public class IRCConnection extends Thread {
 		listeners[len] = l;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Removes the first occurence of the given 
@@ -672,7 +672,7 @@ public class IRCConnection extends Thread {
 		return true;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Enables or disables the mIRC colorcodes. 
@@ -683,7 +683,7 @@ public class IRCConnection extends Thread {
 		colorsEnabled = colors;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Enables or disables the automatic PING? PONG! support. 
@@ -695,7 +695,7 @@ public class IRCConnection extends Thread {
 		pongAutomatic = pong;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Changes the character encoding used to talk to the server. 
@@ -708,7 +708,7 @@ public class IRCConnection extends Thread {
 		this.encoding	= encoding;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Sets the connection's timeout in milliseconds. <br />
@@ -724,7 +724,7 @@ public class IRCConnection extends Thread {
 			timeout = millis;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Tells whether there's a connection to the IRC network or not. <br />
@@ -739,7 +739,7 @@ public class IRCConnection extends Thread {
 		return level >= 1;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Returns the nickname of this instance. 
@@ -749,7 +749,7 @@ public class IRCConnection extends Thread {
 		return nick;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Returns the realname of this instance. 
@@ -759,7 +759,7 @@ public class IRCConnection extends Thread {
 		return realname;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Returns the username of this instance. 
@@ -769,7 +769,7 @@ public class IRCConnection extends Thread {
 		return username;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Returns the server of this instance. 
@@ -779,7 +779,7 @@ public class IRCConnection extends Thread {
 		return host;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Returns the password of this instance. If no password is set, 
@@ -791,7 +791,7 @@ public class IRCConnection extends Thread {
 		return pass;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Returns all ports to which the <code>IRCConnection</code> is going to try
@@ -802,7 +802,7 @@ public class IRCConnection extends Thread {
 		return ports;
 	}  
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Returns the port to which the <code>IRCConnection</code> connected, or 
@@ -814,7 +814,7 @@ public class IRCConnection extends Thread {
 		return (socket != null) ? socket.getPort() : 0;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Indicates whether colors are stripped out or not.
@@ -824,7 +824,7 @@ public class IRCConnection extends Thread {
 		return colorsEnabled;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Indicates whether automatic PING? PONG! is enabled or not.
@@ -834,7 +834,7 @@ public class IRCConnection extends Thread {
 		return pongAutomatic;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Returns the encoding of the socket. 
@@ -844,7 +844,7 @@ public class IRCConnection extends Thread {
 		return encoding;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Returns the timeout of the socket. <br />
@@ -863,7 +863,7 @@ public class IRCConnection extends Thread {
 				return timeout;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Generates a <code>String</code> with some information about the instance of
@@ -878,7 +878,7 @@ public class IRCConnection extends Thread {
 		nick +","+ realname +","+ pass +","+ isConnected() +"]";
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Removes away message. 
@@ -887,7 +887,7 @@ public class IRCConnection extends Thread {
 		send("AWAY");
 	}  
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Sets away message. 
@@ -897,7 +897,7 @@ public class IRCConnection extends Thread {
 		send("AWAY :"+ msg);
 	}  
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Invites a user to a channel. 
@@ -908,7 +908,7 @@ public class IRCConnection extends Thread {
 		send("INVITE "+ nick +" "+ chan);
 	}  
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Checks if one or more nicks are used on the server. 
@@ -918,7 +918,7 @@ public class IRCConnection extends Thread {
 		send("ISON "+ nick);
 	}  
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Joins a channel without a key. 
@@ -928,7 +928,7 @@ public class IRCConnection extends Thread {
 		send("JOIN "+ chan);
 	}  
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Joins a channel with a key. 
@@ -939,7 +939,7 @@ public class IRCConnection extends Thread {
 		send("JOIN "+ chan +" "+ key);
 	}  
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Kicks a user from a channel. 
@@ -950,7 +950,7 @@ public class IRCConnection extends Thread {
 		send("KICK "+ chan +" "+ nick);
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Kicks a user from a channel with a comment. 
@@ -962,7 +962,7 @@ public class IRCConnection extends Thread {
 		send("KICK "+ chan +" "+ nick +" :"+ msg);
 	}  
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Lists all channels with their topic and status. 
@@ -971,7 +971,7 @@ public class IRCConnection extends Thread {
 		send("LIST");
 	}  
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Lists channel(s) with their topic and status. 
@@ -981,7 +981,7 @@ public class IRCConnection extends Thread {
 		send("LIST "+ chan);
 	}  
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Lists all visible users.
@@ -990,7 +990,7 @@ public class IRCConnection extends Thread {
 		send("NAMES");
 	}  
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Lists all visible users of (a) channel(s). 
@@ -1000,7 +1000,7 @@ public class IRCConnection extends Thread {
 		send("NAMES "+ chan);
 	}  
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Sends a message to a person or a channel. 
@@ -1011,7 +1011,7 @@ public class IRCConnection extends Thread {
 		send("PRIVMSG "+ target +" :"+ msg);
 	} 
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Requests a Reply 324 for the modes of a given channel. 
@@ -1021,7 +1021,7 @@ public class IRCConnection extends Thread {
 		send("MODE "+ chan);
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Sends a mode to the server. <br />
@@ -1036,7 +1036,7 @@ public class IRCConnection extends Thread {
 		send("MODE "+ target +" "+ mode);
 	} 
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Changes the nickname. 
@@ -1046,7 +1046,7 @@ public class IRCConnection extends Thread {
 		send("NICK "+ nick);
 	}  
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Notices a message to a person or a channel. 
@@ -1058,7 +1058,7 @@ public class IRCConnection extends Thread {
 		send("NOTICE "+ target +" :"+ msg);
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Parts from a given channel. 
@@ -1068,7 +1068,7 @@ public class IRCConnection extends Thread {
 		send("PART "+ chan);
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Parts from a given channel with a given parg-msg. 
@@ -1079,7 +1079,7 @@ public class IRCConnection extends Thread {
 		send("PART "+ chan +" :"+ msg);
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Quits from the IRC server with a quit-msg.
@@ -1093,7 +1093,7 @@ public class IRCConnection extends Thread {
 		send("PONG :"+ ping);
 	} 
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Quits from the IRC server. 
@@ -1107,7 +1107,7 @@ public class IRCConnection extends Thread {
 		send("QUIT"); 
 	} 
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Quits from the IRC server with a quit-msg. 
@@ -1122,7 +1122,7 @@ public class IRCConnection extends Thread {
 		send("QUIT :"+ msg); 
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Requests the topic of a chan. The topic is given in a numeric reply. 
@@ -1132,7 +1132,7 @@ public class IRCConnection extends Thread {
 		send("TOPIC "+ chan);
 	}  
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Changes the topic of a chan. 
@@ -1143,7 +1143,7 @@ public class IRCConnection extends Thread {
 		send("TOPIC "+ chan +" :"+ topic);
 	}  
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Requests information about users matching the given criteric, 
@@ -1154,7 +1154,7 @@ public class IRCConnection extends Thread {
 		send("WHO "+ criteric);
 	}  
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Requires information about an existing user. 
@@ -1164,7 +1164,7 @@ public class IRCConnection extends Thread {
 		send("WHOIS "+ nick);
 	}  
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Requires host-information about a user, who is not connected anymore. 
@@ -1174,7 +1174,7 @@ public class IRCConnection extends Thread {
 		send("WHOWAS "+ nick);
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Requires host-information about up to 5 users which must be listed and 
@@ -1184,7 +1184,4 @@ public class IRCConnection extends Thread {
 	public void doUserhost(String nick) {
 		send("USERHOST "+ nick);
 	}
-	
-//	------------------------------
-	
 }

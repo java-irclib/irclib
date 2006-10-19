@@ -22,6 +22,8 @@ public interface SSLTrustManager {
 	 */
 	public boolean isTrusted(X509Certificate[] chain);
 	
+// ------------------------------
+	
 	/**
 	 * Return an array of certificate authority certificates which are trusted 
 	 * for authenticating peers.

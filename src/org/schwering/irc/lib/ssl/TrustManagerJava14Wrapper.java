@@ -18,7 +18,7 @@ class TrustManagerJava14Wrapper implements javax.net.ssl.X509TrustManager {
 	 */
 	private SSLTrustManager trustManager;
 	
-//	------------------------------
+// ------------------------------
 
 	public static TrustManagerJava14Wrapper[] wrap(SSLTrustManager[] tm) {
 		TrustManagerJava14Wrapper[] w = new TrustManagerJava14Wrapper[tm.length];
@@ -28,7 +28,8 @@ class TrustManagerJava14Wrapper implements javax.net.ssl.X509TrustManager {
 		return w;
 	}
 	
-//	------------------------------
+// ------------------------------
+	
 	/**
 	 * Creates a new trust manager wrapper.
 	 * @param trustManager The <code>SSLTrustManager</code> that should be 
@@ -41,7 +42,7 @@ class TrustManagerJava14Wrapper implements javax.net.ssl.X509TrustManager {
 		this.trustManager = trustManager;
 	}
 
-//	------------------------------
+// ------------------------------
 
 	/**
 	 * Always throws a <code>CertificateException</code>.
@@ -55,7 +56,7 @@ class TrustManagerJava14Wrapper implements javax.net.ssl.X509TrustManager {
 				"What other client should be trusted?");
 	}
 
-//	------------------------------
+// ------------------------------
 
 	/**
 	 * Does nothing if the server is trusted, throws a 
@@ -71,7 +72,7 @@ class TrustManagerJava14Wrapper implements javax.net.ssl.X509TrustManager {
 		}
 	}
 
-//	------------------------------
+// ------------------------------
 
 	/**
 	 * Returns <code>true</code> if the server is trusted. This decision is 

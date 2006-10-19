@@ -37,7 +37,7 @@ public class SSLDefaultTrustManager implements SSLTrustManager {
 	 */
 	protected X509Certificate[] accepted = new X509Certificate[0];
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Trusts the complete certificate chain and returns <code>true</code>.
@@ -49,7 +49,7 @@ public class SSLDefaultTrustManager implements SSLTrustManager {
 		return true;
 	}
 
-	//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Returns the accepted certificates. They are set in the 

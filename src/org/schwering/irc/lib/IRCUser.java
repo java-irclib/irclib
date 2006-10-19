@@ -39,7 +39,7 @@ public class IRCUser {
 	 */
 	private String host;
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Creates a new <code>IRCUser</code> object.
@@ -53,7 +53,7 @@ public class IRCUser {
 		this.host = host;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Returns the nickname of the person who sent the line 
@@ -71,7 +71,7 @@ public class IRCUser {
 		return nick;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Returns the servername of the server which sent the line or the nickname of
@@ -87,7 +87,7 @@ public class IRCUser {
 		return getNick();
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Returns the username of the person who sent the line. <br />
@@ -100,7 +100,7 @@ public class IRCUser {
 		return username;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/** 
 	 * Returns the host of the person who sent the line. <br />
@@ -113,7 +113,7 @@ public class IRCUser {
 		return host;
 	}
 	
-//	------------------------------
+// ------------------------------
 	
 	/**
 	 * Returns the nickname.
@@ -122,7 +122,4 @@ public class IRCUser {
 	public String toString() {
 		return getNick();
 	}
-	
-//	------------------------------
-	
 }
