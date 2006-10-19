@@ -106,7 +106,7 @@ public class IRCConnection extends Thread {
 	/** 
 	 * The <code>BufferedReader</code> receives Strings from the IRC server. 
 	 */
-	private BufferedReader in;
+	private volatile BufferedReader in;
 	
 	/** 
 	 * The <code>PrintWriter</code> sends Strings to the IRC server. 
@@ -375,7 +375,6 @@ public class IRCConnection extends Thread {
 					close();
 			}
 		} catch (IOException exc) {
-			exc.printStackTrace();
 			close();
 		}
 	}
@@ -412,7 +411,7 @@ public class IRCConnection extends Thread {
 	 * through the <code>IRCEventListener</code>.<br />
 	 * @param line The line which is sent from the server.
 	 */
-	private void get(String line) {
+	private synchronized void get(String line) {
 		IRCParser p;
 		try {
 			p = new IRCParser(line, colorsEnabled);
@@ -588,7 +587,7 @@ public class IRCConnection extends Thread {
 	 */
 	public synchronized void close() {
 		try {
-			if (isAlive())
+			if (!isInterrupted())
 				interrupt();
 		} catch (Exception exc) {
 			exc.printStackTrace();
@@ -627,19 +626,19 @@ public class IRCConnection extends Thread {
 	/** 
 	 * Adds a new {@link org.schwering.irc.lib.IRCEventListener} which listens 
 	 * for actions coming from the IRC server. 
-	 * @param listener An instance of the 
-	 *                 {@link org.schwering.irc.lib.IRCEventListener} interface.
+	 * @param l An instance of the 
+	 *          {@link org.schwering.irc.lib.IRCEventListener} interface.
 	 * @throws IllegalArgumentException If <code>listener</code> is 
 	 *                                  <code>null</code>.
 	 */
-	public void addIRCEventListener(IRCEventListener listener) {
-		if (listener == null)
+	public synchronized void addIRCEventListener(IRCEventListener l) {
+		if (l == null)
 			throw new IllegalArgumentException("Listener is null.");
 		int len = listeners.length;
 		IRCEventListener[] oldListeners = listeners;
 		listeners = new IRCEventListener[len + 1];
 		System.arraycopy(oldListeners, 0, listeners, 0, len);
-		listeners[len] = listener;
+		listeners[len] = l;
 	}
 	
 //	------------------------------
@@ -647,17 +646,17 @@ public class IRCConnection extends Thread {
 	/** 
 	 * Removes the first occurence of the given 
 	 * {@link org.schwering.irc.lib.IRCEventListener} from the listener-vector.
-	 * @param listener An instance of the 
-	 *                 {@link org.schwering.irc.lib.IRCEventListener} interface. 
+	 * @param l An instance of the 
+	 *          {@link org.schwering.irc.lib.IRCEventListener} interface. 
 	 * @return <code>true</code> if the listener was successfully removed;
 	 *         <code>false</code> if it was not found.
 	 */
-	public boolean removeIRCEventListener(IRCEventListener listener) {
-		if (listener == null)
+	public synchronized boolean removeIRCEventListener(IRCEventListener l) {
+		if (l == null)
 			return false;
 		int index = -1;
 		for (int i = 0; i < listeners.length; i++)
-			if (listeners[i].equals(listener)) {
+			if (listeners[i].equals(l)) {
 				index = i;
 				break;
 			}
