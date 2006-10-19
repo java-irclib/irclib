@@ -174,7 +174,6 @@ public class SSLIRCConnection extends IRCConnection {
 	public SSLIRCConnection(String host, int portMin, int portMax, String pass, 
 			String nick, String username, String realname) {
 		super(host, portMin, portMax, pass, nick, username, realname);
-		System.out.println("Commencing");
 	}
 	
 //	------------------------------
@@ -210,13 +209,10 @@ public class SSLIRCConnection extends IRCConnection {
 		SSLSocket s = null;
 		for (int i = 0; i < ports.length && s == null; i++) {
 			try {
-				System.out.println("Connecting...");
 				if (sf == null)
 					sf = SSLSocketFactoryFactory.createSSLSocketFactory(getTrustManagers());
 				s = (SSLSocket)sf.createSocket(host, ports[i]);
-				System.out.println("Handshaking...");
 				s.startHandshake();
-				System.out.println("Done");
 				exception = null;
 			} catch (SSLNotSupportedException exc) {
 				if (s != null)
