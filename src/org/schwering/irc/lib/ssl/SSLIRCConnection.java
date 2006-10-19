@@ -97,6 +97,12 @@ import org.schwering.irc.lib.IRCConnection;
 public class SSLIRCConnection extends IRCConnection {
 	
 	/**
+	 * The SSL protocol of choice. Values can be "TLS", "SSLv3" or "SSL".
+	 * "SSL" is the default value.
+	 */
+	public static String protocol = "SSL";
+	
+	/**
 	 * The list of <code>SSLTrustManager</code>s. 
 	 */
 	private Vector trustManagers = new Vector(1);

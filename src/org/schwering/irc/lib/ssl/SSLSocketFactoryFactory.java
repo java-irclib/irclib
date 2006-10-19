@@ -40,6 +40,9 @@ class SSLSocketFactoryFactory {
 	 */
 	public static SSLSocketFactory createSSLSocketFactory(SSLTrustManager[] tm) 
 	throws SSLException, SSLNotSupportedException {
+		boolean sslNotSupported = false;
+		Exception exception = null;
+		
 		try {
 			return createJava14SSLSocketFactory(tm);
 		} catch (ClassNotFoundException cnfe) {
@@ -51,23 +54,43 @@ class SSLSocketFactoryFactory {
 		} catch (IllegalAccessException eae) {
 			// try JSSE after try/catch block
 		} catch (Exception exc) {
-			throw createSSLException(exc);
+			// try JSSE after try/catch block
 		}
 		
-		SSLNotSupportedException exception = new SSLNotSupportedException(
-				"Neither JSSE nor J2SE >= 1.4 installed");
 		try {
 			return createJsseSSLSocketFactory(tm);
 		} catch (ClassNotFoundException cnfe) {
-			throw exception;
+			exception = cnfe;
+			sslNotSupported = true;
 		} catch (NoSuchMethodException nsme) {
-			throw exception;
+			exception = nsme;
+			sslNotSupported = true;
+		} catch (InstantiationException ie) {
+			exception = ie;
+			sslNotSupported = true;
 		} catch (InvocationTargetException ite) {
-			throw exception;
+			exception = ite;
+			sslNotSupported = true;
 		} catch (IllegalAccessException eae) {
-			throw exception;
+			exception = eae;
+			sslNotSupported = true;
 		} catch (Exception exc) {
-			throw createSSLException(exc);
+			exception = exc;
+		}
+		
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		exception.printStackTrace(pw);
+		pw.close();
+		
+		if (sslNotSupported) {
+			throw new SSLNotSupportedException("Neither JSSE nor J2SE " +
+					">= 1.4 installed:\n---\n"+
+			sw.toString() +"---");
+		} else {
+			throw new SSLException("Exception while creating "+
+					"the SSLSocketFactory with JSSE:\n---\n"+ 
+					sw.toString() + "---");
 		}
 	}
 	
@@ -98,8 +121,6 @@ class SSLSocketFactoryFactory {
 		 * SSLSocketFactory socketFactory = context.getSocketFactory();
 		 */
 		
-//		Security.addProvider(new Provider());
-		
 		Class stringClass = String.class;
 		Class contextClass = Class.forName("javax.net.ssl.SSLContext");
 		Class keyManagerClass = Class.forName("javax.net.ssl.KeyManager");
@@ -114,7 +135,8 @@ class SSLSocketFactoryFactory {
 		
 		TrustManagerJava14Wrapper[] tmWrappers = TrustManagerJava14Wrapper.wrap(tm);
 		
-		Object context = getInstanceMethod.invoke(null, new Object[] { "SSL" });
+		String protocol = SSLIRCConnection.protocol;
+		Object context = getInstanceMethod.invoke(null, new Object[] { protocol });
 		initMethod.invoke(context, new Object[] { null, tmWrappers, null });
 		Object socketFactory = getSocketFactoryMethod.invoke(context, null);
 		
@@ -138,17 +160,27 @@ class SSLSocketFactoryFactory {
 	 * accessed properly
 	 */
 	private static SSLSocketFactory createJsseSSLSocketFactory(SSLTrustManager[] tm) 
-	throws ClassNotFoundException, NoSuchMethodException, 
+	throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
 	InvocationTargetException, IllegalAccessException {
 		/*
 		 * The code below does the following:
+		 * java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+		 * 
 		 * TrustManagerJsseWrapper[] tmWrappers = TrustManagerJsseWrapper.wrap(tm);
 		 * com.sun.net.ssl.SSLContext context = com.sun.net.ssl.SSLContext.getInstance("SSL");
 		 * context.init(null, tmWrappers, null);
 		 * SSLSocketFactory socketFactory = context.getSocketFactory();
 		 */
 		
-//		Security.addProvider(new Provider());
+		Class securityClass = Class.forName("java.security.Security");
+		Class providerClass = Class.forName("java.security.Provider");
+		Class sslProviderClass = Class.forName("com.sun.net.ssl.internal.ssl.Provider");
+		
+		Method addProvider = securityClass.getMethod("addProvider", new Class[] { providerClass });
+		
+		Object provider = sslProviderClass.newInstance();
+		addProvider.invoke(null, new Object[] { provider });
+		
 		
 		Class stringClass = String.class;
 		Class contextClass = Class.forName("com.sun.net.ssl.SSLContext");
@@ -164,19 +196,11 @@ class SSLSocketFactoryFactory {
 		
 		TrustManagerJsseWrapper[] tmWrappers = TrustManagerJsseWrapper.wrap(tm);
 		
-		Object context = getInstanceMethod.invoke(null, new Object[] { "SSL" });
+		String protocol = SSLIRCConnection.protocol;
+		Object context = getInstanceMethod.invoke(null, new Object[] { protocol });
 		initMethod.invoke(context, new Object[] { null, tmWrappers, null });
 		Object socketFactory = getSocketFactoryMethod.invoke(context, null);
 		
 		return (SSLSocketFactory)socketFactory;
-	}
-	
-	private static SSLException createSSLException(Exception exc) {
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		exc.printStackTrace(pw);
-		pw.close();
-		return new SSLException("Exception while preparing "+
-				"the SSLSocket:\n---\n"+ sw.toString() + "---");
 	}
 }
