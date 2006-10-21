@@ -1,7 +1,10 @@
 package org.schwering.irc.lib.ssl;
 
 /**
- * Thrown if no SSL implementation is available.
+ * Indicates that SSL is not supported. However, a 
+ * <code>NoClassDefFoundError</code> is probably thrown before a
+ * <code>SSLNotSupportedException</code> can be thrown, because the 
+ * <code>javax.net.SocketFactory</code> will not be found (among others).
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 1.10
  * @version 1.00

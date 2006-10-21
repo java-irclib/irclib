@@ -133,13 +133,14 @@ class SSLSocketFactoryFactory {
 		Method initMethod = contextClass.getMethod("init", new Class[] { keyManagerArrayClass, trustManagerArrayClass, secureRandomClass });
 		Method getSocketFactoryMethod = contextClass.getMethod("getSocketFactory", null);
 		
+		Class.forName("javax.net.ssl.X509TrustManager"); // check for availability
 		TrustManagerJava14Wrapper[] tmWrappers = TrustManagerJava14Wrapper.wrap(tm);
 		
 		String protocol = SSLIRCConnection.protocol;
 		Object context = getInstanceMethod.invoke(null, new Object[] { protocol });
 		initMethod.invoke(context, new Object[] { null, tmWrappers, null });
 		Object socketFactory = getSocketFactoryMethod.invoke(context, null);
-		
+		System.out.println("J2SE");
 		return (SSLSocketFactory)socketFactory;
 	}
 	
@@ -194,13 +195,14 @@ class SSLSocketFactoryFactory {
 		Method initMethod = contextClass.getMethod("init", new Class[] { keyManagerArrayClass, trustManagerArrayClass, secureRandomClass });
 		Method getSocketFactoryMethod = contextClass.getMethod("getSocketFactory", null);
 		
+		Class.forName("com.sun.net.ssl.X509TrustManager"); // check for availability
 		TrustManagerJsseWrapper[] tmWrappers = TrustManagerJsseWrapper.wrap(tm);
 		
 		String protocol = SSLIRCConnection.protocol;
 		Object context = getInstanceMethod.invoke(null, new Object[] { protocol });
 		initMethod.invoke(context, new Object[] { null, tmWrappers, null });
 		Object socketFactory = getSocketFactoryMethod.invoke(context, null);
-		
+		System.out.println("JSSE");
 		return (SSLSocketFactory)socketFactory;
 	}
 }

@@ -193,9 +193,14 @@ public class SSLIRCConnection extends IRCConnection {
 	 * conflicts with the algorithms or during the handshaking), a 
 	 * <code>SSLException</code> is thrown. <br />
 	 * You can invoke <code>connect</code> only one time.
+	 * @throws NoClassDefFoundError If SSL is not supported. This is the case
+	 *                              if neither JSSE nor J2SE 1.4 or later is 
+	 *                              installed.
 	 * @throws SSLNotSupportedException If SSL is not supported. This is the 
 	 *                                  case if neither JSSE nor J2SE 1.4 or 
-	 *                                  later is installed.
+	 *                                  later is installed. This exception is 
+	 *                                  thrown if no NoClassDefFoundError is 
+	 *                                  thrown.
 	 * @throws IOException If an I/O error occurs. 
 	 * @throws SSLException If anything with the secure sockets fails. 
 	 * @throws SocketException If the <code>connect</code> method was already
