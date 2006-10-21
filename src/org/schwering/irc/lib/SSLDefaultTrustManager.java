@@ -21,7 +21,7 @@ import java.security.cert.X509Certificate;
  * <code>SSLIRCConnection</code>.
  * <p>
  * Note that this class is <b>deprecated</b>. The SSL supporting classes moved 
- * to <code>org.schwering.irc.lib.ssl</code> since IRClib 1.05.
+ * to <code>org.schwering.irc.lib.ssl</code> since IRClib 1.10.
  * <p>
  * It automatically accepts the X509 certificate.
  * <p>

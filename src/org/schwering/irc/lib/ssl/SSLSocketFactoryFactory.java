@@ -14,7 +14,7 @@ import javax.net.ssl.SSLException;
  * classes and then tries to do so using the <code>javax.net.ssl.*</code> 
  * classes plus the <code>com.sun.net.ssl.*</code> classes.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
- * @since 1.05
+ * @since 1.10
  * @version 1.00
  * @see SSLIRCConnection
  * @see SSLIRCConnection#connect()

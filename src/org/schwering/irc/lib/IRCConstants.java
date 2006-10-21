@@ -3,7 +3,7 @@ package org.schwering.irc.lib;
 /**
  * Contains constants: reply codes, error codes and mIRC color codes.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
- * @since 1.05
+ * @since 1.10
  * @version 1.00
  * @see IRCEventListener#onError(int, String)
  * @see IRCEventListener#onReply(int, String, String)

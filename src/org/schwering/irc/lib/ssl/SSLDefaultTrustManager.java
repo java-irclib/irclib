@@ -26,6 +26,7 @@ import java.security.cert.X509Certificate;
  * users, you may want to ask the user whether he accepts the server's 
  * certificate or not.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
+ * @since 1.10
  * @version 2.00
  * @see SSLIRCConnection
  * @see SSLTrustManager

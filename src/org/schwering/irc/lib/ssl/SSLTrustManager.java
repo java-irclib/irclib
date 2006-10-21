@@ -5,7 +5,7 @@ import java.security.cert.X509Certificate;
 /**
  * A trust manager decides whether the server is trusted or not.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
- * @since 1.05
+ * @since 1.10
  * @version 1.00
  * @see SSLIRCConnection
  * @see SSLDefaultTrustManager

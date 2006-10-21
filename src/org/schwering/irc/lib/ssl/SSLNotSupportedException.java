@@ -3,7 +3,7 @@ package org.schwering.irc.lib.ssl;
 /**
  * Thrown if no SSL implementation is available.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
- * @since 1.05
+ * @since 1.10
  * @version 1.00
  * @see SSLIRCConnection
  */
