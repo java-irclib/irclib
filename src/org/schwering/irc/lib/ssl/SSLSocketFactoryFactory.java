@@ -140,7 +140,7 @@ class SSLSocketFactoryFactory {
 		Object context = getInstanceMethod.invoke(null, new Object[] { protocol });
 		initMethod.invoke(context, new Object[] { null, tmWrappers, null });
 		Object socketFactory = getSocketFactoryMethod.invoke(context, null);
-		System.out.println("J2SE");
+
 		return (SSLSocketFactory)socketFactory;
 	}
 	
@@ -202,7 +202,7 @@ class SSLSocketFactoryFactory {
 		Object context = getInstanceMethod.invoke(null, new Object[] { protocol });
 		initMethod.invoke(context, new Object[] { null, tmWrappers, null });
 		Object socketFactory = getSocketFactoryMethod.invoke(context, null);
-		System.out.println("JSSE");
+
 		return (SSLSocketFactory)socketFactory;
 	}
 }
