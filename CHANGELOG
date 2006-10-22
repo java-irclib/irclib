@@ -1,6 +1,6 @@
 Changelog of IRClib (IRC client library):
 
-IRClib 1.10 (xx.10.2006):
+IRClib 1.10 (22.10.2006):
  * Changed: org.schwering.irc.lib.ssl.*. The new package is the new residence 
             of the SSL IRC classes.
             org.schwering.irc.lib.SSLIRCConnection and 
