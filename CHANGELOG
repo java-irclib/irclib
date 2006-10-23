@@ -12,6 +12,7 @@ IRClib 1.10 (22.10.2006):
  * Changed: The mIRC color code fields in the IRCUtil class (like 
             actionIndicator etc.) are deprecated. The new values are final 
             and written in upper case with underscores (e.g. ACTION_INDICATOR).
+ * Changed: IRCEventListeners are fired from-last-to-first.
  * Changed: There's only one release which contains the three licenses:
             GNU LGPL, Eclipse Public License, Apache Software License.
 

@@ -426,7 +426,7 @@ public class IRCConnection extends Thread {
 			IRCUser user = p.getUser();
 			String middle = p.getMiddle();
 			String trailing = p.getTrailing();
-			for (int i = 0; i < listeners.length; i++)
+			for (int i = listeners.length - 1; i >= 0; i--)
 				listeners[i].onPrivmsg(middle, user, trailing);
 			
 		} else if (command.equalsIgnoreCase("MODE")) { // MODE
@@ -436,13 +436,13 @@ public class IRCConnection extends Thread {
 				IRCUser user = p.getUser();
 				String param2 = p.getParameter(2);
 				String paramsFrom3 = p.getParametersFrom(3);
-				for (int i = 0; i < listeners.length; i++)
+				for (int i = listeners.length - 1; i >= 0; i--)
 					listeners[i].onMode(chan, user,
 							new IRCModeParser(param2, paramsFrom3));
 			} else {
 				IRCUser user = p.getUser();
 				String paramsFrom2 = p.getParametersFrom(2);
-				for (int i = 0; i < listeners.length; i++)
+				for (int i = listeners.length - 1; i >= 0; i--)
 					listeners[i].onMode(user, chan, paramsFrom2);
 			}
 			
@@ -452,12 +452,12 @@ public class IRCConnection extends Thread {
 			if (pongAutomatic)
 				doPong(ping);
 			else
-				for (int i = 0; i < listeners.length; i++)
+				for (int i = listeners.length - 1; i >= 0; i--)
 					listeners[i].onPing(ping);
 			
 			if (level == 1) { // not registered
 				level = 2; // first PING received -> connection
-				for (int i = 0; i < listeners.length; i++)
+				for (int i = listeners.length - 1; i >= 0; i--)
 					listeners[i].onRegistered();
 			}
 			
@@ -465,7 +465,7 @@ public class IRCConnection extends Thread {
 			
 			IRCUser user = p.getUser();
 			String trailing = p.getTrailing();
-			for (int i = 0; i < listeners.length; i++)
+			for (int i = listeners.length - 1; i >= 0; i--)
 				listeners[i].onJoin(trailing, user);
 			
 		} else if (command.equalsIgnoreCase("NICK")) { // NICK
@@ -475,14 +475,14 @@ public class IRCConnection extends Thread {
 			String newNick = p.getTrailing();
 			if (changingNick.equalsIgnoreCase(nick))
 				nick = newNick;
-			for (int i = 0; i < listeners.length; i++)
+			for (int i = listeners.length - 1; i >= 0; i--)
 				listeners[i].onNick(user, newNick);
 			
 		} else if (command.equalsIgnoreCase("QUIT")) { // QUIT
 			
 			IRCUser user = p.getUser();
 			String trailing = p.getTrailing();
-			for (int i = 0; i < listeners.length; i++)
+			for (int i = listeners.length - 1; i >= 0; i--)
 				listeners[i].onQuit(user, trailing);
 			
 		} else if (command.equalsIgnoreCase("PART")) { // PART
@@ -492,7 +492,7 @@ public class IRCConnection extends Thread {
 			String msg = p.getParameterCount() > 1 ? p.getTrailing() : "";
 			// not logic: "PART :#zentrum" is without msg, "PART #zentrum :cjo all"
 			// is with msg. so we cannot use getMiddle and getTrailing :-/
-			for (int i = 0; i < listeners.length; i++)
+			for (int i = listeners.length - 1; i >= 0; i--)
 				listeners[i].onPart(chan, user, msg);
 			
 		} else if (command.equalsIgnoreCase("NOTICE")) { // NOTICE
@@ -500,7 +500,7 @@ public class IRCConnection extends Thread {
 			IRCUser user = p.getUser();
 			String middle = p.getMiddle();
 			String trailing = p.getTrailing();
-			for (int i = 0; i < listeners.length; i++)
+			for (int i = listeners.length - 1; i >= 0; i--)
 				listeners[i].onNotice(middle, user, trailing);
 			
 		} else if ((reply = IRCUtil.parseInt(command)) >= 1 && reply < 400) { // RPL
@@ -515,19 +515,19 @@ public class IRCConnection extends Thread {
 			
 			if (level == 1) { // not registered
 				level = 2; // if first PING wasn't received, we're
-				for (int i = 0; i < listeners.length; i++)
+				for (int i = listeners.length - 1; i >= 0; i--)
 					listeners[i].onRegistered(); // connected now for sure
 			}
 			
 			String middle = p.getMiddle();
 			String trailing = p.getTrailing();
-			for (int i = 0; i < listeners.length; i++)
+			for (int i = listeners.length - 1; i >= 0; i--)
 				listeners[i].onReply(reply, middle, trailing);
 			
 		} else if (reply >= 400 && reply < 600) { // ERROR
 			
 			String trailing = p.getTrailing();
-			for (int i = 0; i < listeners.length; i++)
+			for (int i = listeners.length - 1; i >= 0; i--)
 				listeners[i].onError(reply, trailing);
 			
 		} else if (command.equalsIgnoreCase("KICK")) { // KICK
@@ -536,7 +536,7 @@ public class IRCConnection extends Thread {
 			String param1 = p.getParameter(1);
 			String param2 = p.getParameter(2);
 			String msg = (p.getParameterCount() > 2) ? p.getTrailing() : "";
-			for (int i = 0; i < listeners.length; i++)
+			for (int i = listeners.length - 1; i >= 0; i--)
 				listeners[i].onKick(param1, user, param2, msg);
 			
 		} else if (command.equalsIgnoreCase("INVITE")) { // INVITE
@@ -544,7 +544,7 @@ public class IRCConnection extends Thread {
 			IRCUser user = p.getUser();
 			String middle = p.getMiddle();
 			String trailing = p.getTrailing();
-			for (int i = 0; i < listeners.length; i++)
+			for (int i = listeners.length - 1; i >= 0; i--)
 				listeners[i].onInvite(trailing, user, middle);
 			
 		} else if (command.equalsIgnoreCase("TOPIC")) { // TOPIC
@@ -552,13 +552,13 @@ public class IRCConnection extends Thread {
 			IRCUser user = p.getUser();
 			String middle = p.getMiddle();
 			String trailing = p.getTrailing();
-			for (int i = 0; i < listeners.length; i++)
+			for (int i = listeners.length - 1; i >= 0; i--)
 				listeners[i].onTopic(middle, user, trailing);
 			
 		} else if (command.equalsIgnoreCase("ERROR")) { // ERROR
 			
 			String trailing = p.getTrailing();
-			for (int i = 0; i < listeners.length; i++)
+			for (int i = listeners.length - 1; i >= 0; i--)
 				listeners[i].onError(trailing);
 			
 		} else { // OTHER
@@ -566,7 +566,7 @@ public class IRCConnection extends Thread {
 			String prefix = p.getPrefix();
 			String middle = p.getMiddle();
 			String trailing = p.getTrailing();
-			for (int i = 0; i < listeners.length; i++)
+			for (int i = listeners.length - 1; i >= 0; i--)
 				listeners[i].unknown(prefix, command, middle, trailing);
 			
 		}
@@ -612,7 +612,7 @@ public class IRCConnection extends Thread {
 		}
 		if (this.level != -1) {
 			this.level = -1;
-			for (int i = 0; i < listeners.length; i++) 
+			for (int i = listeners.length - 1; i >= 0; i--)
 				listeners[i].onDisconnected(); 
 		}
 		socket = null;
