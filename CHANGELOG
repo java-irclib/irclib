@@ -1,5 +1,8 @@
 Changelog of IRClib (IRC client library):
 
+IRClib 1.xx (04.11.2007):
+ * Fixed:   Javadocs for indicators in IRCConstants; thanks to Johan Gunnarsson.
+
 IRClib 1.10 (03.11.2006):
  * Changed: org.schwering.irc.lib.ssl.*. The new package is the new residence 
             of the SSL IRC classes.
