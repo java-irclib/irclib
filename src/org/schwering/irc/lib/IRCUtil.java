@@ -37,7 +37,7 @@ public class IRCUtil implements IRCConstants {
 	
 	/** 
 	 * This is part of the mIRC code and shows that bold starts / ends.
-	 * Here it is as the ASCII decimal int 32. 
+	 * Here it is as the ASCII decimal int 31. 
 	 * @deprecated Moved to <code>IRCConstants</code>.
 	 */
 	public static char boldIndicator = 31; // ASCII code
@@ -60,7 +60,7 @@ public class IRCUtil implements IRCConstants {
 	/**
 	 * This is part of the mIRC code and indicates that the client's colors are 
 	 * reversed (background -&gt; foreground and foreground -&gt; background).
-	 * Here it is as the ASCII decimal int 1. 
+	 * Here it is as the ASCII decimal int 22. 
 	 * @deprecated Moved to <code>IRCConstants</code>.
 	 */ 
 	public static char colorReverseIndicator = 22; // ASCII code
@@ -68,7 +68,7 @@ public class IRCUtil implements IRCConstants {
 	/**
 	 * This is part of the mIRC code and shows that a PRIVMSG is an ACTION 
 	 * (<code>/me</code>).
-	 * Here it is as the ASCII decimal int 22. 
+	 * Here it is as the ASCII decimal int 1. 
 	 * @deprecated Moved to <code>IRCConstants</code>.
 	 */ 
 	public static char actionIndicator = 1; // ASCII code
