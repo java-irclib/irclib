@@ -1369,7 +1369,7 @@ public interface IRCConstants {
 	
 	/** 
 	 * This is part of the mIRC code and shows that bold starts / ends.
-	 * Here it is as the ASCII decimal int 32. 
+	 * Here it is as the ASCII decimal int 31. 
 	 */
 	public static final char BOLD_INDICATOR = 31; // ASCII code
 	
@@ -1389,14 +1389,14 @@ public interface IRCConstants {
 	/**
 	 * This is part of the mIRC code and indicates that the client's colors are 
 	 * reversed (background -&gt; foreground and foreground -&gt; background).
-	 * Here it is as the ASCII decimal int 1. 
+	 * Here it is as the ASCII decimal int 22. 
 	 */ 
 	public static final char COLOR_REVERSE_INDICATOR = 22; // ASCII code
 	
 	/**
 	 * This is part of the mIRC code and shows that a PRIVMSG is an ACTION 
 	 * (<code>/me</code>).
-	 * Here it is as the ASCII decimal int 22. 
+	 * Here it is as the ASCII decimal int 1. 
 	 */ 
 	public static final char ACTION_INDICATOR = 1; // ASCII code
 }
