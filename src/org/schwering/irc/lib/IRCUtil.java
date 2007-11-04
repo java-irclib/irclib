@@ -187,7 +187,7 @@ public class IRCUtil implements IRCConstants {
 			if (j > i) {
 				buf = buf.delete(i, j); // remove the cars
 				len -= (j - i);
-				i -= (j - i);
+				i--;
 			}
 		}
 		return buf;
