@@ -1397,6 +1397,16 @@ public interface IRCConstants {
 	 * This is part of the mIRC code and shows that a PRIVMSG is an ACTION 
 	 * (<code>/me</code>).
 	 * Here it is as the ASCII decimal int 1. 
+	 * @deprecated Replaced by {@see #CTCP_DELIMITER}, because my understanding
+	 * of this is wrong. The /me command is no invention of mIRC but part of 
+	 * CTCP.
 	 */ 
 	public static final char ACTION_INDICATOR = 1; // ASCII code
+	
+	/**
+	 * The delimiter of CTCP messages. CTCP messages start and end with this
+	 * character.
+	 * The value is the ASCII decimal int 1.
+	 */
+	public static final char CTCP_DELIMITER = 1; // ASCII code
 }

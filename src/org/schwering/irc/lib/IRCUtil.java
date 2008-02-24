@@ -172,9 +172,9 @@ public class IRCUtil implements IRCConstants {
 						if ('0' <= c && c <= '9') 
 							c = buf.charAt(++j); // second int
 					}
-					// ACTION / BOLD / UNDERLINE / COLOR END 
-					// (format: <actionIndicator> / <boldIndicator> etc.)
-				} else if (c == ACTION_INDICATOR || c == BOLD_INDICATOR || 
+					// CTCP / BOLD / UNDERLINE / COLOR END 
+					// (format: <ctcpDelimiter> / <boldIndicator> etc.)
+				} else if (c == CTCP_DELIMITER || c == BOLD_INDICATOR || 
 						c == UNDERLINE_INDICATOR || c == COLOR_END_INDICATOR ||
 						c == COLOR_REVERSE_INDICATOR) {
 					j++;
