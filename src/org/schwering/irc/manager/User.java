@@ -43,6 +43,13 @@ public class User implements Comparable {
 		this.host = host;
 	}
 	
+	User(User oldUser, String newNick) {
+		this.nickname = newNick;
+		this.username = oldUser.username;
+		this.host = oldUser.host;
+		this.away = oldUser.away;
+	}
+	
 	void update(IRCUser user) {
 		if (!nickname.equals(user.getNick())) {
 			throw new IllegalArgumentException();
@@ -51,7 +58,7 @@ public class User implements Comparable {
 		host = user.getHost();
 	}
 	
-	public String getNickname() {
+	public String getNick() {
 		return nickname;
 	}
 	
@@ -72,10 +79,22 @@ public class User implements Comparable {
 	}
 
 	public String toString() {
-		return getNickname();
+		return getNick();
 	}
 
 	public int compareTo(Object other) {
 		return nickname.compareTo(((User)other).nickname);
+	}
+
+	public boolean equals(Object obj) {
+		if (obj instanceof User) {
+			return nickname.equalsIgnoreCase(((User)obj).nickname);
+		} else {
+			return false;
+		}
+	}
+
+	public int hashCode() {
+		return nickname.hashCode();
 	}
 }

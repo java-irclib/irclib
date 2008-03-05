@@ -14,7 +14,7 @@ public class ConnectionAdapter implements ConnectionListener {
 	
 	public void errorReceived(Message msg) {
 	}
-
+	
 	public void connectionEstablished() {
 	}
 

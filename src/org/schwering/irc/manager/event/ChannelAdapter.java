@@ -16,10 +16,10 @@ public class ChannelAdapter implements ChannelListener {
 	public void userJoined(User user) {
 	}
 
-	public void userKicked(User user, Message msg) {
+	public void userLeft(User user, Message msg, int method) {
 	}
-
-	public void userLeft(User user) {
+	
+	public void nickChanged(User oldUser, User newUser) {
 	}
 
 	public void noticeReceived(User user, Message msg) {

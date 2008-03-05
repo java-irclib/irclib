@@ -35,6 +35,7 @@ public class Connection {
 	private IRCConnection conn;
 	private SortedMap channels = new TreeMap();
 	private boolean requestModes = true;
+	private NickGenerator nickGenerator = new DefaultNickGenerator();
 	private Collection connectionListeners = new LinkedList();
 	private Collection ctcpListeners = new LinkedList();
 	private Collection privateMessageListeners = new LinkedList();
@@ -42,7 +43,7 @@ public class Connection {
 	
 	/**
 	 * Initializes a new connection. This means that the internal
-	 * <code>IRCConnection</code> is initalized with the connection data
+	 * <code>IRCConnection</code> is initialized with the connection data
 	 * specified as constructor arguments and some other specific values.
 	 * Further configuration can be done via the <code>Connection</code>
 	 * class's methods.
@@ -72,11 +73,25 @@ public class Connection {
 	}
 	
 	/**
+	 * Returns the <code>IRCConnection</code> object.
+	 */
+	IRCConnection getIRCConnection() {
+		return conn;
+	}
+	
+	/**
 	 * Returns the connected user's current nickname.
 	 * This method simply calls <code>IRCConnection.getNick</code>.
+	 * <p>
+	 * Note: The IRC server might implicitly change the originally set
+	 * nickname. This done when the set nick contains illegal characters
+	 * or is too long, for example. Therefore one should always use
+	 * this method to obtain the current nickname instead of storing it
+	 * once and accessing this stored string which might then be not equal
+	 * to the real nickname.
 	 * @see IRCConnection#getNick()
 	 */
-	public String getNickname() {
+	public String getNick() {
 		return conn.getNick();
 	}
 	
@@ -123,6 +138,42 @@ public class Connection {
 	 */
 	public void setTimeout(int millis) {
 		conn.setTimeout(millis);
+	}
+	
+	/**
+	 * Returns the current nickname generator.
+	 * <p>
+	 * The nickname generator is needed because the server might ask for a
+	 * new nickname when we try to establish the connection. This question
+	 * for a new nickname must be answered somehow, and this task is
+	 * delivered to the nickname generator.
+	 * <p>
+	 * The nick generator is initialized with a default one which behaves
+	 * as follows: the first invocation returns the originally set nickname
+	 * plus an underscore (i.e. "Peter_"), the second invocation returns
+	 * a leading underscore (i.e. "_Peter_") and all subsequent invocations
+	 * return <code>null</code> which will kill the connection.
+	 */
+	public NickGenerator getNickGenerator() {
+		return nickGenerator;
+	}
+	
+	/**
+	 * Sets the nickname generator.
+	 * <p>
+	 * The nickname generator is needed because the server might ask for a
+	 * new nickname when we try to establish the connection. This question
+	 * for a new nickname must be answered somehow, and this task is
+	 * delivered to the nickname generator.
+	 * <p>
+	 * The nick generator is initialized with a default one which behaves
+	 * as follows: the first invocation returns the originally set nickname
+	 * plus an underscore (i.e. "Peter_"), the second invocation returns
+	 * a leading underscore (i.e. "_Peter_") and all subsequent invocations
+	 * return <code>null</code> which will kill the connection.
+	 */
+	public void setNickGenerator(NickGenerator nickGen) {
+		this.nickGenerator = nickGen;
 	}
 	
 	/**
@@ -182,6 +233,10 @@ public class Connection {
 	 */
 	public Channel getChannel(String channelName) {
 		return (Channel)channels.get(channelName);
+	}
+	
+	void clearChannels() {
+		channels.clear();
 	}
 	
 	/**
@@ -365,4 +420,18 @@ public class Connection {
 		}
 	}
 	
+	/* DefaultNickGenerator */
+	
+	private class DefaultNickGenerator implements NickGenerator {
+		private int cnt = 0;
+		public String createNewNick() {
+			if (++cnt == 1) {
+				return getNick() + "_";
+			} else if (cnt == 2) {
+				return "_" + getNick();
+			} else {
+				return null;
+			}
+		}
+	}
 }

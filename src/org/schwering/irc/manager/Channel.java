@@ -42,8 +42,24 @@ public class Channel implements Comparable {
 		return (User)users.get(nick);
 	}
 	
+	public boolean hasUser(User user) {
+		return users.containsKey(user.getNick());
+	}
+	
 	public boolean hasUser(String nick) {
 		return users.containsKey(nick);
+	}
+	
+	void addUser(User user) {
+		users.put(user.getNick(), user);
+	}
+	
+	void removeUser(User user) {
+		users.remove(user.getNick());
+	}
+	
+	void removeUser(String nick) {
+		users.remove(nick);
 	}
 	
 	public Topic getTopic() {
@@ -53,6 +69,12 @@ public class Channel implements Comparable {
 	public int compareTo(Object other) {
 		return getName().compareTo(((Channel)other).getName());
 	}
+	
+	public String toString() {
+		return name;
+	}
+	
+	/* ChannelListener methods */
 	
 	public void addChannelListener(ChannelListener listener) {
 		listeners.add(listener);
@@ -68,15 +90,9 @@ public class Channel implements Comparable {
 		}
 	}
 	
-	void fireUserLeft(User user) {
+	void fireUserLeft(User user, Message msg, int type) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).userLeft(user);
-		}
-	}
-	
-	void fireUserKicked(User user, Message msg) {
-		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).userKicked(user, msg);
+			((ChannelListener)it.next()).userLeft(user, msg, type);
 		}
 	}
 	
@@ -92,6 +108,12 @@ public class Channel implements Comparable {
 		}
 	}
 	
+	void fireNickChanged(User oldUser, User newUser) {
+		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
+			((ChannelListener)it.next()).nickChanged(oldUser, newUser);
+		}
+	}
+	
 	void firePrivmsgReceived(User user, Message msg) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
 			((ChannelListener)it.next()).privmsgReceived(user, msg);
@@ -102,9 +124,5 @@ public class Channel implements Comparable {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
 			((ChannelListener)it.next()).noticeReceived(user, msg);
 		}
-	}
-	
-	public String toString() {
-		return name;
 	}
 }
