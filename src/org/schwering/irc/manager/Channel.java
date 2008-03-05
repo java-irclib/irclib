@@ -10,6 +10,13 @@ import java.util.TreeMap;
 import org.schwering.irc.lib.IRCModeParser;
 import org.schwering.irc.manager.event.ChannelListener;
 
+/**
+ * Represents an IRC channel. This object manages a list of users in the
+ * channel, the channel's topic and a list of <code>ChannelListener</code>s.
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
+ * @since 2.00
+ * @version 1.00
+ */
 public class Channel implements Comparable {
 	private String name;
 	private SortedMap users = new TreeMap();

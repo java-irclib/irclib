@@ -2,6 +2,19 @@ package org.schwering.irc.manager;
 
 import org.schwering.irc.lib.IRCUser;
 
+/**
+ * Represents a user. The minimal information is his nickname. Further
+ * and optional information are his username, host and away status.
+ * <p>
+ * Each <code>Connection</code> object maintains a list of known users,
+ * i.e. those users in the channels the connection participates in. 
+ * Information about these users is collected and can be requested
+ * via {@see Connection#resolveUser(String)} and 
+ * {@see Connection#resolveUser(IRCUser)}.
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
+ * @since 2.00
+ * @version 1.00
+ */
 public class User implements Comparable {
 	private String nickname;
 	private String username;
@@ -10,6 +23,15 @@ public class User implements Comparable {
 	
 	User(String nickname) {
 		this(nickname, null, null);
+	}
+	
+	User(IRCUser user) {
+		if (user == null) {
+			throw new IllegalArgumentException();
+		}
+		this.nickname = user.getNick();
+		this.username = user.getUsername();
+		this.host = user.getHost();
 	}
 	
 	User(String nickname, String username, String host) {
@@ -55,16 +77,5 @@ public class User implements Comparable {
 
 	public int compareTo(Object other) {
 		return nickname.compareTo(((User)other).nickname);
-	}
-	
-	public boolean equals(Object obj) {
-		if (!(obj instanceof User)) {
-			return false;
-		}
-		return nickname.equals(((User)obj).nickname);
-	}
-
-	public int hashCode() {
-		return nickname.hashCode();
 	}
 }

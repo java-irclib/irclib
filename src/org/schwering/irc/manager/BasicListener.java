@@ -4,18 +4,45 @@ import org.schwering.irc.lib.IRCEventListener;
 import org.schwering.irc.lib.IRCModeParser;
 import org.schwering.irc.lib.IRCUser;
 
-public class BasicListener implements IRCEventListener {
-
-	public void onDisconnected() {
+/**
+ * Distributes the <code>IRCEventListener</code> events to the respective
+ * listeners of a <code>Connection</code> object.
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
+ * @since 2.00
+ * @version 1.00
+ */
+class BasicListener implements IRCEventListener {
+	private Connection owner;
+	
+	public BasicListener(Connection owner) {
+		this.owner = owner;
 	}
 
-	public void onError(int num, String msg) {
+	public void onRegistered() {
+		owner.fireConnectionEstablished();
+	}
+
+	public void onDisconnected() {
+		owner.fireConnectionLost();
 	}
 
 	public void onError(String msg) {
+		owner.fireErrorReceived(new Message(msg));
 	}
 
 	public void onInvite(String chan, IRCUser user, String passiveNick) {
+		if (passiveNick != null && passiveNick.equals(owner.getNickname())) {
+			owner.fireInvited(owner.resolveChannel(chan), 
+					owner.resolveUser(user));
+		} else {
+			Object[] args = new Object[] {
+					chan, user, passiveNick
+			};
+			owner.fireUnexpectedEventReceived("onInvite", args);
+		}
+	}
+
+	public void onError(int num, String msg) {
 	}
 
 	public void onJoin(String chan, IRCUser user) {
@@ -46,9 +73,6 @@ public class BasicListener implements IRCEventListener {
 	}
 
 	public void onQuit(IRCUser user, String msg) {
-	}
-
-	public void onRegistered() {
 	}
 
 	public void onReply(int num, String value, String msg) {
