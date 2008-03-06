@@ -2,37 +2,59 @@ package org.schwering.irc.manager.event;
 
 import java.util.EventListener;
 
-import org.schwering.irc.manager.Channel;
-import org.schwering.irc.manager.Message;
-import org.schwering.irc.manager.User;
-
+/**
+ * A connection listener listens for general events on connection level.
+ * <p>
+ * Events that are directly related to a channel the connection participates
+ * in, these events are treated by <code>ChannelListener</code>s.
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
+ * @since 2.00
+ * @version 1.00
+ */
 public interface ConnectionListener extends EventListener {
 	/**
 	 * Fired when the connection is registered successfully. At this point
 	 * of time, the connecting user is fully-privileged.
 	 */
-	void connectionEstablished();
+	void connectionEstablished(ConnectionEvent event);
 
 	/**
 	 * Fired when the connection has been terminated is completely dead.
 	 */
-	void connectionLost();
+	void connectionLost(ConnectionEvent event);
 	
-	void errorReceived(Message msg);
+	void errorReceived(ErrorEvent event);
 
-	void motdReceived(String[] motd);
+	void motdReceived(MOTDEvent event);
 
 	/**
-	 * Thrown when the server asked for a ping pong.
+	 * Fired when the server asked for a ping pong.
 	 * <p>
 	 * Note: You don't have to answer the request, this is done automatically.
-	 * @param msg
 	 */
-	void pingReceived(Message msg);
+	void pingReceived(PingEvent event);
 	
-	void channelJoined(Channel channel);
+	/**
+	 * Fired when you've joined a channel.
+	 */
+	void channelJoined(UserParticipationEvent channel);
 
-	void channelLeft(Channel channel);
+	/**
+	 * Fired when you've left a channel, either by parting or being kicked.
+	 * @param channel
+	 */
+	void channelLeft(UserParticipationEvent channel);
 	
-	void invited(Channel channel, User user);
+	/**
+	 * Fired when someone is invited by someone else.
+	 * <p>
+	 * Note: The invited user is always you.
+	 */
+	void invited(InvitationEvent event);
+	
+	void numericReplyReceived(NumericEvent event);
+	
+	void numericErrorReceived(NumericEvent event);
+	
+	void userModeReceived(UserModeEvent event);
 }

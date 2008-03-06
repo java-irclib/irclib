@@ -1,32 +1,42 @@
 package org.schwering.irc.manager.event;
 
-import org.schwering.irc.manager.Channel;
-import org.schwering.irc.manager.Message;
-import org.schwering.irc.manager.User;
-
+/**
+ * Adapter for connection listener.
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
+ * @since 2.00
+ * @version 1.00
+ */
 public class ConnectionAdapter implements ConnectionListener {
-
-	public void channelJoined(Channel channel) {
+	public void channelJoined(UserParticipationEvent channel) {
 	}
 
-	public void channelLeft(Channel channel) {
-	}
-	
-	public void errorReceived(Message msg) {
-	}
-	
-	public void connectionEstablished() {
+	public void channelLeft(UserParticipationEvent channel) {
 	}
 
-	public void connectionLost() {
+	public void connectionEstablished(ConnectionEvent event) {
 	}
 
-	public void motdReceived(String[] motd) {
+	public void connectionLost(ConnectionEvent event) {
 	}
 
-	public void pingReceived(Message msg) {
+	public void errorReceived(ErrorEvent event) {
 	}
 
-	public void invited(Channel channel, User user) {
+	public void invited(InvitationEvent event) {
+	}
+
+	public void motdReceived(MOTDEvent event) {
+	}
+
+	public void pingReceived(PingEvent event) {
+	}
+
+	public void numericErrorReceived(NumericEvent event) {
+	}
+
+	public void numericReplyReceived(NumericEvent event) {
+	}
+
+	public void userModeReceived(UserModeEvent event) {
 	}
 }

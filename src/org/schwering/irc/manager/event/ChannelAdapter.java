@@ -1,31 +1,32 @@
 package org.schwering.irc.manager.event;
 
-import org.schwering.irc.lib.IRCModeParser;
-import org.schwering.irc.manager.Message;
-import org.schwering.irc.manager.Topic;
-import org.schwering.irc.manager.User;
-
+/**
+ * Adapter for channel listener.
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
+ * @since 2.00
+ * @version 1.00
+ */
 public class ChannelAdapter implements ChannelListener {
-
-	public void modeChanged(IRCModeParser mode) {
+	public void channelModeReceived(ChannelModeEvent event) {
 	}
 
-	public void topicChanged(Topic topic) {
+	public void nickChanged(NickEvent event) {
 	}
 
-	public void userJoined(User user) {
+	public void noticeReceived(MessageEvent event) {
 	}
 
-	public void userLeft(User user, Message msg, int method) {
+	public void privmsgReceived(MessageEvent event) {
+	}
+
+	public void topicReceived(TopicEvent event) {
+	}
+
+	public void userJoined(UserParticipationEvent event) {
+	}
+
+	public void userLeft(UserParticipationEvent event) {
 	}
 	
-	public void nickChanged(User oldUser, User newUser) {
-	}
-
-	public void noticeReceived(User user, Message msg) {
-	}
-
-	public void privmsgReceived(User user, Message msg) {
-	}
-
+	
 }

@@ -1,5 +1,7 @@
 package org.schwering.irc.manager;
 
+import java.util.Date;
+
 /**
  * Represents a channel's topic. A topic is composed of the actual topic
  * message, the channel, the user that set the topic and the date when
@@ -10,27 +12,22 @@ package org.schwering.irc.manager;
  */
 public class Topic {
 	private Channel channel;
-	private String topic;
+	private Message topic;
 	private User user;
-	private long time;
+	private Date date;
 	
-	Topic(Channel channel, String topic, User user, long time) {
+	Topic(Channel channel, Message topic, User user, Date date) {
 		this.channel = channel;
 		this.topic = topic;
 		this.user = user;
-		this.time = time;
-	}
-	
-	void update(User user, long time) {
-		this.user = user;
-		this.time = time;
+		this.date = date;
 	}
 	
 	public Channel getChannel() {
 		return channel;
 	}
 	
-	public String getTopic() {
+	public Message getTopic() {
 		return topic;
 	}
 	
@@ -38,7 +35,7 @@ public class Topic {
 		return user;
 	}
 	
-	public long getTime() {
-		return time;
+	public Date getDate() {
+		return date;
 	}
 }

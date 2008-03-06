@@ -9,8 +9,8 @@ import org.schwering.irc.lib.IRCUser;
  * Each <code>Connection</code> object maintains a list of known users,
  * i.e. those users in the channels the connection participates in. 
  * Information about these users is collected and can be requested
- * via {@see Connection#resolveUser(String)} and 
- * {@see Connection#resolveUser(IRCUser)}.
+ * via {@link Connection#resolveUser(String)} and 
+ * {@link Connection#resolveUser(IRCUser)}.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00

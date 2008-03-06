@@ -1,11 +1,23 @@
 package org.schwering.irc.manager;
 
+import java.util.Date;
 import java.util.Iterator;
 
 import org.schwering.irc.lib.IRCEventListener;
 import org.schwering.irc.lib.IRCModeParser;
 import org.schwering.irc.lib.IRCUser;
 import org.schwering.irc.lib.IRCUtil;
+import org.schwering.irc.manager.event.ConnectionEvent;
+import org.schwering.irc.manager.event.ErrorEvent;
+import org.schwering.irc.manager.event.InvitationEvent;
+import org.schwering.irc.manager.event.MessageEvent;
+import org.schwering.irc.manager.event.NickEvent;
+import org.schwering.irc.manager.event.NumericEvent;
+import org.schwering.irc.manager.event.PingEvent;
+import org.schwering.irc.manager.event.TopicEvent;
+import org.schwering.irc.manager.event.UnexpectedEvent;
+import org.schwering.irc.manager.event.UserModeEvent;
+import org.schwering.irc.manager.event.UserParticipationEvent;
 
 /**
  * Distributes the <code>IRCEventListener</code> events to the respective
@@ -26,35 +38,40 @@ class BasicListener implements IRCEventListener {
 	
 	public void onRegistered() {
 		registered = true;
-		owner.fireConnectionEstablished();
+		owner.fireConnectionEstablished(new ConnectionEvent(owner));
 	}
 
 	public void onDisconnected() {
 		registered = false;
-		owner.fireConnectionLost();
+		owner.fireConnectionLost(new ConnectionEvent(owner));
 		owner.clearChannels();
 	}
 
 	public void onError(String msg) {
-		owner.fireErrorReceived(new Message(msg));
+		ErrorEvent event = new ErrorEvent(owner, msg);
+		owner.fireErrorReceived(event);
 	}
 
 	public void onInvite(String chan, IRCUser user, String passiveNick) {
-		if (passiveNick.equals(owner.getNick())) {
-			owner.fireInvited(owner.resolveChannel(chan), 
-					owner.resolveUser(user));
-		} else {
-			Object[] args = new Object[] { chan, user, passiveNick };
-			owner.fireUnexpectedEventReceived("onInvite", args);
-		}
+		User invitingUser = owner.resolveUser(user);
+		User invitedUser = owner.resolveUser(passiveNick);
+		Channel channel = owner.resolveChannel(chan);
+		InvitationEvent event = new InvitationEvent(owner, channel, 
+				invitingUser, invitedUser);
+		owner.fireInvited(event);
 	}
 
 	public void onPing(String ping) {
-		owner.firePingReceived(new Message(ping));
+		PingEvent event = new PingEvent(owner, ping);
+		owner.firePingReceived(event);
 	}
 
 	public void onMode(IRCUser user, String passiveNick, String mode) {
-		// XXX ???
+		User activeUser = owner.resolveUser(user);
+		User passiveUser = owner.resolveUser(passiveNick);
+		UserModeEvent event = new UserModeEvent(owner, activeUser, passiveUser,
+				mode);
+		owner.fireUserModeReceived(event);
 	}
 
 	public void onError(int num, String msg) {
@@ -70,6 +87,9 @@ class BasicListener implements IRCEventListener {
 					owner.getIRCConnection().doQuit();
 				}
 			}
+		} else {
+			NumericEvent event = new NumericEvent(owner, num, msg); 
+			owner.fireNumericErrorReceived(event);
 		}
 	}
 
@@ -79,23 +99,38 @@ class BasicListener implements IRCEventListener {
 	public void onNick(IRCUser user, String newNick) {
 		User oldUser = owner.resolveUser(user);
 		User newUser = new User(oldUser, newNick);
+		NickEvent event = new NickEvent(owner, oldUser, newUser);
 		for (Iterator it = owner.getChannels().iterator(); it.hasNext(); ) {
 			Channel channel = (Channel)it.next();
 			if (channel.hasUser(oldUser)) {
 				channel.removeUser(oldUser);
 				channel.addUser(newUser);
-				channel.fireNickChanged(oldUser, newUser);
+				channel.fireNickChanged(event);
 			}
 		}
 	}
 
 	public void onQuit(IRCUser ircUser, String msg) {
 		User user = owner.resolveUser(ircUser);
-		for (Iterator it = owner.getChannels().iterator(); it.hasNext(); ) {
-			Channel channel = (Channel)it.next();
-			if (channel.hasUser(user)) {
-				channel.removeUser(user);
-				
+		if (user.getNick().equals(owner.getNick())) {
+			for (Iterator it = owner.getChannels().iterator(); it.hasNext(); ) {
+				Channel channel = (Channel)it.next();
+				UserParticipationEvent event = new UserParticipationEvent(owner,
+						channel, user, UserParticipationEvent.QUIT, 
+						new Message(msg));
+				owner.fireChannelLeft(event);
+				owner.removeChannel(channel);
+			}
+		} else {
+			for (Iterator it = owner.getChannels().iterator(); it.hasNext(); ) {
+				Channel channel = (Channel)it.next();
+				if (channel.hasUser(user)) {
+					UserParticipationEvent event = new UserParticipationEvent(owner,
+							channel, user, UserParticipationEvent.QUIT, 
+							new Message(msg));
+					channel.fireUserLeft(event);
+					channel.removeUser(user);
+				}
 			}
 		}
 	}
@@ -103,62 +138,100 @@ class BasicListener implements IRCEventListener {
 	public void unknown(String prefix, String command, String middle,
 			String trailing) {
 		Object[] args = new Object[] { prefix, command, middle };
-		owner.fireUnexpectedEventReceived("unknown", args);
+		UnexpectedEvent event = new UnexpectedEvent(owner, "unknown", args);
+		owner.fireUnexpectedEventReceived(event);
 	}
 	
-	public void onNotice(String target, IRCUser user, String msg) {
+	public void onNotice(String target, IRCUser ircUser, String msg) {
+		MessageEvent event;
+		User sender = owner.resolveUser(ircUser);
 		if (IRCUtil.isChan(target)) {
-			Channel channel = owner.getChannel(target);
-			if (channel != null) {
-				channel.fireNoticeReceived(owner.resolveUser(user), 
-						new Message(msg));
-			} else {
-				Object[] args = new Object[] { target, user, msg };
-				owner.fireUnexpectedEventReceived("onNotice", args);
-			}
-		} else if (target.equals(owner.getNick())) {
-			owner.fireNoticeReceived(owner.resolveUser(user), new Message(msg));
+			Channel channel = owner.resolveChannel(target);
+			event = new MessageEvent(owner, sender, channel, msg);
 		} else {
-			Object[] args = new Object[] { target, user, msg };
-			owner.fireUnexpectedEventReceived("onNotice", args);
+			User user = owner.resolveUser(target);
+			event = new MessageEvent(owner, sender, user, new Message(msg));
 		}
+		owner.fireNoticeReceived(event);
 	}
 
-	public void onPrivmsg(String target, IRCUser user, String msg) {
+	public void onPrivmsg(String target, IRCUser ircUser, String msg) {
+		MessageEvent event;
+		User sender = owner.resolveUser(ircUser);
 		if (IRCUtil.isChan(target)) {
-			Channel channel = owner.getChannel(target);
-			if (channel != null) {
-				channel.firePrivmsgReceived(owner.resolveUser(user), 
-						new Message(msg));
-			} else {
-				Object[] args = new Object[] { target, user, msg };
-				owner.fireUnexpectedEventReceived("onPrivmsg", args);
-			}
-		} else if (target.equals(owner.getNick())) {
-			owner.firePrivmsgReceived(owner.resolveUser(user), new Message(msg));
+			Channel channel = owner.resolveChannel(target);
+			event = new MessageEvent(owner, sender, channel, msg);
 		} else {
-			Object[] args = new Object[] { target, user, msg };
-			owner.fireUnexpectedEventReceived("onPrivmsg", args);
+			User user = owner.resolveUser(target);
+			event = new MessageEvent(owner, sender, user, new Message(msg));
 		}
+		owner.fireNoticeReceived(event);
 	}
 	
 	/* Channel events */
 
-	public void onJoin(String chan, IRCUser user) {
+	public void onJoin(String chan, IRCUser ircUser) {
+		Channel channel = owner.resolveChannel(chan);
+		User user = owner.resolveUser(ircUser);
+		UserParticipationEvent event = new UserParticipationEvent(owner, 
+				channel, user, UserParticipationEvent.JOIN);
 		if (user.getNick().equals(owner.getNick())) {
-			
+			owner.addChannel(channel);
+			channel.addUser(user);
+			owner.fireChannelJoined(event);
+			if (owner.getRequestModes()) {
+				owner.getIRCConnection().doMode(chan);
+				owner.getIRCConnection().doMode(chan, "+b");
+			}
 		} else {
-			
+			channel.addUser(user);
+			channel.fireUserJoined(event);
 		}
 	}
 
-	public void onPart(String chan, IRCUser user, String msg) {
+	public void onPart(String chan, IRCUser ircUser, String msg) {
+		Channel channel = owner.resolveChannel(chan);
+		User user = owner.resolveUser(ircUser);
+		UserParticipationEvent event = new UserParticipationEvent(owner, 
+				channel, user, UserParticipationEvent.PART, 
+				new Message(msg));
+		if (user.getNick().equals(owner.getNick())) {
+			owner.fireChannelLeft(event);
+			channel.removeUser(user);
+			owner.removeChannel(channel);
+		} else {
+			channel.fireUserLeft(event);
+			channel.removeUser(user);
+		}
 	}
 
-	public void onKick(String chan, IRCUser user, String passiveNick, String msg) {
+	public void onKick(String chan, IRCUser ircUser, String passiveNick, 
+			String msg) {
+		Channel channel = owner.resolveChannel(chan);
+		User user = owner.resolveUser(ircUser);
+		User kickingUser = owner.resolveUser(passiveNick);
+		User kickedUser = owner.resolveUser(passiveNick);
+		UserParticipationEvent event = new UserParticipationEvent(owner, 
+				channel, user, UserParticipationEvent.KICK, 
+				new Message(msg), kickingUser);
+		if (user.getNick().equals(owner.getNick())) {
+			owner.fireChannelLeft(event);
+			channel.removeUser(kickedUser);
+			owner.removeChannel(channel);
+		} else {
+			channel.fireUserLeft(event);
+			channel.removeUser(kickedUser);
+		}
 	}
 	
-	public void onTopic(String chan, IRCUser user, String topic) {
+	public void onTopic(String chan, IRCUser ircUser, String topic) {
+		Channel channel = owner.resolveChannel(chan);
+		User user = owner.resolveUser(ircUser);
+		Date date = new Date();
+		channel.setTopic(new Topic(channel, new Message(topic), user, date));
+		TopicEvent event = new TopicEvent(owner, channel, new Message(topic),  
+				user, date);
+		channel.fireTopicReceived(event);
 	}
 
 	public void onMode(String chan, IRCUser user, IRCModeParser modeParser) {

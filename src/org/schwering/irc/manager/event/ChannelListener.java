@@ -2,17 +2,19 @@ package org.schwering.irc.manager.event;
 
 import java.util.EventListener;
 
-import org.schwering.irc.lib.IRCModeParser;
-import org.schwering.irc.manager.Message;
-import org.schwering.irc.manager.Topic;
-import org.schwering.irc.manager.User;
-
+/**
+ * Listener for channel-related events. Examples are incoming messages, 
+ * nick changes and joining and leaving users.
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
+ * @since 2.00
+ * @version 1.00
+ */
 public interface ChannelListener extends EventListener {
-	void userJoined(User user);
+	void userJoined(UserParticipationEvent event);
 
-	void userLeft(User user, Message msg, int method);
+	void userLeft(UserParticipationEvent event);
 
-	void topicChanged(Topic topic);
+	void topicReceived(TopicEvent event);
 
 	/**
 	 * Fired when a user in the channel changed his nickname.
@@ -24,11 +26,11 @@ public interface ChannelListener extends EventListener {
 	 * <code>nickChanged</code> event is fired before the global
 	 * <code>ConnectionListener.nickChanged</code> event. 
 	 */
-	void nickChanged(User oldUser, User newUser);
+	void nickChanged(NickEvent event);
 	
-	void modeChanged(IRCModeParser mode);
+	void channelModeReceived(ChannelModeEvent event);
 	
-	void privmsgReceived(User user, Message msg);
+	void privmsgReceived(MessageEvent event);
 	
-	void noticeReceived(User user, Message msg);
+	void noticeReceived(MessageEvent event);
 }

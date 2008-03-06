@@ -7,8 +7,12 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.schwering.irc.lib.IRCModeParser;
 import org.schwering.irc.manager.event.ChannelListener;
+import org.schwering.irc.manager.event.MessageEvent;
+import org.schwering.irc.manager.event.ChannelModeEvent;
+import org.schwering.irc.manager.event.NickEvent;
+import org.schwering.irc.manager.event.TopicEvent;
+import org.schwering.irc.manager.event.UserParticipationEvent;
 
 /**
  * Represents an IRC channel. This object manages a list of users in the
@@ -22,6 +26,16 @@ public class Channel implements Comparable {
 	private SortedMap users = new TreeMap();
 	private Topic topic;
 	private Collection listeners = new LinkedList();
+	
+	// TODO administer modes (and banlist) of users in channel
+	
+	// TODO implement a queue-like system that buffers respondings that
+	// belong to another, e.g. parts of a WHOIS or of a topic when joining
+	// a channel (ResponseBuffer) (note: WHOIS x,y,z has only one 
+	// end of whois reply)
+	
+	// TODO an alternative system: a ResponseBuffer that knows one or multiple
+	// special reply-numbers that indicate beginning respectively ending
 	
 	public Channel(String name) {
 		if (name == null) {
@@ -66,6 +80,10 @@ public class Channel implements Comparable {
 		return topic;
 	}
 	
+	void setTopic(Topic topic) {
+		this.topic = topic;
+	}
+	
 	public int compareTo(Object other) {
 		return getName().compareTo(((Channel)other).getName());
 	}
@@ -76,53 +94,53 @@ public class Channel implements Comparable {
 	
 	/* ChannelListener methods */
 	
-	public void addChannelListener(ChannelListener listener) {
+	public synchronized void addChannelListener(ChannelListener listener) {
 		listeners.add(listener);
 	}
 	
-	public void removeChannelListener(ChannelListener listener) {
+	public synchronized void removeChannelListener(ChannelListener listener) {
 		listeners.remove(listener);
 	}
 	
-	void fireUserJoined(User user) {
+	void fireUserJoined(UserParticipationEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).userJoined(user);
+			((ChannelListener)it.next()).userJoined(event);
 		}
 	}
 	
-	void fireUserLeft(User user, Message msg, int type) {
+	void fireUserLeft(UserParticipationEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).userLeft(user, msg, type);
+			((ChannelListener)it.next()).userLeft(event);
 		}
 	}
 	
-	void fireTopicChanged(Topic topic) {
+	void fireTopicReceived(TopicEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).topicChanged(topic);
+			((ChannelListener)it.next()).topicReceived(event);
 		}
 	}
 	
-	void fireTopicChanged(IRCModeParser mode) {
+	void fireChannelModeReceived(ChannelModeEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).modeChanged(mode);
+			((ChannelListener)it.next()).channelModeReceived(event);
 		}
 	}
 	
-	void fireNickChanged(User oldUser, User newUser) {
+	void fireNickChanged(NickEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).nickChanged(oldUser, newUser);
+			((ChannelListener)it.next()).nickChanged(event);
 		}
 	}
 	
-	void firePrivmsgReceived(User user, Message msg) {
+	void firePrivmsgReceived(MessageEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).privmsgReceived(user, msg);
+			((ChannelListener)it.next()).privmsgReceived(event);
 		}
 	}
 	
-	void fireNoticeReceived(User user, Message msg) {
+	void fireNoticeReceived(MessageEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).noticeReceived(user, msg);
+			((ChannelListener)it.next()).noticeReceived(event);
 		}
 	}
 }

@@ -14,9 +14,19 @@ import org.schwering.irc.lib.IRCConnection;
 import org.schwering.irc.lib.IRCEventListener;
 import org.schwering.irc.lib.IRCUser;
 import org.schwering.irc.manager.event.CTCPListener;
+import org.schwering.irc.manager.event.ConnectionEvent;
 import org.schwering.irc.manager.event.ConnectionListener;
+import org.schwering.irc.manager.event.ErrorEvent;
+import org.schwering.irc.manager.event.InvitationEvent;
+import org.schwering.irc.manager.event.MOTDEvent;
+import org.schwering.irc.manager.event.MessageEvent;
+import org.schwering.irc.manager.event.NumericEvent;
+import org.schwering.irc.manager.event.PingEvent;
 import org.schwering.irc.manager.event.PrivateMessageListener;
+import org.schwering.irc.manager.event.UnexpectedEvent;
 import org.schwering.irc.manager.event.UnexpectedEventListener;
+import org.schwering.irc.manager.event.UserModeEvent;
+import org.schwering.irc.manager.event.UserParticipationEvent;
 
 /**
  * A wrapper for <code>IRCConnection</code> and interface to various
@@ -40,6 +50,9 @@ public class Connection {
 	private Collection ctcpListeners = new LinkedList();
 	private Collection privateMessageListeners = new LinkedList();
 	private Collection unexpectedEventListeners = new LinkedList();
+	
+	// TODO what about CTCP? The messages MUST be parsed in BasicListener
+	// already to fire the CTCP events, don't they?
 	
 	/**
 	 * Initializes a new connection. This means that the internal
@@ -235,8 +248,32 @@ public class Connection {
 		return (Channel)channels.get(channelName);
 	}
 	
-	void clearChannels() {
+	/**
+	 * Clears the channel map.
+	 */
+	synchronized void clearChannels() {
 		channels.clear();
+	}
+	
+	/**
+	 * Stores a new channel in the map.
+	 */
+	synchronized void addChannel(Channel channel) {
+		channels.put(channel.getName(), channel);
+	}
+	
+	/**
+	 * Removes a channel in the map.
+	 */
+	synchronized void removeChannel(String channel) {
+		channels.remove(channel);
+	}
+	
+	/**
+	 * Removes a channel in the map.
+	 */
+	void removeChannel(Channel channel) {
+		channels.remove(channel.getName());
 	}
 	
 	/**
@@ -302,7 +339,7 @@ public class Connection {
 	 * Adds a pure <code>IRCEventListener</code> to the pure
 	 * <code>IRCConnection</code>.
 	 */
-	public void addIRCEventListener(IRCEventListener listener) {
+	public synchronized void addIRCEventListener(IRCEventListener listener) {
 		conn.addIRCEventListener(listener);
 	}
 	
@@ -310,65 +347,83 @@ public class Connection {
 	 * Removes a pure <code>IRCEventListener</code> from the pure
 	 * <code>IRCConnection</code>.
 	 */
-	public void removeIRCEventListener(IRCEventListener listener) {
+	public synchronized void removeIRCEventListener(IRCEventListener listener) {
 		conn.removeIRCEventListener(listener);
 	}
 	
 	/* ConnectionListener methods */
 	
-	public void addConnectionListener(ConnectionListener listener) {
+	public synchronized void addConnectionListener(ConnectionListener listener) {
 		connectionListeners.add(listener);
 	}
 	
-	public void removeConnectionListener(ConnectionListener listener) {
+	public synchronized void removeConnectionListener(ConnectionListener listener) {
 		connectionListeners.remove(listener);
 	}
 	
-	void fireConnectionEstablished() {
+	void fireConnectionEstablished(ConnectionEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
-			((ConnectionListener)it.next()).connectionEstablished();
+			((ConnectionListener)it.next()).connectionEstablished(event);
 		}
 	}
 	
-	void fireConnectionLost() {
+	void fireConnectionLost(ConnectionEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
-			((ConnectionListener)it.next()).connectionLost();
+			((ConnectionListener)it.next()).connectionLost(event);
 		}
 	}
 	
-	void fireErrorReceived(Message msg) {
+	void fireErrorReceived(ErrorEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
-			((ConnectionListener)it.next()).errorReceived(msg);
+			((ConnectionListener)it.next()).errorReceived(event);
 		}
 	}
 	
-	void fireMotdReceived(String[] motd) {
+	void fireMotdReceived(MOTDEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
-			((ConnectionListener)it.next()).motdReceived(motd);
+			((ConnectionListener)it.next()).motdReceived(event);
 		}
 	}
 	
-	void firePingReceived(Message msg) {
+	void firePingReceived(PingEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
-			((ConnectionListener)it.next()).pingReceived(msg);
+			((ConnectionListener)it.next()).pingReceived(event);
 		}
 	}
 	
-	void fireChannelJoined(Channel channel) {
+	void fireChannelJoined(UserParticipationEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
-			((ConnectionListener)it.next()).channelJoined(channel);
+			((ConnectionListener)it.next()).channelJoined(event);
 		}
 	}
 	
-	void fireChannelLeft(Channel channel) {
+	void fireChannelLeft(UserParticipationEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
-			((ConnectionListener)it.next()).channelLeft(channel);
+			((ConnectionListener)it.next()).channelLeft(event);
 		}
 	}
 	
-	void fireInvited(Channel channel, User user) {
+	void fireInvited(InvitationEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
-			((ConnectionListener)it.next()).invited(channel, user);
+			((ConnectionListener)it.next()).invited(event);
+		}
+	}
+	
+	void fireNumericReplyReceived(NumericEvent event) {
+		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
+			((ConnectionListener)it.next()).numericReplyReceived(event);
+		}
+	}
+	
+	void fireNumericErrorReceived(NumericEvent event) {
+		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
+			((ConnectionListener)it.next()).numericErrorReceived(event);
+		}
+	}
+	
+	void fireUserModeReceived(UserModeEvent event) {
+		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
+			((ConnectionListener)it.next()).userModeReceived(event);
 		}
 	}
 	
@@ -382,15 +437,15 @@ public class Connection {
 		privateMessageListeners.remove(listener);
 	}
 	
-	void firePrivmsgReceived(User user, Message msg) {
+	void firePrivmsgReceived(MessageEvent event) {
 		for (Iterator it = privateMessageListeners.iterator(); it.hasNext(); ) {
-			((PrivateMessageListener)it.next()).privmsgReceived(user, msg);
+			((PrivateMessageListener)it.next()).privmsgReceived(event);
 		}
 	}
 	
-	void fireNoticeReceived(User user, Message msg) {
+	void fireNoticeReceived(MessageEvent event) {
 		for (Iterator it = privateMessageListeners.iterator(); it.hasNext(); ) {
-			((PrivateMessageListener)it.next()).noticeReceived(user, msg);
+			((PrivateMessageListener)it.next()).noticeReceived(event);
 		}
 	}
 	
@@ -406,17 +461,17 @@ public class Connection {
 	
 	/* UnexpectedEventListener methods */
 	
-	public void addUnexpectedEventListener(UnexpectedEventListener listener) {
+	public synchronized void addUnexpectedEventListener(UnexpectedEventListener listener) {
 		unexpectedEventListeners.add(listener);
 	}
 	
-	public void removeUnexpectedEventListener(UnexpectedEventListener listener) {
+	public synchronized void removeUnexpectedEventListener(UnexpectedEventListener listener) {
 		unexpectedEventListeners.remove(listener);
 	}
 	
-	void fireUnexpectedEventReceived(String event, Object[] args) {
+	void fireUnexpectedEventReceived(UnexpectedEvent event) {
 		for (Iterator it = privateMessageListeners.iterator(); it.hasNext(); ) {
-			((UnexpectedEventListener)it.next()).unexpectedEventReceived(event, args);
+			((UnexpectedEventListener)it.next()).unexpectedEventReceived(event);
 		}
 	}
 	
