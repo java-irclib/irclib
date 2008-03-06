@@ -23,6 +23,7 @@ import org.schwering.irc.manager.event.MessageEvent;
 import org.schwering.irc.manager.event.NumericEvent;
 import org.schwering.irc.manager.event.PingEvent;
 import org.schwering.irc.manager.event.PrivateMessageListener;
+import org.schwering.irc.manager.event.TopicEvent;
 import org.schwering.irc.manager.event.UnexpectedEvent;
 import org.schwering.irc.manager.event.UnexpectedEventListener;
 import org.schwering.irc.manager.event.UserModeEvent;
@@ -239,13 +240,19 @@ public class Connection {
 	}
 	
 	/**
-	 * Returns the <code>Channel</code> object corresponding to the channel
-	 * with the specified channel name if connection participates in this
-	 * channel. Otherwise <code>null</code> is returned.
-	 * TODO Remove either this or resolveChannel().
+	 * Returns <code>true</code> if the connection participates in the
+	 * channel.
 	 */
-	public Channel getChannel(String channelName) {
-		return (Channel)channels.get(channelName);
+	public boolean hasChannel(String channelName) {
+		return channels.containsKey(channelName);
+	}
+	
+	/**
+	 * Returns <code>true</code> if the connection participates in the
+	 * channel.
+	 */
+	public boolean hasChannel(Channel channel) {
+		return channels.containsKey(channel.getName());
 	}
 	
 	/**
@@ -424,6 +431,12 @@ public class Connection {
 	void fireUserModeReceived(UserModeEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).userModeReceived(event);
+		}
+	}
+	
+	void fireTopicReceived(TopicEvent event) {
+		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
+			((ConnectionListener)it.next()).topicReceived(event);
 		}
 	}
 	

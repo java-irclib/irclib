@@ -20,19 +20,22 @@ abstract class NumericEventWaiter extends ConnectionAdapter implements Runnable 
 	public NumericEventWaiter(Connection owner) {
 		this.owner = owner;
 		owner.addConnectionListener(this);
+		new Thread(this).start();
 	}
 	
 	public synchronized void numericErrorReceived(NumericEvent event) {
-		sleepAgain = true;
-		handle(event);
+		if (handle(event)) {
+			sleepAgain = true;
+		}
 	}
 
 	public synchronized void numericReplyReceived(NumericEvent event) {
-		sleepAgain = true;
-		handle(event);
+		if (handle(event)) {
+			sleepAgain = true;
+		}
 	}
 	
-	protected abstract void handle(NumericEvent event);
+	protected abstract boolean handle(NumericEvent event);
 	
 	protected abstract void fire();
 

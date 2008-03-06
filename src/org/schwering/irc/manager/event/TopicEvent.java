@@ -1,11 +1,7 @@
 package org.schwering.irc.manager.event;
 
-import java.util.Date;
-
-import org.schwering.irc.manager.Channel;
 import org.schwering.irc.manager.Connection;
-import org.schwering.irc.manager.Message;
-import org.schwering.irc.manager.User;
+import org.schwering.irc.manager.Topic;
 
 /**
  * Fired when a topic was received either after joining a channel or after
@@ -16,37 +12,18 @@ import org.schwering.irc.manager.User;
  */
 public class TopicEvent {
 	private Connection connection;
-	private Channel channel;
-	private Message message;
-	private User user;
-	private Date date;
+	private Topic topic;
 
-	public TopicEvent(Connection connection, Channel channel, Message message,
-			User user, Date date) {
+	public TopicEvent(Connection connection, Topic topic) {
 		this.connection = connection;
-		this.channel = channel;
-		this.message = message;
-		this.user = user;
-		this.date = date;
+		this.topic = topic;
 	}
 
 	public Connection getConnection() {
 		return connection;
 	}
 
-	public Channel getChannel() {
-		return channel;
-	}
-
-	public Message getMessage() {
-		return message;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public Date getDate() {
-		return date;
+	public Topic getTopic() {
+		return topic;
 	}
 }

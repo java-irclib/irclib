@@ -3,6 +3,7 @@ package org.schwering.irc.manager.event;
 import org.schwering.irc.lib.IRCModeParser;
 import org.schwering.irc.manager.Channel;
 import org.schwering.irc.manager.Connection;
+import org.schwering.irc.manager.User;
 
 /**
  * Fired when a channel mode was changed or received. Channel modes include
@@ -15,9 +16,10 @@ import org.schwering.irc.manager.Connection;
 public class ChannelModeEvent {
 	private Connection connection;
 	private Channel channel;
+	private User user;
 	private IRCModeParser ircModeParser;
 
-	public ChannelModeEvent(Connection connection, Channel channel,
+	public ChannelModeEvent(Connection connection, Channel channel, User user,
 			IRCModeParser ircModeParser) {
 		this.connection = connection;
 		this.channel = channel;
@@ -30,6 +32,10 @@ public class ChannelModeEvent {
 
 	public Channel getChannel() {
 		return channel;
+	}
+	
+	public User getUser() {
+		return user;
 	}
 
 	public IRCModeParser getIrcModeParser() {

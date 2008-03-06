@@ -88,6 +88,18 @@ public class Channel implements Comparable {
 		return getName().compareTo(((Channel)other).getName());
 	}
 	
+	public boolean isSame(Object obj) {
+		if (obj == null) {
+			return false;
+		} else if (obj instanceof Channel) {
+			return name.equalsIgnoreCase(((Channel)obj).name);
+		} else if (obj instanceof String) {
+			return name.equalsIgnoreCase((String)obj);
+		} else {
+			return false;
+		}
+	}
+
 	public String toString() {
 		return name;
 	}

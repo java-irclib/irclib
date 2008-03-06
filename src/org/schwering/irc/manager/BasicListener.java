@@ -2,11 +2,13 @@ package org.schwering.irc.manager;
 
 import java.util.Date;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 
 import org.schwering.irc.lib.IRCEventListener;
 import org.schwering.irc.lib.IRCModeParser;
 import org.schwering.irc.lib.IRCUser;
 import org.schwering.irc.lib.IRCUtil;
+import org.schwering.irc.manager.event.ChannelModeEvent;
 import org.schwering.irc.manager.event.ConnectionEvent;
 import org.schwering.irc.manager.event.ErrorEvent;
 import org.schwering.irc.manager.event.InvitationEvent;
@@ -88,12 +90,67 @@ class BasicListener implements IRCEventListener {
 				}
 			}
 		} else {
-			NumericEvent event = new NumericEvent(owner, num, msg); 
+			NumericEvent event = new NumericEvent(owner, num, null, msg); 
 			owner.fireNumericErrorReceived(event);
 		}
 	}
 
 	public void onReply(int num, String value, String msg) {
+		StringTokenizer valTok = new StringTokenizer(value);
+		
+		if (num == IRCUtil.RPL_TOPIC) {
+			handleTopicReply(valTok, msg);
+		} else if (num == IRCUtil.RPL_NAMREPLY) {
+//			handleNameReply(valTo)
+		} else if (num == IRCUtil.RPL_MOTDSTART) {
+			handleMOTD(msg);
+		} else {
+			NumericEvent event = new NumericEvent(owner, num, value, msg); 
+			owner.fireNumericReplyReceived(event);
+		}
+	}
+	
+	private void handleTopicReply(StringTokenizer valTok, String msg) {
+		valTok.nextToken(); // skip first (our name)
+		final Channel channel = owner.resolveChannel(valTok.nextToken());
+		final Message message = (msg.trim().length() > 0) ? new Message(msg) : null;
+		
+		new NumericEventWaiter(owner) { // waits for topic info (user, date)
+			private User user = null;
+			private Date date = null;
+			
+			protected boolean handle(NumericEvent event) {
+				if (event.getNumber() == IRCUtil.RPL_TOPICINFO) {
+					StringTokenizer valTok = new StringTokenizer(event.getValue()); // skip first (our name)
+					Channel secondChannel = owner.resolveChannel(valTok.nextToken());
+					if (secondChannel.isSame(channel)) {
+						user = owner.resolveUser(valTok.nextToken());
+						try {
+							String seconds = event.getMessage();
+							long millis = Long.parseLong(seconds) * 1000;
+							date = new Date(millis);
+						} catch (Exception exc) {
+							date = null;
+						}
+					}
+				}
+				return false;
+			}
+			
+			protected void fire() {
+				Topic topic = new Topic(channel, message, user, date);
+				TopicEvent event = new TopicEvent(owner, topic);
+				if (owner.hasChannel(channel)) {
+					channel.setTopic(topic);
+					channel.fireTopicReceived(event);
+				} else {
+					owner.fireTopicReceived(event);
+				}
+			}
+		};
+	}
+	
+	private void handleMOTD(String msg) {
 	}
 
 	public void onNick(IRCUser user, String newNick) {
@@ -224,16 +281,21 @@ class BasicListener implements IRCEventListener {
 		}
 	}
 	
-	public void onTopic(String chan, IRCUser ircUser, String topic) {
+	public void onTopic(String chan, IRCUser ircUser, String msg) {
 		Channel channel = owner.resolveChannel(chan);
 		User user = owner.resolveUser(ircUser);
 		Date date = new Date();
-		channel.setTopic(new Topic(channel, new Message(topic), user, date));
-		TopicEvent event = new TopicEvent(owner, channel, new Message(topic),  
-				user, date);
+		Topic topic = new Topic(channel, new Message(msg), user, date);
+		channel.setTopic(topic);
+		TopicEvent event = new TopicEvent(owner, topic);
 		channel.fireTopicReceived(event);
 	}
 
-	public void onMode(String chan, IRCUser user, IRCModeParser modeParser) {
+	public void onMode(String chan, IRCUser ircUser, IRCModeParser modeParser) {
+		Channel channel = owner.resolveChannel(chan);
+		User user = owner.resolveUser(ircUser);
+		ChannelModeEvent event = new ChannelModeEvent(owner, channel, user, 
+				modeParser);
+		channel.fireChannelModeReceived(event);
 	}
 }

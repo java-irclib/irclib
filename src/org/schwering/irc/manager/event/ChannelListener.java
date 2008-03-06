@@ -5,6 +5,17 @@ import java.util.EventListener;
 /**
  * Listener for channel-related events. Examples are incoming messages, 
  * nick changes and joining and leaving users.
+ * <p>
+ * Events that are directly related to a channel the connection participates
+ * in are processed by <code>ChannelListener</code>s.
+ * However, events like an incoming topic cannot be clearly identified as
+ * channel or connection event, because one can also request the topic of
+ * channels one doesn't participate in. Therefore, the libraries general
+ * strategy is to attribute events to channels if possible and fire them
+ * with <code>ChannelListener</code>s. In the case of the topic-example,
+ * this means that a <code>ChannelListener.topicReceived</code> is fired
+ * if the connection participates in the channel and a 
+ * <code>ConnectionListener.topicChanged</code> otherwise.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00

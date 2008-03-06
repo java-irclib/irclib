@@ -16,6 +16,11 @@ public class Topic {
 	private User user;
 	private Date date;
 	
+	Topic(Channel channel, Message topic) {
+		this.channel = channel;
+		this.topic = topic;
+	}
+	
 	Topic(Channel channel, Message topic, User user, Date date) {
 		this.channel = channel;
 		this.topic = topic;
@@ -23,18 +28,41 @@ public class Topic {
 		this.date = date;
 	}
 	
+	/**
+	 * Returns the channel of the topic.
+	 */
 	public Channel getChannel() {
 		return channel;
 	}
 	
+	/**
+	 * Returns the topic message itself or <code>null</code>. The latter
+	 * is the case if no topic is set.
+	 */
 	public Message getTopic() {
 		return topic;
 	}
 	
+	void setUser(User user) {
+		this.user = user;
+	}
+	
+	/**
+	 * Returns the user who set the topic or <code>null</code>. The latter
+	 * is the case if the topic is empty or if the information is not known.
+	 */
 	public User getUser() {
 		return user;
 	}
 	
+	void setDate(Date date) {
+		this.date = date;
+	}
+	
+	/**
+	 * Returns the date when set the topic or <code>null</code>. The latter
+	 * is the case if the topic is empty or if the information is not known.
+	 */
 	public Date getDate() {
 		return date;
 	}

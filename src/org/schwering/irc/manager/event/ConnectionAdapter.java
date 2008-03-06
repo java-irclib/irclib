@@ -39,4 +39,7 @@ public class ConnectionAdapter implements ConnectionListener {
 
 	public void userModeReceived(UserModeEvent event) {
 	}
+	
+	public void topicReceived(TopicEvent event) {
+	}
 }
