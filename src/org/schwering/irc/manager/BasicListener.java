@@ -105,14 +105,45 @@ class BasicListener implements IRCEventListener {
 	public void onReply(int num, String value, String msg) {
 		if (num == IRCUtil.RPL_TOPIC) {
 			handleTopicReply(value, msg);
+		} else if (num == IRCUtil.RPL_NOTOPIC) {
+			Channel channel = owner.resolveChannel(value);
+			Topic topic = new Topic(channel, null, null, null);
+			TopicEvent event = new TopicEvent(owner, topic);
+			if (owner.hasChannel(channel)) {
+				channel.fireTopicReceived(event);
+			} else {
+				owner.fireTopicReceived(event);
+			}
 		} else if (num == IRCUtil.RPL_NAMREPLY) {
 			handleNamesReply(value, msg);
+		} else if (num == IRCUtil.RPL_WHOREPLY) {
+			handleWhoReply(value, msg);
+		} else if (num == IRCUtil.RPL_WHOWASUSER) {
+			// terminated by RPL_ENDOFWHOWAS
+		} else if (num == IRCUtil.RPL_WHOISUSER 
+				|| num == IRCUtil.RPL_WHOISSERVER
+				|| num == IRCUtil.RPL_WHOISCHANNELS
+				|| num == IRCUtil.RPL_WHOISOPERATOR
+				|| num == IRCUtil.RPL_WHOISIDLE
+				|| num == IRCUtil.RPL_WHOISCHANNELS) {
+			// handle whois, RPL_WHOISCHANNELS may appear multiple times, formats:
+			// RPL_WHOISUSER: <nick> <user> <host> * :<real name>
+			// RPL_WHOISSERVER: <nick> <server> :<server info>
+			// RPL_WHOISOPERATOR: <nick> :is an IRC operator
+			// RPL_WHOISIDLE: <nick> <integer> :seconds idle
+			// RPL_WHOISCHANNELS <nick> :{[@|+]<channel><space>}
+			// RPL_ENDOFWHOIS terminates
+		} else if (num == IRCUtil.RPL_LIST) {
+			// termianted by RPL_ENDOFLIST
+		} else if (num == IRCUtil.RPL_BANLIST) {
+			// terminated by RPL_ENDOFBANLIST, format <channel> <banid>
+		} else if (num == IRCUtil.RPL_LINKS) {
+			// terminated by RPL_ENDOFLINKS
 		} else if (num == IRCUtil.RPL_MOTDSTART) {
 			handleMOTD(msg);
-		} else {
-			NumericEvent event = new NumericEvent(owner, num, value, msg); 
-			owner.fireNumericReplyReceived(event);
 		}
+		NumericEvent event = new NumericEvent(owner, num, value, msg); 
+		owner.fireNumericReplyReceived(event);
 	}
 	
 	private void handleTopicReply(String val, String msg) {
@@ -167,26 +198,13 @@ class BasicListener implements IRCEventListener {
 		}
 		blockedNamesChannels.add(channel);
 		final List names = new Vector();
+		handleNamesLine(names, msg);
 		new NumericEventWaiter(owner) {
 			protected boolean handle(NumericEvent event) {
 				Channel secondChannel = owner.resolveChannel(event.getValue());
 				boolean rightChannel = channel.isSame(secondChannel);
 				if (rightChannel && event.getNumber() == IRCUtil.RPL_NAMREPLY) {
-					StringTokenizer tok = new StringTokenizer(event.getMessage());
-					while (tok.hasMoreTokens()) {
-						String name = tok.nextToken();
-						int status = ChannelUser.NONE;
-						if (name.charAt(0) == '@') {
-							status = ChannelUser.OPERATOR;
-							name = name.substring(1);
-						} else if (name.charAt(0) == '+') {
-							status = ChannelUser.VOICED;
-							name = name.substring(1);
-						}
-						User user = owner.resolveUser(name);
-						ChannelUser channelUser = new ChannelUser(user, status);
-						names.add(channelUser);
-					}
+					handleNamesLine(names, event.getMessage());
 					return true;
 				} else if (rightChannel && event.getNumber() == IRCUtil.RPL_ENDOFNAMES) {
 					blockedNamesChannels.remove(channel);
@@ -205,6 +223,64 @@ class BasicListener implements IRCEventListener {
 				}
 			}
 		};
+	}
+	
+	private void handleNamesLine(List names, String msg) {
+		StringTokenizer tok = new StringTokenizer(msg);
+		while (tok.hasMoreTokens()) {
+			String name = tok.nextToken();
+			int status = ChannelUser.NONE;
+			if (name.charAt(0) == '@') {
+				status = ChannelUser.OPERATOR;
+				name = name.substring(1);
+			} else if (name.charAt(0) == '+') {
+				status = ChannelUser.VOICED;
+				name = name.substring(1);
+			}
+			User user = owner.resolveUser(name);
+			ChannelUser channelUser = new ChannelUser(user, status);
+			names.add(channelUser);
+		}
+	}
+	
+	private Set blockedWhoChannels = new HashSet();
+	
+	private void handleWhoReply(String val, String msg) {
+		final Channel channel = owner.resolveChannel(val);
+		if (blockedWhoChannels.contains(channel)) {
+			return;
+		}
+		blockedWhoChannels.add(channel);
+		final List who = new Vector();
+		handleWhoLine(who, msg);
+		new NumericEventWaiter(owner) {
+			protected boolean handle(NumericEvent event) {
+				Channel secondChannel = owner.resolveChannel(event.getValue());
+				boolean rightChannel = channel.isSame(secondChannel);
+				if (rightChannel && event.getNumber() == IRCUtil.RPL_WHOREPLY) {
+					handleWhoLine(who, event.getMessage());
+					return true;
+				} else if (rightChannel && event.getNumber() == IRCUtil.RPL_ENDOFWHO) {
+					blockedWhoChannels.remove(channel);
+					return false;
+				} else {
+					return true;
+				}
+			}
+			
+			protected void fire() {
+				NamesEvent event = new NamesEvent(owner, channel, who);
+				if (owner.hasChannel(channel)) {
+					channel.fireNamesReceived(event);
+				} else {
+					owner.fireNamesReceived(event);
+				}
+			}
+		};
+	}
+	
+	private void handleWhoLine(List who, String msg) {
+		// TODO implement, format: <channel> <user> <host> <server> <nick> <H|G>[*][@|+] :<hopcount> <real name>
 	}
 	
 	private void handleMOTD(String msg) {

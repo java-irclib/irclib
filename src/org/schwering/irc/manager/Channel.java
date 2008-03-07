@@ -143,6 +143,10 @@ public class Channel implements Comparable {
 			return false;
 		}
 	}
+	
+	public boolean equals(Object obj) {
+		return name.equalsIgnoreCase(((Channel)obj).name);
+	}
 
 	public String toString() {
 		return name;

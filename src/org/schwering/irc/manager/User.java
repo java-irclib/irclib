@@ -58,6 +58,11 @@ public class User implements Comparable {
 		host = user.getHost();
 	}
 	
+	void update(String username, String host) {
+		this.username = username;
+		this.host = host;
+	}
+	
 	public String getNick() {
 		return nickname;
 	}
@@ -94,6 +99,10 @@ public class User implements Comparable {
 		} else {
 			return false;
 		}
+	}
+	
+	public boolean equals(Object obj) {
+		return nickname.equalsIgnoreCase(((User)obj).nickname);
 	}
 
 	public int hashCode() {
