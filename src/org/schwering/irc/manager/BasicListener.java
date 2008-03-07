@@ -27,6 +27,7 @@ import org.schwering.irc.manager.event.TopicEvent;
 import org.schwering.irc.manager.event.UnexpectedEvent;
 import org.schwering.irc.manager.event.UserModeEvent;
 import org.schwering.irc.manager.event.UserParticipationEvent;
+import org.schwering.irc.manager.event.UserStatusEvent;
 
 /**
  * Distributes the <code>IRCEventListener</code> events to the respective
@@ -198,13 +199,13 @@ class BasicListener implements IRCEventListener {
 		}
 		blockedNamesChannels.add(channel);
 		final List names = new Vector();
-		handleNamesLine(names, msg);
+		handleNamesLine(names, channel, msg);
 		new NumericEventWaiter(owner) {
 			protected boolean handle(NumericEvent event) {
 				Channel secondChannel = owner.resolveChannel(event.getValue());
 				boolean rightChannel = channel.isSame(secondChannel);
 				if (rightChannel && event.getNumber() == IRCUtil.RPL_NAMREPLY) {
-					handleNamesLine(names, event.getMessage());
+					handleNamesLine(names, channel, event.getMessage());
 					return true;
 				} else if (rightChannel && event.getNumber() == IRCUtil.RPL_ENDOFNAMES) {
 					blockedNamesChannels.remove(channel);
@@ -225,7 +226,7 @@ class BasicListener implements IRCEventListener {
 		};
 	}
 	
-	private void handleNamesLine(List names, String msg) {
+	private void handleNamesLine(List names, Channel channel, String msg) {
 		StringTokenizer tok = new StringTokenizer(msg);
 		while (tok.hasMoreTokens()) {
 			String name = tok.nextToken();
@@ -238,8 +239,15 @@ class BasicListener implements IRCEventListener {
 				name = name.substring(1);
 			}
 			User user = owner.resolveUser(name);
-			ChannelUser channelUser = new ChannelUser(user, status);
-			names.add(channelUser);
+			ChannelUser chanUser = new ChannelUser(user, status);
+			names.add(chanUser);
+			ChannelUser origChanUser = channel.getUser(chanUser);
+			if (origChanUser != null
+					&& origChanUser.getStatus() != chanUser.getStatus()) {
+				UserStatusEvent event = new UserStatusEvent(owner, channel, 
+						chanUser);
+				channel.fireUserStatusChanged(event);
+			}
 		}
 	}
 	
@@ -455,5 +463,26 @@ class BasicListener implements IRCEventListener {
 		ChannelModeEvent event = new ChannelModeEvent(owner, channel, user, 
 				modeParser);
 		channel.fireChannelModeReceived(event);
+		for (int i = 0; i < modeParser.getCount(); i++) { // user status changed
+			int mode = modeParser.getModeAt(i);
+			if (mode == 'o' || mode == 'v') {
+				int status = (mode == 'o') ? ChannelUser.OPERATOR
+						: ChannelUser.VOICED;
+				int oper = modeParser.getOperatorAt(i);
+				String arg = modeParser.getArgAt(i);
+				ChannelUser chanUser = channel.getUser(arg);
+				int oldStatus = chanUser.getStatus();
+				if (oper == '+') {
+					chanUser.addStatus(status);
+				} else if (oper == '-') {
+					chanUser.removeStatus(status);
+				}
+				if (chanUser.getStatus() != oldStatus) {
+					UserStatusEvent e = new UserStatusEvent(owner, channel, 
+							chanUser);
+					channel.fireUserStatusChanged(e);
+				}
+			}
+		}
 	}
 }

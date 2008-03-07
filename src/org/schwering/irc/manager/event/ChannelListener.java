@@ -62,4 +62,21 @@ public interface ChannelListener extends EventListener {
 	 * in the channel.
 	 */
 	void namesReceived(NamesEvent event);
+	
+	/**
+	 * Fired when the status of a user changed. This can be triggered by
+	 * an incoming NAMES list, for example, or an incoming MODE command.
+	 * <p>
+	 * However, this is just an additional event to the existing 
+	 * <code>namesReceived</code> and <code>channelModeReceived</code> events.
+	 * Note that when the connection joins an empty channel, it automatically
+	 * gets operator status. This is not the result of a MODE command 
+	 * executed by anyone, it is implicitly. However, this information is
+	 * included in the NAMES list received when joining a channel and therefore
+	 * propagated with this event.
+	 * <p>
+	 * This event is fired after the <code>channelModeChanged</code> event,
+	 * but before <code>namesReceived</code> is fired.
+	 */
+	void userStatusChanged(UserStatusEvent event);
 }

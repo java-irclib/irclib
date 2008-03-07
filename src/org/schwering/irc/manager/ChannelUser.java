@@ -57,6 +57,14 @@ public class ChannelUser extends User {
 		this.status = status;
 	}
 	
+	void addStatus(int status) {
+		this.status |= status;
+	}
+	
+	void removeStatus(int status) {
+		this.status &= ~status;
+	}
+	
 	public int getStatus() {
 		return status;
 	}

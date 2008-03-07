@@ -15,6 +15,7 @@ import org.schwering.irc.manager.event.NamesEvent;
 import org.schwering.irc.manager.event.NickEvent;
 import org.schwering.irc.manager.event.TopicEvent;
 import org.schwering.irc.manager.event.UserParticipationEvent;
+import org.schwering.irc.manager.event.UserStatusEvent;
 
 /**
  * Represents an IRC channel. This object manages a list of users in the
@@ -171,6 +172,12 @@ public class Channel implements Comparable {
 	void fireUserLeft(UserParticipationEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
 			((ChannelListener)it.next()).userLeft(event);
+		}
+	}
+	
+	void fireUserStatusChanged(UserStatusEvent event) {
+		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
+			((ChannelListener)it.next()).userStatusChanged(event);
 		}
 	}
 	

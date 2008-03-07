@@ -30,4 +30,7 @@ public class ChannelAdapter implements ChannelListener {
 	
 	public void namesReceived(NamesEvent event) {
 	}
+	
+	public void userStatusChanged(UserStatusEvent event) {
+	}
 }
