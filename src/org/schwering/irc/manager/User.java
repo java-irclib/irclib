@@ -83,12 +83,14 @@ public class User implements Comparable {
 	}
 
 	public int compareTo(Object other) {
-		return nickname.compareTo(((User)other).nickname);
+		return nickname.compareToIgnoreCase(((User)other).nickname);
 	}
-
-	public boolean equals(Object obj) {
+	
+	public boolean isSame(Object obj) {
 		if (obj instanceof User) {
 			return nickname.equalsIgnoreCase(((User)obj).nickname);
+		} else if (obj instanceof String) {
+			return nickname.equalsIgnoreCase((String)obj);
 		} else {
 			return false;
 		}

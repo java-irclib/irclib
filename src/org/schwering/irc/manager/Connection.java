@@ -20,6 +20,7 @@ import org.schwering.irc.manager.event.ErrorEvent;
 import org.schwering.irc.manager.event.InvitationEvent;
 import org.schwering.irc.manager.event.MOTDEvent;
 import org.schwering.irc.manager.event.MessageEvent;
+import org.schwering.irc.manager.event.NamesEvent;
 import org.schwering.irc.manager.event.NumericEvent;
 import org.schwering.irc.manager.event.PingEvent;
 import org.schwering.irc.manager.event.PrivateMessageListener;
@@ -287,7 +288,6 @@ public class Connection {
 	 * Returns a <code>Channel</code> object that contains all known 
 	 * information about the channel. This is rather empty if the connection
 	 * has not joined the respective channel.
-	 * TODO Remove either this or resolveChannel().
 	 */
 	public Channel resolveChannel(String channelName) {
 		if (channelName == null) {
@@ -311,9 +311,9 @@ public class Connection {
 		}
 		for (Iterator it = getChannels().iterator(); it.hasNext(); ) {
 			Channel channel = (Channel)it.next();
-			User user = channel.getUser(nick);
+			ChannelUser user = channel.getUser(nick);
 			if (user != null) {
-				return user;
+				return user.getUser();
 			}
 		}
 		return new User(nick);
@@ -333,10 +333,10 @@ public class Connection {
 		}
 		for (Iterator it = getChannels().iterator(); it.hasNext(); ) {
 			Channel channel = (Channel)it.next();
-			User user = channel.getUser(ircUser.getNick());
+			ChannelUser user = channel.getUser(ircUser.getNick());
 			if (user != null) {
 				user.update(ircUser);
-				return user;
+				return user.getUser();
 			}
 		}
 		return new User(ircUser);
@@ -437,6 +437,12 @@ public class Connection {
 	void fireTopicReceived(TopicEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).topicReceived(event);
+		}
+	}
+	
+	void fireNamesReceived(NamesEvent event) {
+		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
+			((ConnectionListener)it.next()).namesReceived(event);
 		}
 	}
 	

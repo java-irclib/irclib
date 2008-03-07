@@ -21,10 +21,22 @@ import java.util.EventListener;
  * @version 1.00
  */
 public interface ChannelListener extends EventListener {
+	/**
+	 * Fired when another user joins the channel.
+	 */
 	void userJoined(UserParticipationEvent event);
 
+	/**
+	 * Fired when another user leaves the channel. This can be either by
+	 * parting, quitting or being kicked.
+	 */
 	void userLeft(UserParticipationEvent event);
 
+	/**
+	 * Fired when a topic of the channel was received.
+	 * This is the case directly after joining the channel, when requesting
+	 * the topic of the channel and when the channel's topic is changed.
+	 */
 	void topicReceived(TopicEvent event);
 
 	/**
@@ -44,4 +56,10 @@ public interface ChannelListener extends EventListener {
 	void privmsgReceived(MessageEvent event);
 	
 	void noticeReceived(MessageEvent event);
+	
+	/**
+	 * Fired when a NAMES list was received and the connection participates
+	 * in the channel.
+	 */
+	void namesReceived(NamesEvent event);
 }

@@ -79,4 +79,10 @@ public interface ConnectionListener extends EventListener {
 	void userModeReceived(UserModeEvent event);
 	
 	void topicReceived(TopicEvent event);
+	
+	/**
+	 * Fired when a NAMES list was received and the connection participates
+	 * in the channel.
+	 */
+	void namesReceived(NamesEvent event);
 }

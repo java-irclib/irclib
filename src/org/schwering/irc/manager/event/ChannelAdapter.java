@@ -28,5 +28,6 @@ public class ChannelAdapter implements ChannelListener {
 	public void userLeft(UserParticipationEvent event) {
 	}
 	
-	
+	public void namesReceived(NamesEvent event) {
+	}
 }

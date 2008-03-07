@@ -42,4 +42,7 @@ public class ConnectionAdapter implements ConnectionListener {
 	
 	public void topicReceived(TopicEvent event) {
 	}
+	
+	public void namesReceived(NamesEvent event) {
+	}
 }

@@ -1,6 +1,7 @@
 package org.schwering.irc.manager;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
@@ -10,6 +11,7 @@ import java.util.TreeMap;
 import org.schwering.irc.manager.event.ChannelListener;
 import org.schwering.irc.manager.event.MessageEvent;
 import org.schwering.irc.manager.event.ChannelModeEvent;
+import org.schwering.irc.manager.event.NamesEvent;
 import org.schwering.irc.manager.event.NickEvent;
 import org.schwering.irc.manager.event.TopicEvent;
 import org.schwering.irc.manager.event.UserParticipationEvent;
@@ -29,14 +31,6 @@ public class Channel implements Comparable {
 	
 	// TODO administer modes (and banlist) of users in channel
 	
-	// TODO implement a queue-like system that buffers respondings that
-	// belong to another, e.g. parts of a WHOIS or of a topic when joining
-	// a channel (ResponseBuffer) (note: WHOIS x,y,z has only one 
-	// end of whois reply)
-	
-	// TODO an alternative system: a ResponseBuffer that knows one or multiple
-	// special reply-numbers that indicate beginning respectively ending
-	
 	public Channel(String name) {
 		if (name == null) {
 			throw new IllegalArgumentException();
@@ -48,32 +42,82 @@ public class Channel implements Comparable {
 		return name;
 	}
 	
-	public Set getUsers() {
-		return users.entrySet();
+	public Set getChannelUsers() {
+		return Collections.unmodifiableSet(users.entrySet());
 	}
 	
-	public User getUser(String nick) {
-		return (User)users.get(nick);
+	public ChannelUser getUser(String nick) {
+		return (ChannelUser)users.get(nick);
 	}
 	
-	public boolean hasUser(User user) {
-		return users.containsKey(user.getNick());
+	public ChannelUser getUser(User user) {
+		return (ChannelUser)users.get(user.getNick());
 	}
 	
 	public boolean hasUser(String nick) {
 		return users.containsKey(nick);
 	}
 	
+	public boolean hasUser(User user) {
+		return users.containsKey(user.getNick());
+	}
+	
 	void addUser(User user) {
+		users.put(user.getNick(), new ChannelUser(user));
+	}
+	
+	void addUser(ChannelUser user) {
 		users.put(user.getNick(), user);
+	}
+	
+	void removeUser(String nick) {
+		users.remove(nick);
 	}
 	
 	void removeUser(User user) {
 		users.remove(user.getNick());
 	}
 	
-	void removeUser(String nick) {
-		users.remove(nick);
+	void setUserStatus(String nick, int status) {
+		ChannelUser channelUser = (ChannelUser)users.get(nick);
+		if (channelUser != null) {
+			channelUser.setStatus(status);
+		}
+	}
+	
+	/**
+	 * Returns the user's status or -1 if the user is not found.
+	 * Valid user status can be <code>UserStatusPair</code>'s
+	 * <code>NONE</code>, <code>OPERATOR</code>, <code>VOICED</code>. 
+	 */
+	public int getUserStatus(String nick) {
+		ChannelUser channelUser= (ChannelUser)users.get(nick);
+		if (channelUser != null) {
+			return channelUser.getStatus();
+		} else {
+			return -1;
+		}
+	}
+	
+	void setUserStatus(User user, int status) {
+		ChannelUser channelUser = (ChannelUser)users.get(user.getNick());
+		if (channelUser != null) {
+			channelUser.setStatus(status);
+		}
+	}
+	
+	/**
+	 * Returns the user's status or -1 if the user is not found.
+	 * Valid user status can be <code>UserStatusPair</code>'s
+	 * <code>NONE</code>, <code>OPERATOR</code>, <code>VOICED</code>. 
+	 */
+	public int getUserStatus(User user) {
+		ChannelUser channelUser= (ChannelUser)users.get(user.getNick());
+		if (channelUser != null) {
+			return channelUser.getStatus();
+		} else {
+			return -1;
+		}
 	}
 	
 	public Topic getTopic() {
@@ -85,7 +129,7 @@ public class Channel implements Comparable {
 	}
 	
 	public int compareTo(Object other) {
-		return getName().compareTo(((Channel)other).getName());
+		return getName().compareToIgnoreCase(((Channel)other).getName());
 	}
 	
 	public boolean isSame(Object obj) {
@@ -153,6 +197,12 @@ public class Channel implements Comparable {
 	void fireNoticeReceived(MessageEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
 			((ChannelListener)it.next()).noticeReceived(event);
+		}
+	}
+	
+	void fireNamesReceived(NamesEvent event) {
+		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
+			((ChannelListener)it.next()).namesReceived(event);
 		}
 	}
 }

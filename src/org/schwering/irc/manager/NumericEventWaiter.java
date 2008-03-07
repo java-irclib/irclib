@@ -12,26 +12,34 @@ import org.schwering.irc.manager.event.NumericEvent;
  */
 abstract class NumericEventWaiter extends ConnectionAdapter implements Runnable {
 	public static int MILLIS_SLEEP = 500;
+	public static int MILLIS_STEP = 50;
 	
 	private Connection owner;
-	protected boolean sleepAgain = false;
-	protected long millis = MILLIS_SLEEP;
+	private Thread thread;
+	private boolean interrupt = false;
+	private boolean sleepAgain = false;
+	private long millis = MILLIS_SLEEP;
 	
 	public NumericEventWaiter(Connection owner) {
 		this.owner = owner;
 		owner.addConnectionListener(this);
-		new Thread(this).start();
+		thread = new Thread(this);
+		thread.start();
 	}
 	
 	public synchronized void numericErrorReceived(NumericEvent event) {
 		if (handle(event)) {
 			sleepAgain = true;
+		} else {
+			interrupt = true;
 		}
 	}
 
 	public synchronized void numericReplyReceived(NumericEvent event) {
 		if (handle(event)) {
 			sleepAgain = true;
+		} else {
+			interrupt = true;
 		}
 	}
 	
@@ -41,10 +49,12 @@ abstract class NumericEventWaiter extends ConnectionAdapter implements Runnable 
 
 	public void run() {
 		do {
-			try {
-				Thread.sleep(millis);
-			} catch (Exception exc) {
-				exc.printStackTrace();
+			while (!interrupt) {
+				try {
+					Thread.sleep(millis);
+				} catch (Exception exc) {
+					exc.printStackTrace();
+				}
 			}
 		} while (getAndSetSleepAgain(false));
 		synchronized (this) {

@@ -1,8 +1,13 @@
 package org.schwering.irc.manager;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import org.schwering.irc.lib.IRCEventListener;
 import org.schwering.irc.lib.IRCModeParser;
@@ -12,7 +17,9 @@ import org.schwering.irc.manager.event.ChannelModeEvent;
 import org.schwering.irc.manager.event.ConnectionEvent;
 import org.schwering.irc.manager.event.ErrorEvent;
 import org.schwering.irc.manager.event.InvitationEvent;
+import org.schwering.irc.manager.event.MOTDEvent;
 import org.schwering.irc.manager.event.MessageEvent;
+import org.schwering.irc.manager.event.NamesEvent;
 import org.schwering.irc.manager.event.NickEvent;
 import org.schwering.irc.manager.event.NumericEvent;
 import org.schwering.irc.manager.event.PingEvent;
@@ -96,12 +103,10 @@ class BasicListener implements IRCEventListener {
 	}
 
 	public void onReply(int num, String value, String msg) {
-		StringTokenizer valTok = new StringTokenizer(value);
-		
 		if (num == IRCUtil.RPL_TOPIC) {
-			handleTopicReply(valTok, msg);
+			handleTopicReply(value, msg);
 		} else if (num == IRCUtil.RPL_NAMREPLY) {
-//			handleNameReply(valTo)
+			handleNamesReply(value, msg);
 		} else if (num == IRCUtil.RPL_MOTDSTART) {
 			handleMOTD(msg);
 		} else {
@@ -110,10 +115,11 @@ class BasicListener implements IRCEventListener {
 		}
 	}
 	
-	private void handleTopicReply(StringTokenizer valTok, String msg) {
+	private void handleTopicReply(String val, String msg) {
+		StringTokenizer valTok = new StringTokenizer(val);
 		valTok.nextToken(); // skip first (our name)
 		final Channel channel = owner.resolveChannel(valTok.nextToken());
-		final Message message = (msg.trim().length() > 0) ? new Message(msg) : null;
+		final Message message = (msg == null || msg.trim().length() > 0) ? new Message(msg) : null;
 		
 		new NumericEventWaiter(owner) { // waits for topic info (user, date)
 			private User user = null;
@@ -133,8 +139,10 @@ class BasicListener implements IRCEventListener {
 							date = null;
 						}
 					}
+					return false;
+				} else {
+					return true;
 				}
-				return false;
 			}
 			
 			protected void fire() {
@@ -150,7 +158,80 @@ class BasicListener implements IRCEventListener {
 		};
 	}
 	
+	private Set blockedNamesChannels = new HashSet();
+	
+	private void handleNamesReply(String val, String msg) {
+		final Channel channel = owner.resolveChannel(val);
+		if (blockedNamesChannels.contains(channel)) {
+			return;
+		}
+		blockedNamesChannels.add(channel);
+		final List names = new Vector();
+		new NumericEventWaiter(owner) {
+			protected boolean handle(NumericEvent event) {
+				Channel secondChannel = owner.resolveChannel(event.getValue());
+				boolean rightChannel = channel.isSame(secondChannel);
+				if (rightChannel && event.getNumber() == IRCUtil.RPL_NAMREPLY) {
+					StringTokenizer tok = new StringTokenizer(event.getMessage());
+					while (tok.hasMoreTokens()) {
+						String name = tok.nextToken();
+						int status = ChannelUser.NONE;
+						if (name.charAt(0) == '@') {
+							status = ChannelUser.OPERATOR;
+							name = name.substring(1);
+						} else if (name.charAt(0) == '+') {
+							status = ChannelUser.VOICED;
+							name = name.substring(1);
+						}
+						User user = owner.resolveUser(name);
+						ChannelUser channelUser = new ChannelUser(user, status);
+						names.add(channelUser);
+					}
+					return true;
+				} else if (rightChannel && event.getNumber() == IRCUtil.RPL_ENDOFNAMES) {
+					blockedNamesChannels.remove(channel);
+					return false;
+				} else {
+					return true;
+				}
+			}
+			
+			protected void fire() {
+				NamesEvent event = new NamesEvent(owner, channel, names);
+				if (owner.hasChannel(channel)) {
+					channel.fireNamesReceived(event);
+				} else {
+					owner.fireNamesReceived(event);
+				}
+			}
+		};
+	}
+	
 	private void handleMOTD(String msg) {
+		final List motd = new LinkedList();
+		motd.add(msg);
+		new NumericEventWaiter(owner) {
+			protected boolean handle(NumericEvent event) {
+				if (event.getNumber() == IRCUtil.RPL_MOTD) {
+					motd.add(event.getMessage());
+					return true;
+				} else if (event.getNumber() == IRCUtil.RPL_ENDOFMOTD) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+			
+			protected void fire() {
+				String[] arr = new String[motd.size()];
+				int i = 0;
+				for (Iterator it = motd.iterator(); it.hasNext(); ) {
+					arr[i++] = (String)it.next();
+				}
+				MOTDEvent event = new MOTDEvent(owner, arr);
+				owner.fireMotdReceived(event);
+			}
+		};
 	}
 
 	public void onNick(IRCUser user, String newNick) {
@@ -283,9 +364,10 @@ class BasicListener implements IRCEventListener {
 	
 	public void onTopic(String chan, IRCUser ircUser, String msg) {
 		Channel channel = owner.resolveChannel(chan);
+		Message message = (msg == null || msg.trim().length() > 0) ? new Message(msg) : null;
 		User user = owner.resolveUser(ircUser);
 		Date date = new Date();
-		Topic topic = new Topic(channel, new Message(msg), user, date);
+		Topic topic = new Topic(channel, message, user, date);
 		channel.setTopic(topic);
 		TopicEvent event = new TopicEvent(owner, topic);
 		channel.fireTopicReceived(event);
