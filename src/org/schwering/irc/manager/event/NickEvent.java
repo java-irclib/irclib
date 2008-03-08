@@ -8,27 +8,29 @@ import org.schwering.irc.manager.User;
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
+ * @see ConnectionListener#nickChanged(NickEvent)
+ * @see ChannelListener#nickChanged(NickEvent)
  */
 public class NickEvent {
 	private Connection connection;
-	private User oldUser;
-	private User newUser;
+	private User user;
+	private String oldNick;
 
-	public NickEvent(Connection connection, User oldUser, User newUser) {
+	public NickEvent(Connection connection, User user, String oldNick) {
 		this.connection = connection;
-		this.oldUser = oldUser;
-		this.newUser = newUser;
+		this.user = user;
+		this.oldNick = oldNick;
 	}
 
 	public Connection getConnection() {
 		return connection;
 	}
 
-	public User getOldUser() {
-		return oldUser;
+	public User getUser() {
+		return user;
 	}
-
-	public User getNewUser() {
-		return newUser;
+	
+	public String getOldNick() {
+		return oldNick;
 	}
 }

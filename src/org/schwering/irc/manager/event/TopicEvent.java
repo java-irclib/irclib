@@ -9,6 +9,8 @@ import org.schwering.irc.manager.Topic;
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
+ * @see ConnectionListener#topicReceived(TopicEvent)
+ * @see ChannelListener#topicReceived(TopicEvent)
  */
 public class TopicEvent {
 	private Connection connection;

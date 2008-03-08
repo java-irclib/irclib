@@ -9,6 +9,7 @@ import org.schwering.irc.manager.User;
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
+ * @see ConnectionListener#userModeReceived(UserModeEvent)
  */
 public class UserModeEvent {
 	private Connection connection;

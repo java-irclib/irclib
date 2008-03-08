@@ -11,6 +11,12 @@ import org.schwering.irc.manager.User;
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
+ * @see ConnectionListener#channelJoined(UserParticipationEvent)
+ * @see ConnectionListener#channelLeft(UserParticipationEvent)
+ * @see ChannelListener#userJoined(UserParticipationEvent)
+ * @see ChannelListener#userLeft(UserParticipationEvent)
+ * @see ChannelListener#userJoined(UserParticipationEvent)
+ * @see ChannelListener#userLeft(UserParticipationEvent)
  */
 public class UserParticipationEvent {
 	public static final int JOIN = 1;

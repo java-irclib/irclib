@@ -11,6 +11,16 @@ import org.schwering.irc.lib.IRCUser;
  * Information about these users is collected and can be requested
  * via {@link Connection#resolveUser(String)} and 
  * {@link Connection#resolveUser(IRCUser)}.
+ * <p>
+ * You might wonder why <code>User</code> in contrast to <code>Channel</code>
+ * and <code>Connection</code> has no corresponding <code>UserListener</code>.
+ * This is because the character of the <code>User</code> objects is quite
+ * volatile. For example, the <code>User</code> object of the partner of a 
+ * user-to-user communication is created newly for each incoming message
+ * if the connection doesn't have any channel in common with that user.
+ * The connection isn't even informed about potential nick changes of that 
+ * user. Hence, though a <code>UserListener</code> would be nice, that concept
+ * barely exists in IRC. 
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
@@ -26,18 +36,12 @@ public class User implements Comparable {
 	}
 	
 	User(IRCUser user) {
-		if (user == null) {
-			throw new IllegalArgumentException();
-		}
 		this.nickname = user.getNick();
 		this.username = user.getUsername();
 		this.host = user.getHost();
 	}
 	
 	User(String nickname, String username, String host) {
-		if (nickname == null) {
-			throw new IllegalArgumentException();
-		}
 		this.nickname = nickname;
 		this.username = username;
 		this.host = host;
@@ -61,6 +65,10 @@ public class User implements Comparable {
 	void update(String username, String host) {
 		this.username = username;
 		this.host = host;
+	}
+	
+	void setNick(String newNick) {
+		this.nickname = newNick;
 	}
 	
 	public String getNick() {

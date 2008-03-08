@@ -13,8 +13,10 @@ import java.util.TreeMap;
 import org.schwering.irc.lib.IRCConnection;
 import org.schwering.irc.lib.IRCEventListener;
 import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.lib.ssl.SSLIRCConnection;
 import org.schwering.irc.manager.event.BanlistEvent;
 import org.schwering.irc.manager.event.CTCPListener;
+import org.schwering.irc.manager.event.ChannelModeEvent;
 import org.schwering.irc.manager.event.ConnectionEvent;
 import org.schwering.irc.manager.event.ConnectionListener;
 import org.schwering.irc.manager.event.ErrorEvent;
@@ -22,6 +24,7 @@ import org.schwering.irc.manager.event.InvitationEvent;
 import org.schwering.irc.manager.event.MOTDEvent;
 import org.schwering.irc.manager.event.MessageEvent;
 import org.schwering.irc.manager.event.NamesEvent;
+import org.schwering.irc.manager.event.NickEvent;
 import org.schwering.irc.manager.event.NumericEvent;
 import org.schwering.irc.manager.event.PingEvent;
 import org.schwering.irc.manager.event.PrivateMessageListener;
@@ -65,10 +68,15 @@ public class Connection {
 	 * Further configuration can be done via the <code>Connection</code>
 	 * class's methods.
 	 */
-	Connection(String host, int portMin, int portMax, String pass, String nick,
-			String username, String realname) {
-		conn = new IRCConnection(host, portMin, portMax, pass, nick, username, 
-				realname);
+	public Connection(String host, int portMin, int portMax, boolean ssl,
+			String pass, String nick, String username, String realname) {
+		if (ssl) {
+			conn = new SSLIRCConnection(host, portMin, portMax, pass, nick, 
+					username, realname);
+		} else {
+			conn = new IRCConnection(host, portMin, portMax, pass, nick, 
+					username, realname);
+		}
 		conn.setPong(true);
 		conn.setColors(false);
 		conn.addIRCEventListener(new BasicListener(this));
@@ -81,9 +89,15 @@ public class Connection {
 	 * Further configuration can be done via the <code>Connection</code>
 	 * class's methods.
 	 */
-	Connection(String host, int[] ports, String pass, String nick,
-			String username, String realname) {
-		conn = new IRCConnection(host, ports, pass, nick, username, realname);
+	public Connection(String host, int[] ports, boolean ssl, 
+			String pass, String nick, String username, String realname) {
+		if (ssl) {
+			conn = new SSLIRCConnection(host, ports, pass, nick, username, 
+					realname);
+		} else {
+			conn = new IRCConnection(host, ports, pass, nick, username, 
+					realname);
+		}
 		conn.setPong(true);
 		conn.setColors(false);
 		conn.addIRCEventListener(new BasicListener(this));
@@ -412,9 +426,9 @@ public class Connection {
 		}
 	}
 	
-	void fireInvited(InvitationEvent event) {
+	void fireInvitationReceived(InvitationEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
-			((ConnectionListener)it.next()).invited(event);
+			((ConnectionListener)it.next()).invitationReceived(event);
 		}
 	}
 	
@@ -436,9 +450,51 @@ public class Connection {
 		}
 	}
 	
+	void fireWhoisReceived(WhoisEvent event) {
+		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
+			((ConnectionListener)it.next()).whoisReceived(event);
+		}
+	}
+	
+	void fireUserJoined(UserParticipationEvent event) {
+		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
+			((ConnectionListener)it.next()).userJoined(event);
+		}
+	}
+	
+	void fireUserLeft(UserParticipationEvent event) {
+		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
+			((ConnectionListener)it.next()).userLeft(event);
+		}
+	}
+	
 	void fireTopicReceived(TopicEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).topicReceived(event);
+		}
+	}
+	
+	void fireChannelModeReceived(ChannelModeEvent event) {
+		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
+			((ConnectionListener)it.next()).channelModeReceived(event);
+		}
+	}
+	
+	void fireNickChanged(NickEvent event) {
+		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
+			((ConnectionListener)it.next()).nickChanged(event);
+		}
+	}
+	
+	void fireMessageReceived(MessageEvent event) {
+		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
+			((ConnectionListener)it.next()).messageReceived(event);
+		}
+	}
+	
+	void fireNoticeReceived(MessageEvent event) {
+		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
+			((ConnectionListener)it.next()).noticeReceived(event);
 		}
 	}
 	
@@ -447,16 +503,10 @@ public class Connection {
 			((ConnectionListener)it.next()).namesReceived(event);
 		}
 	}
-
+	
 	void fireBanlistReceived(BanlistEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).banlistReceived(event);
-		}
-	}
-	
-	void fireWhoisReceived(WhoisEvent event) {
-		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
-			((ConnectionListener)it.next()).whoisReceived(event);
 		}
 	}
 	
@@ -470,13 +520,13 @@ public class Connection {
 		privateMessageListeners.remove(listener);
 	}
 	
-	void firePrivmsgReceived(MessageEvent event) {
+	void firePrivateMessageReceived(MessageEvent event) {
 		for (Iterator it = privateMessageListeners.iterator(); it.hasNext(); ) {
-			((PrivateMessageListener)it.next()).privmsgReceived(event);
+			((PrivateMessageListener)it.next()).messageReceived(event);
 		}
 	}
 	
-	void fireNoticeReceived(MessageEvent event) {
+	void firePrivateNoticeReceived(MessageEvent event) {
 		for (Iterator it = privateMessageListeners.iterator(); it.hasNext(); ) {
 			((PrivateMessageListener)it.next()).noticeReceived(event);
 		}

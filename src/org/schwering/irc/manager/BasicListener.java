@@ -71,7 +71,7 @@ class BasicListener implements IRCEventListener {
 		Channel channel = owner.resolveChannel(chan);
 		InvitationEvent event = new InvitationEvent(owner, channel, 
 				invitingUser, invitedUser);
-		owner.fireInvited(event);
+		owner.fireInvitationReceived(event);
 	}
 
 	public void onPing(String ping) {
@@ -112,12 +112,10 @@ class BasicListener implements IRCEventListener {
 		} else if (num == IRCConstants.RPL_NOTOPIC) {
 			Channel channel = owner.resolveChannel(val);
 			Topic topic = new Topic(channel, null, null, null);
+			channel.setTopic(topic);
 			TopicEvent event = new TopicEvent(owner, topic);
-			if (owner.hasChannel(channel)) {
-				channel.fireTopicReceived(event);
-			} else {
-				owner.fireTopicReceived(event);
-			}
+			owner.fireTopicReceived(event);
+			channel.fireTopicReceived(event);
 		} else if (num == IRCConstants.RPL_NAMREPLY) {
 			handleNamesReply(val, msg);
 		} else if (num == IRCConstants.RPL_WHOREPLY) {
@@ -136,9 +134,10 @@ class BasicListener implements IRCEventListener {
 			// terminated by RPL_ENDOFLINKS
 		} else if (num == IRCConstants.RPL_MOTDSTART) {
 			handleMOTDReply(msg);
+		} else {
+			NumericEvent event = new NumericEvent(owner, num, val, msg); 
+			owner.fireNumericReplyReceived(event);
 		}
-		NumericEvent event = new NumericEvent(owner, num, val, msg); 
-		owner.fireNumericReplyReceived(event);
 	}
 	
 	private static boolean isReplyNumber(int num) {
@@ -147,7 +146,8 @@ class BasicListener implements IRCEventListener {
 		|| num == IRCConstants.RPL_WHOISCHANNELS
 		|| num == IRCConstants.RPL_WHOISOPERATOR
 		|| num == IRCConstants.RPL_WHOISIDLE
-		|| num == IRCConstants.RPL_WHOISCHANNELS;
+		|| num == IRCConstants.RPL_WHOISCHANNELS
+		|| num == IRCConstants.RPL_WHOISAUTHNAME;
 	}
 	
 	private static String skipFirstToken(String str) {
@@ -206,13 +206,10 @@ class BasicListener implements IRCEventListener {
 			
 			protected void fire() {
 				Topic topic = new Topic(channel, message, user, date);
+				channel.setTopic(topic);
 				TopicEvent event = new TopicEvent(owner, topic);
-				if (owner.hasChannel(channel)) {
-					channel.setTopic(topic);
-					channel.fireTopicReceived(event);
-				} else {
-					owner.fireTopicReceived(event);
-				}
+				owner.fireTopicReceived(event);
+				channel.fireTopicReceived(event);
 			}
 		};
 	}
@@ -247,11 +244,8 @@ class BasicListener implements IRCEventListener {
 			
 			protected void fire() {
 				NamesEvent event = new NamesEvent(owner, channel, names);
-				if (owner.hasChannel(channel)) {
-					channel.fireNamesReceived(event);
-				} else {
-					owner.fireNamesReceived(event);
-				}
+				owner.fireNamesReceived(event);
+				channel.fireNamesReceived(event);
 			}
 		};
 	}
@@ -312,12 +306,11 @@ class BasicListener implements IRCEventListener {
 			}
 			
 			protected void fire() {
-				NamesEvent event = new NamesEvent(owner, channel, who);
-				if (owner.hasChannel(channel)) {
-					channel.fireNamesReceived(event);
-				} else {
-					owner.fireNamesReceived(event);
-				}
+//				WhoEvent event = new WhoEvent(owner, channel, who);
+//				owner.fireWhoReceived(event);
+//				if (owner.hasChannel(channel)) {
+//					channel.fireWhoReceived(event);
+//				}
 			}
 		};
 	}
@@ -352,8 +345,6 @@ class BasicListener implements IRCEventListener {
 					} else if (rightUser && event.getNumber() == IRCConstants.RPL_AWAY) {
 						String awayMsg = event.getMessage();
 						whois.awayMessage = (awayMsg != null) ? new Message(awayMsg) : null;
-					} else if (rightUser && event.getNumber() == IRCConstants.RPL_AUTHNAME) {
-						whois.authName = valTok.nextToken();
 					} else if (rightUser && event.getNumber() == IRCConstants.RPL_ENDOFWHOIS) {
 						blockedWhoisUsers.remove(user);
 						return false;
@@ -416,8 +407,8 @@ class BasicListener implements IRCEventListener {
 				String tok = msgTok.nextToken();
 				whois.channels.add(tok);
 			}
-		} else if (num == IRCConstants.RPL_AUTHNAME) {
-			
+		} else if (num == IRCConstants.RPL_WHOISAUTHNAME) {
+			whois.authName = val;
 		}
 	}
 	
@@ -462,12 +453,9 @@ class BasicListener implements IRCEventListener {
 			
 			protected void fire() {
 				BanlistEvent event = new BanlistEvent(owner, channel, banIDs);
-				if (owner.hasChannel(channel)) {
-					channel.setBanIDs(banIDs);
-					channel.fireBanlistReceived(event);
-				} else {
-					owner.fireBanlistReceived(event);
-				}
+				channel.setBanIDs(banIDs);
+				owner.fireBanlistReceived(event);
+				channel.fireBanlistReceived(event);
 			}
 		};
 	}
@@ -494,15 +482,22 @@ class BasicListener implements IRCEventListener {
 		};
 	}
 
-	public void onNick(IRCUser user, String newNick) {
-		User oldUser = owner.resolveUser(user);
-		User newUser = new User(oldUser, newNick);
-		NickEvent event = new NickEvent(owner, oldUser, newUser);
+	public void onNick(IRCUser ircUser, String newNick) {
+		User user = owner.resolveUser(ircUser);
+		String oldNick = user.getNick();
+		user.setNick(newNick);
+		NickEvent event = new NickEvent(owner, user, oldNick);
 		for (Iterator it = owner.getChannels().iterator(); it.hasNext(); ) {
 			Channel channel = (Channel)it.next();
-			if (channel.hasUser(oldUser)) {
-				channel.removeUser(oldUser);
-				channel.addUser(newUser);
+			if (channel.hasUser(oldNick)) {
+				channel.removeUser(oldNick); // re-add user with new nick
+				channel.addUser(user);
+			}
+		}
+		owner.fireNickChanged(event);
+		for (Iterator it = owner.getChannels().iterator(); it.hasNext(); ) {
+			Channel channel = (Channel)it.next();
+			if (channel.hasUser(user)) {
 				channel.fireNickChanged(event);
 			}
 		}
@@ -520,13 +515,16 @@ class BasicListener implements IRCEventListener {
 				owner.removeChannel(channel);
 			}
 		} else {
+			UserParticipationEvent event = new UserParticipationEvent(owner,
+					null, user, UserParticipationEvent.QUIT, new Message(msg));
+			owner.fireUserLeft(event);
 			for (Iterator it = owner.getChannels().iterator(); it.hasNext(); ) {
 				Channel channel = (Channel)it.next();
+				UserParticipationEvent event2 = new UserParticipationEvent(owner,
+						channel, user, UserParticipationEvent.QUIT, 
+						new Message(msg));
 				if (channel.hasUser(user)) {
-					UserParticipationEvent event = new UserParticipationEvent(owner,
-							channel, user, UserParticipationEvent.QUIT, 
-							new Message(msg));
-					channel.fireUserLeft(event);
+					channel.fireUserLeft(event2);
 					channel.removeUser(user);
 				}
 			}
@@ -541,29 +539,35 @@ class BasicListener implements IRCEventListener {
 	}
 	
 	public void onNotice(String target, IRCUser ircUser, String msg) {
-		MessageEvent event;
 		User sender = owner.resolveUser(ircUser);
 		if (IRCUtil.isChan(target)) {
 			Channel channel = owner.resolveChannel(target);
-			event = new MessageEvent(owner, sender, channel, msg);
+			MessageEvent event = new MessageEvent(owner, sender, channel, msg);
+			owner.fireNoticeReceived(event);
+			channel.fireNoticeReceived(event);
 		} else {
 			User user = owner.resolveUser(target);
-			event = new MessageEvent(owner, sender, user, new Message(msg));
+			MessageEvent event = new MessageEvent(owner, sender, user, 
+					new Message(msg));
+			owner.fireNoticeReceived(event);
+			owner.firePrivateNoticeReceived(event);
 		}
-		owner.fireNoticeReceived(event);
 	}
 
 	public void onPrivmsg(String target, IRCUser ircUser, String msg) {
-		MessageEvent event;
 		User sender = owner.resolveUser(ircUser);
 		if (IRCUtil.isChan(target)) {
 			Channel channel = owner.resolveChannel(target);
-			event = new MessageEvent(owner, sender, channel, msg);
+			MessageEvent event = new MessageEvent(owner, sender, channel, msg);
+			owner.fireMessageReceived(event);
+			channel.fireMessageReceived(event);
 		} else {
 			User user = owner.resolveUser(target);
-			event = new MessageEvent(owner, sender, user, new Message(msg));
+			MessageEvent event = new MessageEvent(owner, sender, user, 
+					new Message(msg));
+			owner.fireMessageReceived(event);
+			owner.firePrivateMessageReceived(event);
 		}
-		owner.fireNoticeReceived(event);
 	}
 	
 	/* Channel events */
@@ -583,6 +587,7 @@ class BasicListener implements IRCEventListener {
 			}
 		} else {
 			channel.addUser(user);
+			owner.fireUserJoined(event);
 			channel.fireUserJoined(event);
 		}
 	}
@@ -598,6 +603,7 @@ class BasicListener implements IRCEventListener {
 			channel.removeUser(user);
 			owner.removeChannel(channel);
 		} else {
+			owner.fireUserLeft(event);
 			channel.fireUserLeft(event);
 			channel.removeUser(user);
 		}
@@ -617,6 +623,7 @@ class BasicListener implements IRCEventListener {
 			channel.removeUser(kickedUser);
 			owner.removeChannel(channel);
 		} else {
+			owner.fireUserLeft(event);
 			channel.fireUserLeft(event);
 			channel.removeUser(kickedUser);
 		}
@@ -630,6 +637,7 @@ class BasicListener implements IRCEventListener {
 		Topic topic = new Topic(channel, message, user, date);
 		channel.setTopic(topic);
 		TopicEvent event = new TopicEvent(owner, topic);
+		owner.fireTopicReceived(event);
 		channel.fireTopicReceived(event);
 	}
 
@@ -638,6 +646,7 @@ class BasicListener implements IRCEventListener {
 		User user = owner.resolveUser(ircUser);
 		ChannelModeEvent event = new ChannelModeEvent(owner, channel, user, 
 				modeParser);
+		owner.fireChannelModeReceived(event);
 		channel.fireChannelModeReceived(event);
 		for (int i = 0; i < modeParser.getCount(); i++) { // user status changed
 			int mode = modeParser.getModeAt(i);

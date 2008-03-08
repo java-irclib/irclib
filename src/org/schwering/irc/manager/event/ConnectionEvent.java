@@ -7,6 +7,8 @@ import org.schwering.irc.manager.Connection;
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
+ * @see ConnectionListener#connectionEstablished(ConnectionEvent)
+ * @see ConnectionListener#connectionLost(ConnectionEvent)
  */
 public class ConnectionEvent {
 	private Connection connection;

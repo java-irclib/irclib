@@ -526,6 +526,13 @@ public interface IRCConstants {
 	public static final int RPL_WHOISCHANNELS = 319;
 	
 	/**
+	 * Format: "&lt;nick&gt; &lt;authname&gt; is authed as"<br />
+	 * This is part of /WHOIS on many servers which provide bots to authenticate.
+	 * This is not part of the RFC.
+	 */
+	public static final int RPL_WHOISAUTHNAME = 330;
+	
+	/**
 	 * Format: "&lt;nick&gt; &lt;user&gt; &lt;host&gt; * &lt;real name&gt;".
 	 */
 	public static final int RPL_WHOWASUSER = 314;
@@ -579,8 +586,11 @@ public interface IRCConstants {
 	/**
 	 * Format: "&lt;nick&gt; &lt;authname&gt; is authed as"<br />
 	 * This is part of /WHOIS on many servers which provide bots to authenticate.
+	 * This is not part of the RFC.
+	 * @deprecated (1) The value should be 330 instead of 333; (2) moved to
+	 * <code>RPL_WHOISAUTHNAME</code>.
 	 */
-	public static final int RPL_AUTHNAME = 330;
+	public static final int RPL_AUTHNAME = 333;
 	
 	/**
 	 * Format: "&lt;channel&gt; No topic is set". <br />

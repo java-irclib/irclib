@@ -10,6 +10,7 @@ import org.schwering.irc.manager.Connection;
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
+ * @see ConnectionListener#motdReceived(MOTDEvent)
  */
 public class MOTDEvent {
 	private Connection connection;

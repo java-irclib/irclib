@@ -210,9 +210,9 @@ public class Channel implements Comparable {
 		}
 	}
 	
-	void firePrivmsgReceived(MessageEvent event) {
+	void fireMessageReceived(MessageEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).privmsgReceived(event);
+			((ChannelListener)it.next()).messageReceived(event);
 		}
 	}
 	

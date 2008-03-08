@@ -16,7 +16,7 @@ public class ChannelAdapter implements ChannelListener {
 	public void noticeReceived(MessageEvent event) {
 	}
 
-	public void privmsgReceived(MessageEvent event) {
+	public void messageReceived(MessageEvent event) {
 	}
 
 	public void topicReceived(TopicEvent event) {

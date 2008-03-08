@@ -11,6 +11,8 @@ import org.schwering.irc.manager.Connection;
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
+ * @see ConnectionListener#namesReceived(NamesEvent)
+ * @see ChannelListener#namesReceived(NamesEvent)
  */
 public class NamesEvent {
 	private Connection connection;

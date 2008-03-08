@@ -11,7 +11,7 @@ public class PrivateMessageAdapter implements PrivateMessageListener {
 	public void noticeReceived(MessageEvent event) {
 	}
 
-	public void privmsgReceived(MessageEvent event) {
+	public void messageReceived(MessageEvent event) {
 	}
 
 }
