@@ -1,5 +1,8 @@
 package org.schwering.irc.manager.event;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.schwering.irc.manager.Connection;
 
 /**
@@ -9,19 +12,23 @@ import org.schwering.irc.manager.Connection;
  * @version 1.00
  */
 public class MOTDEvent {
-	private Connection connect;
-	private String[] text;
+	private Connection connection;
+	private List text;
 
-	public MOTDEvent(Connection connect, String[] text) {
-		this.connect = connect;
+	public MOTDEvent(Connection connection, List text) {
+		this.connection = connection;
 		this.text = text;
 	}
 
-	public Connection getConnect() {
-		return connect;
+	public Connection getConnection() {
+		return connection;
 	}
 
-	public String[] getText() {
-		return text;
+	/**
+	 * Returns the text of the MOTD. The elements in the list are
+	 * <code>String</code>s.
+	 */
+	public List getText() {
+		return Collections.unmodifiableList(text);
 	}
 }

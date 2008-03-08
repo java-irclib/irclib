@@ -5,6 +5,8 @@ IRClib 1.xx (04.11.2007):
             could result in a IndexOutOfBoundsException in the buf.charAt(i)
             line.
  * Fixed:   Javadocs for indicators in IRCConstants; thanks to Johan Gunnarsson.
+ * Fixed:   IRCConstants.RPL_AUTHNAME, which is not part of the RFC 1459, had
+            the wrong value of 333 and is now fixed (330).
 
 IRClib 1.10 (03.11.2006):
  * Changed: org.schwering.irc.lib.ssl.*. The new package is the new residence 

@@ -81,8 +81,19 @@ public interface ConnectionListener extends EventListener {
 	void topicReceived(TopicEvent event);
 	
 	/**
-	 * Fired when a NAMES list was received and the connection participates
-	 * in the channel.
+	 * Fired when a NAMES list was received and the connection doesn't 
+	 * participate in the channel.
 	 */
 	void namesReceived(NamesEvent event);
+	
+	/**
+	 * Fired when the banlist is received and the connection doesn't
+	 * participate in the channel.
+	 */
+	void banlistReceived(BanlistEvent event);
+	
+	/**
+	 * Fired when a WHOIS of a user is received.
+	 */
+	void whoisReceived(WhoisEvent event);
 }

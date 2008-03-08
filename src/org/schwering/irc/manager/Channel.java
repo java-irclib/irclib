@@ -4,10 +4,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.schwering.irc.manager.event.BanlistEvent;
 import org.schwering.irc.manager.event.ChannelListener;
 import org.schwering.irc.manager.event.MessageEvent;
 import org.schwering.irc.manager.event.ChannelModeEvent;
@@ -28,6 +30,7 @@ public class Channel implements Comparable {
 	private String name;
 	private SortedMap users = new TreeMap();
 	private Topic topic;
+	private List banIDs;
 	private Collection listeners = new LinkedList();
 	
 	// TODO administer modes (and banlist) of users in channel
@@ -64,7 +67,7 @@ public class Channel implements Comparable {
 	}
 	
 	void addUser(User user) {
-		users.put(user.getNick(), new ChannelUser(user));
+		users.put(user.getNick(), new ChannelUser(this, user));
 	}
 	
 	void addUser(ChannelUser user) {
@@ -127,6 +130,14 @@ public class Channel implements Comparable {
 	
 	void setTopic(Topic topic) {
 		this.topic = topic;
+	}
+	
+	public List getBanIDs() {
+		return Collections.unmodifiableList(banIDs);
+	}
+	
+	void setBanIDs(List banIDs) {
+		this.banIDs = banIDs;
 	}
 	
 	public int compareTo(Object other) {
@@ -214,6 +225,12 @@ public class Channel implements Comparable {
 	void fireNamesReceived(NamesEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
 			((ChannelListener)it.next()).namesReceived(event);
+		}
+	}
+	
+	void fireBanlistReceived(BanlistEvent event) {
+		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
+			((ChannelListener)it.next()).banlistReceived(event);
 		}
 	}
 }

@@ -28,22 +28,28 @@ public class ChannelUser extends User {
 	public static final int VOICED = 1;
 	public static final int OPERATOR = 2;
 	
+	private Channel channel;
 	private User user;
 	private int status;
 	
-	ChannelUser(User user) {
-		this(user, NONE);
+	ChannelUser(Channel channel, User user) {
+		this(channel, user, NONE);
 	}
 	
-	ChannelUser(User user, int status) {
+	ChannelUser(Channel channel, User user, int status) {
 		super(null, null, null);
 		if (user instanceof ChannelUser) {
 			throw new RuntimeException("Wrapping a ChannelUser in a " +
 					"ChannelUser is a bad idea; this exception shows " +
 					"the bad design of the org.schwering.irc.manager package");
 		}
+		this.channel = channel;
 		this.user = user;
 		this.status = status;
+	}
+	
+	public Channel getChannel() {
+		return channel;
 	}
 	
 	/**

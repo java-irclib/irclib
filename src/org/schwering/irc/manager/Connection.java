@@ -13,6 +13,7 @@ import java.util.TreeMap;
 import org.schwering.irc.lib.IRCConnection;
 import org.schwering.irc.lib.IRCEventListener;
 import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.manager.event.BanlistEvent;
 import org.schwering.irc.manager.event.CTCPListener;
 import org.schwering.irc.manager.event.ConnectionEvent;
 import org.schwering.irc.manager.event.ConnectionListener;
@@ -29,6 +30,7 @@ import org.schwering.irc.manager.event.UnexpectedEvent;
 import org.schwering.irc.manager.event.UnexpectedEventListener;
 import org.schwering.irc.manager.event.UserModeEvent;
 import org.schwering.irc.manager.event.UserParticipationEvent;
+import org.schwering.irc.manager.event.WhoisEvent;
 
 /**
  * A wrapper for <code>IRCConnection</code> and interface to various
@@ -443,6 +445,18 @@ public class Connection {
 	void fireNamesReceived(NamesEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).namesReceived(event);
+		}
+	}
+
+	void fireBanlistReceived(BanlistEvent event) {
+		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
+			((ConnectionListener)it.next()).banlistReceived(event);
+		}
+	}
+	
+	void fireWhoisReceived(WhoisEvent event) {
+		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
+			((ConnectionListener)it.next()).whoisReceived(event);
 		}
 	}
 	

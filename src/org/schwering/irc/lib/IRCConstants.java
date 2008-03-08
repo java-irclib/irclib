@@ -580,7 +580,7 @@ public interface IRCConstants {
 	 * Format: "&lt;nick&gt; &lt;authname&gt; is authed as"<br />
 	 * This is part of /WHOIS on many servers which provide bots to authenticate.
 	 */
-	public static final int RPL_AUTHNAME = 333;
+	public static final int RPL_AUTHNAME = 330;
 	
 	/**
 	 * Format: "&lt;channel&gt; No topic is set". <br />

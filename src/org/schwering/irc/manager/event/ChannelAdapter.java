@@ -33,4 +33,7 @@ public class ChannelAdapter implements ChannelListener {
 	
 	public void userStatusChanged(UserStatusEvent event) {
 	}
+	
+	public void banlistReceived(BanlistEvent event) {
+	}
 }

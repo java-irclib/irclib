@@ -1,5 +1,6 @@
 package org.schwering.irc.manager.event;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.schwering.irc.manager.Channel;
@@ -38,6 +39,6 @@ public class NamesEvent {
 	 * Returns a list of <code>UserStatusPair</code>s.
 	 */
 	public List getUserStatusPairs() {
-		return userStatusPairs;
+		return Collections.unmodifiableList(userStatusPairs);
 	}
 }

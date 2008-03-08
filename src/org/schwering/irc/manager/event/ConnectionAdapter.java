@@ -45,4 +45,10 @@ public class ConnectionAdapter implements ConnectionListener {
 	
 	public void namesReceived(NamesEvent event) {
 	}
+	
+	public void banlistReceived(BanlistEvent event) {
+	}
+	
+	public void whoisReceived(WhoisEvent event) {
+	}
 }

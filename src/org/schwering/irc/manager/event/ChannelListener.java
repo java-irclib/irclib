@@ -79,4 +79,10 @@ public interface ChannelListener extends EventListener {
 	 * but before <code>namesReceived</code> is fired.
 	 */
 	void userStatusChanged(UserStatusEvent event);
+	
+	/**
+	 * Fired when the banlist is received and the connection participates
+	 * in the channel.
+	 */
+	void banlistReceived(BanlistEvent event);
 }
