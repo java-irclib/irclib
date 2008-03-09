@@ -644,6 +644,35 @@ public class IRCConnection extends Thread {
 // ------------------------------
 	
 	/** 
+	 * Adds a new {@link org.schwering.irc.lib.IRCEventListener} which listens 
+	 * for actions coming from the IRC server at a given index. 
+	 * @param l An instance of the 
+	 *          {@link org.schwering.irc.lib.IRCEventListener} interface.
+	 * @param i The designated index of the listener.
+	 * @throws IllegalArgumentException If <code>listener</code> is 
+	 *                                  <code>null</code>.
+	 * @throws IndexOutOfBoundsException If <code>i</code> is not greater than
+	 *                                   0 and less or equal than 
+	 *                                   <code>listeners.length</code>.
+	 */
+	public synchronized void addIRCEventListener(IRCEventListener l, int i) {
+		if (l == null)
+			throw new IllegalArgumentException("Listener is null.");
+		if (i < 0 || i > listeners.length)
+			throw new IndexOutOfBoundsException("i is not in range");
+		int len = listeners.length;
+		IRCEventListener[] oldListeners = listeners;
+		listeners = new IRCEventListener[len + 1];
+		if (i > 0)
+			System.arraycopy(oldListeners, 0, listeners, 0, i);
+		if (i < listeners.length)
+			System.arraycopy(oldListeners, i, listeners, i+1, len-i);
+		listeners[i] = l;
+	}
+	
+// ------------------------------
+	
+	/** 
 	 * Removes the first occurence of the given 
 	 * {@link org.schwering.irc.lib.IRCEventListener} from the listener-vector.
 	 * @param l An instance of the 

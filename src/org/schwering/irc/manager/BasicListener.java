@@ -1,5 +1,6 @@
 package org.schwering.irc.manager;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -107,6 +108,7 @@ class BasicListener implements IRCEventListener {
 	}
 	
 	public void onReply(int num, String val, String msg) {
+		System.out.println("onReply("+num+","+val+","+msg+")");
 		if (num == IRCConstants.RPL_TOPIC) {
 			handleTopicReply(val, msg);
 		} else if (num == IRCConstants.RPL_NOTOPIC) {
@@ -116,23 +118,24 @@ class BasicListener implements IRCEventListener {
 			TopicEvent event = new TopicEvent(owner, topic);
 			owner.fireTopicReceived(event);
 			channel.fireTopicReceived(event);
-		} else if (num == IRCConstants.RPL_NAMREPLY) {
+		} else if (num == IRCConstants.RPL_NAMREPLY || num == IRCConstants.RPL_ENDOFNAMES) {
 			handleNamesReply(val, msg);
-		} else if (num == IRCConstants.RPL_WHOREPLY) {
+		} else if (num == IRCConstants.RPL_WHOREPLY || num == IRCConstants.RPL_ENDOFWHO) {
 			handleWhoReply(val, msg);
-		} else if (num == IRCConstants.RPL_WHOWASUSER) {
+		} else if (num == IRCConstants.RPL_WHOWASUSER || num == IRCConstants.RPL_ENDOFWHOWAS) {
 			// terminated by RPL_ENDOFWHOWAS
-		} else if (isReplyNumber(num)) {
+		} else if (isWhoisReplyNumber(num)) {
 			handleWhoisReply(num, val, msg);
 		} else if (num == IRCConstants.RPL_AWAY) {
 			handleAwayReply(val, msg);
 		} else if (num == IRCConstants.RPL_LIST) {
 			// terminated by RPL_ENDOFLIST
-		} else if (num == IRCConstants.RPL_BANLIST) {
+		} else if (num == IRCConstants.RPL_BANLIST || num == IRCConstants.RPL_ENDOFBANLIST) {
 			handleBanlistReply(val, msg);
-		} else if (num == IRCConstants.RPL_LINKS) {
+		} else if (num == IRCConstants.RPL_LINKS || num == IRCConstants.RPL_ENDOFLINKS) {
 			// terminated by RPL_ENDOFLINKS
-		} else if (num == IRCConstants.RPL_MOTDSTART) {
+		} else if (num == IRCConstants.RPL_MOTDSTART || num == IRCConstants.RPL_MOTD 
+				|| num == IRCConstants.RPL_ENDOFMOTD) {
 			handleMOTDReply(msg);
 		} else {
 			NumericEvent event = new NumericEvent(owner, num, val, msg); 
@@ -140,14 +143,15 @@ class BasicListener implements IRCEventListener {
 		}
 	}
 	
-	private static boolean isReplyNumber(int num) {
+	private static boolean isWhoisReplyNumber(int num) {
 		return num == IRCConstants.RPL_WHOISUSER 
 		|| num == IRCConstants.RPL_WHOISSERVER
 		|| num == IRCConstants.RPL_WHOISCHANNELS
 		|| num == IRCConstants.RPL_WHOISOPERATOR
 		|| num == IRCConstants.RPL_WHOISIDLE
 		|| num == IRCConstants.RPL_WHOISCHANNELS
-		|| num == IRCConstants.RPL_WHOISAUTHNAME;
+		|| num == IRCConstants.RPL_WHOISAUTHNAME
+		|| num == IRCConstants.RPL_ENDOFWHOIS;
 	}
 	
 	private static String skipFirstToken(String str) {
@@ -214,7 +218,7 @@ class BasicListener implements IRCEventListener {
 		};
 	}
 	
-	private Set blockedNamesChannels = new HashSet();
+	private Set blockedNamesChannels = Collections.synchronizedSet(new HashSet());
 	
 	private void handleNamesReply(String val, String msg) {
 		val = skipFirstToken(val); // skip own name
@@ -237,7 +241,6 @@ class BasicListener implements IRCEventListener {
 						handleNamesLine(names, channel, nicks);
 						return true;
 					} else if (rightChannel && event.getNumber() == IRCConstants.RPL_ENDOFNAMES) {
-						blockedNamesChannels.remove(channel);
 						return false;
 					}
 				}
@@ -245,6 +248,7 @@ class BasicListener implements IRCEventListener {
 			}
 			
 			protected void fire() {
+				blockedNamesChannels.remove(channel);
 				NamesEvent event = new NamesEvent(owner, channel, names);
 				owner.fireNamesReceived(event);
 				channel.fireNamesReceived(event);
@@ -277,7 +281,7 @@ class BasicListener implements IRCEventListener {
 		}
 	}
 	
-	private Set blockedWhoChannels = new HashSet();
+	private Set blockedWhoChannels = Collections.synchronizedSet(new HashSet());
 	
 	private void handleWhoReply(String val, String msg) {
 		val = skipFirstToken(val); // skip own name
@@ -298,7 +302,6 @@ class BasicListener implements IRCEventListener {
 						handleWhoLine(who, event.getMessage());
 						return true;
 					} else if (rightChannel && event.getNumber() == IRCConstants.RPL_ENDOFWHO) {
-						blockedWhoChannels.remove(channel);
 						return false;
 					}
 				}
@@ -306,6 +309,7 @@ class BasicListener implements IRCEventListener {
 			}
 			
 			protected void fire() {
+				blockedWhoChannels.remove(channel);
 //				WhoEvent event = new WhoEvent(owner, channel, who);
 //				owner.fireWhoReceived(event);
 //				if (owner.hasChannel(channel)) {
@@ -319,9 +323,10 @@ class BasicListener implements IRCEventListener {
 		// TODO implement, format: <channel> <user> <host> <server> <nick> <H|G>[*][@|+] :<hopcount> <real name>
 	}
 	
-	private Set blockedWhoisUsers = new HashSet();
+	private Set blockedWhoisUsers = Collections.synchronizedSet(new HashSet());
 	
 	private void handleWhoisReply(int num, String val, String msg) {
+		// TODO RPL_AWAY?
 		val = skipFirstToken(val); // skip own name
 		StringTokenizer valTok = new StringTokenizer(val);
 		String nick = valTok.nextToken();
@@ -334,19 +339,19 @@ class BasicListener implements IRCEventListener {
 		handleWhoisLine(whois, num, val, msg);
 		new NumericEventWaiter(owner) {
 			protected boolean handle(NumericEvent event) {
-				if (isReplyNumber(event.getNumber())) {
+				System.out.println("handle("+ event.getNumber()+")");
+				if (isWhoisReplyNumber(event.getNumber())) {
 					String val = skipFirstToken(event.getValue());
 					StringTokenizer valTok = new StringTokenizer(val);
 					String nick = valTok.nextToken();
 					User secondUser = owner.resolveUser(nick);
 					boolean rightUser = user.equals(secondUser);
-					if (rightUser && isReplyNumber(event.getNumber()) && event.getNumber() != IRCConstants.RPL_ENDOFWHOIS) {
+					if (rightUser && isWhoisReplyNumber(event.getNumber()) && event.getNumber() != IRCConstants.RPL_ENDOFWHOIS) {
 						handleWhoisLine(whois, event.getNumber(), val, event.getMessage());
 					} else if (rightUser && event.getNumber() == IRCConstants.RPL_AWAY) {
 						String awayMsg = event.getMessage();
 						whois.awayMessage = (awayMsg != null) ? new Message(awayMsg) : null;
 					} else if (rightUser && event.getNumber() == IRCConstants.RPL_ENDOFWHOIS) {
-						blockedWhoisUsers.remove(user);
 						return false;
 					}
 				}
@@ -354,6 +359,7 @@ class BasicListener implements IRCEventListener {
 			}
 			
 			protected void fire() {
+				blockedWhoisUsers.remove(user);
 				if (whois.username != null && whois.host != null) {
 					user.update(whois.username, whois.host);
 				}
@@ -412,7 +418,7 @@ class BasicListener implements IRCEventListener {
 		}
 	}
 	
-	private Set blockedAwayUsers = new HashSet();
+	private Set blockedAwayUsers = Collections.synchronizedSet(new HashSet());
 	
 	private void handleAwayReply(String val, String msg) {
 		String nick = skipFirstToken(val);
@@ -422,7 +428,7 @@ class BasicListener implements IRCEventListener {
 		}
 	}
 	
-	private Set blockedBanlistChannels = new HashSet();
+	private Set blockedBanlistChannels = Collections.synchronizedSet(new HashSet());
 	
 	private void handleBanlistReply(String val, String msg) {
 		val = skipFirstToken(val); // skip own name
@@ -444,7 +450,6 @@ class BasicListener implements IRCEventListener {
 					banIDs.add(event.getMessage());
 					return true;
 				} else if (rightChannel && event.getNumber() == IRCConstants.RPL_ENDOFBANLIST) {
-					blockedBanlistChannels.remove(channel);
 					return false;
 				} else {
 					return true;
@@ -452,6 +457,7 @@ class BasicListener implements IRCEventListener {
 			}
 			
 			protected void fire() {
+				blockedBanlistChannels.remove(channel);
 				BanlistEvent event = new BanlistEvent(owner, channel, banIDs);
 				channel.setBanIDs(banIDs);
 				owner.fireBanlistReceived(event);
@@ -460,7 +466,13 @@ class BasicListener implements IRCEventListener {
 		};
 	}
 	
+	private boolean blockMOTD = false;
+	
 	private void handleMOTDReply(String msg) {
+		if (blockMOTD) {
+			return;
+		}
+		blockMOTD = true;
 		final List motd = new LinkedList();
 		motd.add(msg);
 		new NumericEventWaiter(owner) {
@@ -476,6 +488,7 @@ class BasicListener implements IRCEventListener {
 			}
 			
 			protected void fire() {
+				blockMOTD = false;
 				MOTDEvent event = new MOTDEvent(owner, motd);
 				owner.fireMotdReceived(event);
 			}

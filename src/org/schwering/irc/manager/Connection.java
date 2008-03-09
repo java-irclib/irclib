@@ -6,6 +6,7 @@ import java.net.SocketException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
@@ -54,10 +55,10 @@ public class Connection {
 	private SortedMap channels = new TreeMap();
 	private boolean requestModes = true;
 	private NickGenerator nickGenerator = new DefaultNickGenerator();
-	private Collection connectionListeners = new LinkedList();
-	private Collection ctcpListeners = new LinkedList();
-	private Collection privateMessageListeners = new LinkedList();
-	private Collection unexpectedEventListeners = new LinkedList();
+	private List connectionListeners = new LinkedList();
+	private List ctcpListeners = new LinkedList();
+	private List privateMessageListeners = new LinkedList();
+	private List unexpectedEventListeners = new LinkedList();
 	
 	// TODO what about CTCP? The messages MUST be parsed in BasicListener
 	// already to fire the CTCP events, don't they?

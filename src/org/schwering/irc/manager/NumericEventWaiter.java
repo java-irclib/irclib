@@ -11,16 +11,17 @@ import org.schwering.irc.manager.event.NumericEvent;
  * @version 1.00
  */
 abstract class NumericEventWaiter extends ConnectionAdapter implements Runnable {
-	public static int MILLIS_SLEEP = 500;
-	public static int MILLIS_STEP = 50;
+	public static int MILLIS_SLEEP = 5000;
+	public static int MILLIS_STEPS = 10;
 	
 	private Connection owner;
 	private Thread thread;
 	private boolean interrupt = false;
 	private boolean sleepAgain = false;
-	private long millis = MILLIS_SLEEP;
+	private long millis = MILLIS_SLEEP / MILLIS_STEPS;
 	
 	public NumericEventWaiter(Connection owner) {
+		System.out.println("new NumericEventWaiter()");
 		this.owner = owner;
 		owner.addConnectionListener(this);
 		thread = new Thread(this);
@@ -49,18 +50,17 @@ abstract class NumericEventWaiter extends ConnectionAdapter implements Runnable 
 
 	public void run() {
 		do {
-			while (!interrupt) {
+			System.out.println("sleeping");
+			for (int i = 0; i < MILLIS_STEPS && !interrupt; i++) {
 				try {
 					Thread.sleep(millis);
 				} catch (Exception exc) {
 					exc.printStackTrace();
 				}
 			}
-		} while (getAndSetSleepAgain(false));
-		synchronized (this) {
-			owner.removeConnectionListener(this);
-			fire();
-		}
+		} while (!interrupt && getAndSetSleepAgain(false));
+		owner.removeConnectionListener(this);
+		fire();
 	}
 	
 	private synchronized boolean getAndSetSleepAgain(boolean v) {
