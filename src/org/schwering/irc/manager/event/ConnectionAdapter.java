@@ -14,13 +14,13 @@ public class ConnectionAdapter implements ConnectionListener {
 	/* (non-Javadoc)
 	 * @see org.schwering.irc.manager.event.ConnectionListener#channelJoined(org.schwering.irc.manager.event.UserParticipationEvent)
 	 */
-	public void channelJoined(UserParticipationEvent channel) {
+	public void channelJoined(UserParticipationEvent event) {
 	}
 
 	/* (non-Javadoc)
 	 * @see org.schwering.irc.manager.event.ConnectionListener#channelLeft(org.schwering.irc.manager.event.UserParticipationEvent)
 	 */
-	public void channelLeft(UserParticipationEvent channel) {
+	public void channelLeft(UserParticipationEvent event) {
 	}
 
 	/* (non-Javadoc)
@@ -135,11 +135,5 @@ public class ConnectionAdapter implements ConnectionListener {
 	 * @see org.schwering.irc.manager.event.ChannelListener#userLeft(org.schwering.irc.manager.event.UserParticipationEvent)
 	 */
 	public void userLeft(UserParticipationEvent event) {
-	}
-
-	/* (non-Javadoc)
-	 * @see org.schwering.irc.manager.event.ChannelListener#userStatusChanged(org.schwering.irc.manager.event.UserStatusEvent)
-	 */
-	public void userStatusChanged(UserStatusEvent event) {
 	}
 }

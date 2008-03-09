@@ -54,12 +54,12 @@ public interface ConnectionListener extends EventListener {
 	/**
 	 * Fired when you've joined a channel.
 	 */
-	void channelJoined(UserParticipationEvent channel);
+	void channelJoined(UserParticipationEvent event);
 
 	/**
 	 * Fired when you've left a channel, either by parting or being kicked.
 	 */
-	void channelLeft(UserParticipationEvent channel);
+	void channelLeft(UserParticipationEvent event);
 	
 	/**
 	 * Fired when someone is invited by someone else.

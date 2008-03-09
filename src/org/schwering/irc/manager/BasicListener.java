@@ -224,7 +224,8 @@ class BasicListener implements IRCEventListener {
 		}
 		blockedNamesChannels.add(channel);
 		final List names = new Vector();
-		handleNamesLine(names, channel, msg);
+		String nicks = skipFirstToken(val) + " "+ msg;
+		handleNamesLine(names, channel, nicks);
 		new NumericEventWaiter(owner) {
 			protected boolean handle(NumericEvent event) {
 				if (event.getNumber() == IRCConstants.RPL_NAMREPLY || event.getNumber() == IRCConstants.RPL_ENDOFNAMES) {
@@ -232,7 +233,8 @@ class BasicListener implements IRCEventListener {
 					Channel secondChannel = owner.resolveChannel(val);
 					boolean rightChannel = channel.isSame(secondChannel);
 					if (rightChannel && event.getNumber() == IRCConstants.RPL_NAMREPLY) {
-						handleNamesLine(names, channel, event.getMessage());
+						String nicks = skipFirstToken(val) +" "+ event.getMessage();
+						handleNamesLine(names, channel, nicks);
 						return true;
 					} else if (rightChannel && event.getNumber() == IRCConstants.RPL_ENDOFNAMES) {
 						blockedNamesChannels.remove(channel);
@@ -250,10 +252,8 @@ class BasicListener implements IRCEventListener {
 		};
 	}
 	
-	private void handleNamesLine(List names, Channel channel, String msg) {
-		StringTokenizer tok = new StringTokenizer(msg);
-		tok.nextToken(); // skip own nick
-		tok.nextToken(); // skip @, * or = (XXX meaning?)
+	private void handleNamesLine(List names, Channel channel, String nicks) {
+		StringTokenizer tok = new StringTokenizer(nicks);
 		while (tok.hasMoreTokens()) {
 			String name = tok.nextToken();
 			int status = ChannelUser.NONE;

@@ -174,61 +174,61 @@ public class Channel implements Comparable {
 		listeners.remove(listener);
 	}
 	
-	void fireUserJoined(UserParticipationEvent event) {
+	synchronized void fireUserJoined(UserParticipationEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
 			((ChannelListener)it.next()).userJoined(event);
 		}
 	}
 	
-	void fireUserLeft(UserParticipationEvent event) {
+	synchronized void fireUserLeft(UserParticipationEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
 			((ChannelListener)it.next()).userLeft(event);
 		}
 	}
 	
-	void fireUserStatusChanged(UserStatusEvent event) {
+	synchronized void fireUserStatusChanged(UserStatusEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
 			((ChannelListener)it.next()).userStatusChanged(event);
 		}
 	}
 	
-	void fireTopicReceived(TopicEvent event) {
+	synchronized void fireTopicReceived(TopicEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
 			((ChannelListener)it.next()).topicReceived(event);
 		}
 	}
 	
-	void fireChannelModeReceived(ChannelModeEvent event) {
+	synchronized void fireChannelModeReceived(ChannelModeEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
 			((ChannelListener)it.next()).channelModeReceived(event);
 		}
 	}
 	
-	void fireNickChanged(NickEvent event) {
+	synchronized void fireNickChanged(NickEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
 			((ChannelListener)it.next()).nickChanged(event);
 		}
 	}
 	
-	void fireMessageReceived(MessageEvent event) {
+	synchronized void fireMessageReceived(MessageEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
 			((ChannelListener)it.next()).messageReceived(event);
 		}
 	}
 	
-	void fireNoticeReceived(MessageEvent event) {
+	synchronized void fireNoticeReceived(MessageEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
 			((ChannelListener)it.next()).noticeReceived(event);
 		}
 	}
 	
-	void fireNamesReceived(NamesEvent event) {
+	synchronized void fireNamesReceived(NamesEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
 			((ChannelListener)it.next()).namesReceived(event);
 		}
 	}
 	
-	void fireBanlistReceived(BanlistEvent event) {
+	synchronized void fireBanlistReceived(BanlistEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
 			((ChannelListener)it.next()).banlistReceived(event);
 		}

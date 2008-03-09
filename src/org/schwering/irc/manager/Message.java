@@ -16,6 +16,10 @@ public class Message {
 		this.msg = msg;
 	}
 	
+	public boolean isEmpty() {
+		return msg != null && msg.length() > 0;
+	}
+	
 	public String getText() {
 		return msg;
 	}

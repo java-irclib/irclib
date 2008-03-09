@@ -1,11 +1,12 @@
 package org.schwering.irc.manager;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.SocketException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -229,6 +230,14 @@ public class Connection {
 	public boolean isConnected() {
 		return conn.isConnected();
 	}
+	
+	/**
+	 * Sends a line to the IRC server.
+	 * @param line The line to be sent.
+	 */
+	public void send(String line) {
+		conn.send(line);
+	}
 
 	/**
 	 * Indicates whether directly after joining a channel, the channel modes
@@ -253,7 +262,96 @@ public class Connection {
 	 * participates in.
 	 */
 	public Set getChannels() {
-		return Collections.unmodifiableSet(channels.keySet());
+		return new Set() {
+			private Set entrySet = channels.entrySet();
+
+			public boolean add(Object arg0) {
+				throw new UnsupportedOperationException();
+			}
+
+			public boolean addAll(Collection arg0) {
+				throw new UnsupportedOperationException();
+			}
+
+			public void clear() {
+				throw new UnsupportedOperationException();
+			}
+
+			public boolean contains(Object o) {
+				if (o instanceof User) {
+					return entrySet.contains(((User)o).getNick());
+				} else {
+					return false;
+				}
+			}
+
+			public boolean containsAll(Collection c) {
+				for (Iterator it = c.iterator(); it.hasNext(); ) {
+					if (!contains(it.next())) {
+						return false;
+					}
+				}
+				return true;
+			}
+
+			public boolean isEmpty() {
+				return entrySet.isEmpty();
+			}
+
+			public Iterator iterator() {
+				return new Iterator() {
+					private Iterator it = entrySet.iterator();
+
+					public boolean hasNext() {
+						return it.hasNext();
+					}
+
+					public Object next() {
+						return ((Map.Entry)it.next()).getValue();
+					}
+
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
+				};
+			}
+
+			public boolean remove(Object o) {
+				throw new UnsupportedOperationException();
+			}
+
+			public boolean removeAll(Collection arg0) {
+				throw new UnsupportedOperationException();
+			}
+
+			public boolean retainAll(Collection arg0) {
+				throw new UnsupportedOperationException();
+			}
+
+			public int size() {
+				return entrySet.size();
+			}
+
+			public Object[] toArray() {
+				Object[] arr = new Object[size()];
+				int i = 0;
+				for (Iterator it = iterator(); it.hasNext(); ) {
+					arr[i++] = it.next();
+				}
+				return arr;
+			}
+
+			public Object[] toArray(Object[] arr) {
+				if (arr.length < size()) {
+					arr = (Object[])Array.newInstance(arr[0].getClass(), size());
+				}
+				int i = 0;
+				for (Iterator it = iterator(); it.hasNext(); ) {
+					arr[i++] = it.next();
+				}
+				return arr;
+			}
+		};
 	}
 	
 	/**
@@ -384,127 +482,127 @@ public class Connection {
 		connectionListeners.remove(listener);
 	}
 	
-	void fireConnectionEstablished(ConnectionEvent event) {
+	synchronized void fireConnectionEstablished(ConnectionEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).connectionEstablished(event);
 		}
 	}
 	
-	void fireConnectionLost(ConnectionEvent event) {
+	synchronized void fireConnectionLost(ConnectionEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).connectionLost(event);
 		}
 	}
 	
-	void fireErrorReceived(ErrorEvent event) {
+	synchronized void fireErrorReceived(ErrorEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).errorReceived(event);
 		}
 	}
 	
-	void fireMotdReceived(MOTDEvent event) {
+	synchronized void fireMotdReceived(MOTDEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).motdReceived(event);
 		}
 	}
 	
-	void firePingReceived(PingEvent event) {
+	synchronized void firePingReceived(PingEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).pingReceived(event);
 		}
 	}
 	
-	void fireChannelJoined(UserParticipationEvent event) {
+	synchronized void fireChannelJoined(UserParticipationEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).channelJoined(event);
 		}
 	}
 	
-	void fireChannelLeft(UserParticipationEvent event) {
+	synchronized void fireChannelLeft(UserParticipationEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).channelLeft(event);
 		}
 	}
 	
-	void fireInvitationReceived(InvitationEvent event) {
+	synchronized void fireInvitationReceived(InvitationEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).invitationReceived(event);
 		}
 	}
 	
-	void fireNumericReplyReceived(NumericEvent event) {
+	synchronized void fireNumericReplyReceived(NumericEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).numericReplyReceived(event);
 		}
 	}
 	
-	void fireNumericErrorReceived(NumericEvent event) {
+	synchronized void fireNumericErrorReceived(NumericEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).numericErrorReceived(event);
 		}
 	}
 	
-	void fireUserModeReceived(UserModeEvent event) {
+	synchronized void fireUserModeReceived(UserModeEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).userModeReceived(event);
 		}
 	}
 	
-	void fireWhoisReceived(WhoisEvent event) {
+	synchronized void fireWhoisReceived(WhoisEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).whoisReceived(event);
 		}
 	}
 	
-	void fireUserJoined(UserParticipationEvent event) {
+	synchronized void fireUserJoined(UserParticipationEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).userJoined(event);
 		}
 	}
 	
-	void fireUserLeft(UserParticipationEvent event) {
+	synchronized void fireUserLeft(UserParticipationEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).userLeft(event);
 		}
 	}
 	
-	void fireTopicReceived(TopicEvent event) {
+	synchronized void fireTopicReceived(TopicEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).topicReceived(event);
 		}
 	}
 	
-	void fireChannelModeReceived(ChannelModeEvent event) {
+	synchronized void fireChannelModeReceived(ChannelModeEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).channelModeReceived(event);
 		}
 	}
 	
-	void fireNickChanged(NickEvent event) {
+	synchronized void fireNickChanged(NickEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).nickChanged(event);
 		}
 	}
 	
-	void fireMessageReceived(MessageEvent event) {
-		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
+	synchronized void fireMessageReceived(MessageEvent event) {
+	 	for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).messageReceived(event);
 		}
 	}
 	
-	void fireNoticeReceived(MessageEvent event) {
+	synchronized void fireNoticeReceived(MessageEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).noticeReceived(event);
 		}
 	}
 	
-	void fireNamesReceived(NamesEvent event) {
+	synchronized void fireNamesReceived(NamesEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).namesReceived(event);
 		}
 	}
 	
-	void fireBanlistReceived(BanlistEvent event) {
+	synchronized void fireBanlistReceived(BanlistEvent event) {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			((ConnectionListener)it.next()).banlistReceived(event);
 		}
@@ -512,21 +610,21 @@ public class Connection {
 	
 	/* PrivateMessageListener methods */
 	
-	public void addPrivateMessageListener(PrivateMessageListener listener) {
+	public synchronized void addPrivateMessageListener(PrivateMessageListener listener) {
 		privateMessageListeners.add(listener);
 	}
 	
-	public void removevPrivateMessageListener(PrivateMessageListener listener) {
+	public synchronized void removePrivateMessageListener(PrivateMessageListener listener) {
 		privateMessageListeners.remove(listener);
 	}
 	
-	void firePrivateMessageReceived(MessageEvent event) {
+	synchronized void firePrivateMessageReceived(MessageEvent event) {
 		for (Iterator it = privateMessageListeners.iterator(); it.hasNext(); ) {
 			((PrivateMessageListener)it.next()).messageReceived(event);
 		}
 	}
 	
-	void firePrivateNoticeReceived(MessageEvent event) {
+	synchronized void firePrivateNoticeReceived(MessageEvent event) {
 		for (Iterator it = privateMessageListeners.iterator(); it.hasNext(); ) {
 			((PrivateMessageListener)it.next()).noticeReceived(event);
 		}
@@ -534,11 +632,11 @@ public class Connection {
 	
 	/* CTCP listener methods (TODO: fireEvent() methods!) */
 	
-	public void addCTCPListener(CTCPListener listener) {
+	public synchronized void addCTCPListener(CTCPListener listener) {
 		ctcpListeners.add(listener);
 	}
 	
-	public void removeCTCPListener(CTCPListener listener) {
+	public synchronized void removeCTCPListener(CTCPListener listener) {
 		ctcpListeners.remove(listener);
 	}
 	
@@ -552,7 +650,7 @@ public class Connection {
 		unexpectedEventListeners.remove(listener);
 	}
 	
-	void fireUnexpectedEventReceived(UnexpectedEvent event) {
+	synchronized void fireUnexpectedEventReceived(UnexpectedEvent event) {
 		for (Iterator it = privateMessageListeners.iterator(); it.hasNext(); ) {
 			((UnexpectedEventListener)it.next()).unexpectedEventReceived(event);
 		}

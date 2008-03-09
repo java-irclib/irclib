@@ -28,7 +28,7 @@ public class UnexpectedEvent {
 		return event;
 	}
 	
-	public Object[] getArgument(int i) {
+	public Object[] getArguments() {
 		return args;
 	}
 }

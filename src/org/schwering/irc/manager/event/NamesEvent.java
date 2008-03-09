@@ -38,9 +38,9 @@ public class NamesEvent {
 	}
 
 	/**
-	 * Returns a list of <code>UserStatusPair</code>s.
+	 * Returns a list of <code>ChannelUser</code>s.
 	 */
-	public List getUserStatusPairs() {
+	public List getChannelUsers() {
 		return Collections.unmodifiableList(userStatusPairs);
 	}
 }
