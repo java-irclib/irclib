@@ -11,7 +11,7 @@ import org.schwering.irc.manager.event.NumericEvent;
  * @version 1.00
  */
 abstract class NumericEventWaiter extends ConnectionAdapter implements Runnable {
-	public static int MILLIS_SLEEP = 5000;
+	public static int MILLIS_SLEEP = 1000;
 	public static int MILLIS_STEPS = 10;
 	
 	private Connection owner;

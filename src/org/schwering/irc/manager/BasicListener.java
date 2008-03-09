@@ -124,8 +124,14 @@ class BasicListener implements IRCEventListener {
 			handleWhoReply(val, msg);
 		} else if (num == IRCConstants.RPL_WHOWASUSER || num == IRCConstants.RPL_ENDOFWHOWAS) {
 			// terminated by RPL_ENDOFWHOWAS
-		} else if (isWhoisReplyNumber(num)) {
-			handleWhoisReply(num, val, msg);
+		} else if (num == IRCConstants.RPL_WHOISUSER 
+				|| num == IRCConstants.RPL_WHOISSERVER
+				|| num == IRCConstants.RPL_WHOISCHANNELS
+				|| num == IRCConstants.RPL_WHOISOPERATOR
+				|| num == IRCConstants.RPL_WHOISIDLE
+				|| num == IRCConstants.RPL_WHOISAUTHNAME
+				|| num == IRCConstants.RPL_ENDOFWHOIS) {
+			whoisChain.numericReceived(num, val, msg);
 		} else if (num == IRCConstants.RPL_AWAY) {
 			handleAwayReply(val, msg);
 		} else if (num == IRCConstants.RPL_LIST) {
@@ -142,6 +148,86 @@ class BasicListener implements IRCEventListener {
 			owner.fireNumericReplyReceived(event);
 		}
 	}
+	
+	private NumericEventChain whoisChain = new NumericEventChain(owner,
+			new int[] { IRCConstants.RPL_WHOISUSER,
+					IRCConstants.RPL_WHOISSERVER,
+					IRCConstants.RPL_WHOISCHANNELS,
+					IRCConstants.RPL_WHOISOPERATOR,
+					IRCConstants.RPL_WHOISIDLE,
+					IRCConstants.RPL_WHOISAUTHNAME },
+					IRCConstants.RPL_ENDOFWHO
+			) {
+				protected Object getInitObject() {
+					return new Whois();
+				}
+
+				protected void handle(Object obj, int num, String val,
+						String msg) {
+					Whois whois = (Whois)obj;
+					val = skipFirstToken(val);
+					if (whois.user == null) {
+						String nick = getFirstToken(val);
+						whois.user = owner.resolveUser(nick);
+					}
+					val = skipFirstToken(val);
+					if (num == IRCConstants.RPL_WHOISUSER) {
+						StringTokenizer valTok = new StringTokenizer(val);
+						whois.username = valTok.nextToken();
+						whois.host = valTok.nextToken();
+						whois.realName = msg;
+					} else if (num == IRCConstants.RPL_WHOISSERVER) {
+						whois.server = val;
+						whois.serverInfo = msg;
+					} else if (num == IRCConstants.RPL_WHOISOPERATOR) {
+						whois.operator = true;
+					} else if (num == IRCConstants.RPL_WHOISIDLE) {
+						whois.idle = true;
+						StringTokenizer valTok = new StringTokenizer(val);
+						try {
+							whois.millisIdle = Long.parseLong(valTok.nextToken()) * 1000;
+						} catch (Exception exc) {
+							whois.millisIdle = -1;
+							exc.printStackTrace();
+						}
+						try {
+							whois.millisSignon = Long.parseLong(valTok.nextToken()) * 1000;
+						} catch (Exception exc) {
+							whois.millisSignon = -1;
+							exc.printStackTrace();
+						}
+					} else if (num == IRCConstants.RPL_WHOISCHANNELS) {
+						StringTokenizer msgTok = new StringTokenizer(msg);
+						while (msgTok.hasMoreTokens()) {
+							String tok = msgTok.nextToken();
+							whois.channels.add(tok);
+						}
+					} else if (num == IRCConstants.RPL_WHOISAUTHNAME) {
+						whois.authName = val;
+					}
+				}
+		
+				protected void fire(Object obj) {
+					Whois whois = (Whois)obj;
+					if (whois.username != null && whois.host != null) {
+						whois.user.update(whois.username, whois.host);
+					}
+					Date dateIdle = null;
+					if (whois.idle) {
+						whois.user.setAway(true);
+					}
+					Date dateSignon = null;
+					if (whois.millisSignon != -1) {
+						dateSignon = new Date(whois.millisSignon);
+					}
+					WhoisEvent event = new WhoisEvent(owner, whois.user, 
+							whois.realName, whois.authName, whois.server, 
+							whois.serverInfo, whois.operator, dateSignon,
+							whois.idle, whois.millisIdle, whois.awayMessage, 
+							whois.channels);
+					owner.fireWhoisReceived(event);
+				}
+	};
 	
 	private static boolean isWhoisReplyNumber(int num) {
 		return num == IRCConstants.RPL_WHOISUSER 
@@ -165,16 +251,6 @@ class BasicListener implements IRCEventListener {
 			}
 		}
 		return "";
-	}
-	
-	private static String getFirstToken(String str) {
-		str = str.trim();
-		for (int i = 0; i < str.length(); i++) {
-			if (Character.isWhitespace(str.charAt(i))) {
-				return str.substring(0, i-1);
-			}
-		}
-		return str;
 	}
 	
 	private void handleTopicReply(String val, String msg) {
@@ -337,6 +413,7 @@ class BasicListener implements IRCEventListener {
 		final Whois whois = new Whois();
 		blockedWhoisUsers.add(user);
 		handleWhoisLine(whois, num, val, msg);
+		System.out.println("handleWhoisReply("+num+", "+val+", "+msg+");");
 		new NumericEventWaiter(owner) {
 			protected boolean handle(NumericEvent event) {
 				System.out.println("handle("+ event.getNumber()+")");
@@ -363,16 +440,12 @@ class BasicListener implements IRCEventListener {
 				if (whois.username != null && whois.host != null) {
 					user.update(whois.username, whois.host);
 				}
-				Date date = null;
 				if (whois.idle) {
 					user.setAway(true);
-					if (whois.millis != -1) {
-						date = new Date(whois.millis);
-					}
 				}
 				WhoisEvent event = new WhoisEvent(owner, user, whois.realName, 
 						whois.authName, whois.server, whois.serverInfo,
-						whois.operator, whois.idle, date, whois.awayMessage,
+						whois.operator, null, whois.idle, whois.millisIdle, whois.awayMessage,
 						whois.channels);
 				owner.fireWhoisReceived(event);
 			}
@@ -380,10 +453,11 @@ class BasicListener implements IRCEventListener {
 	}
 	
 	private static class Whois {
+		User user;
 		String username, host, realName, server, serverInfo, authName;
 		boolean operator = false, idle = false;
 		Message awayMessage;
-		long millis;
+		long millisIdle, millisSignon;
 		List channels = new LinkedList();
 	}
 	
@@ -402,9 +476,9 @@ class BasicListener implements IRCEventListener {
 		} else if (num == IRCConstants.RPL_WHOISIDLE) {
 			whois.idle = true;
 			try {
-				whois.millis = Long.parseLong(val) * 1000;
+				whois.millisIdle = Long.parseLong(val) * 1000;
 			} catch (NumberFormatException exc) {
-				whois.millis = -1;
+				whois.millisIdle = -1;
 				exc.printStackTrace();
 			}
 		} else if (num == IRCConstants.RPL_WHOISCHANNELS) {
