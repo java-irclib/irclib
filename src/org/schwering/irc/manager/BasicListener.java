@@ -125,39 +125,28 @@ class BasicListener implements IRCEventListener {
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
+		try {
+			handled |= banlistChain.numericReceived(num, val, msg);
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+		try {
+			handled |= motdChain.numericReceived(num, val, msg);
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
 		
-		if (num == IRCConstants.RPL_TOPIC) {
-		} else if (num == IRCConstants.RPL_NOTOPIC) {
-			Channel channel = owner.resolveChannel(val);
-			Topic topic = new Topic(channel, null, null, null);
-			channel.setTopic(topic);
-			TopicEvent event = new TopicEvent(owner, topic);
-			owner.fireTopicReceived(event);
-			channel.fireTopicReceived(event);
-		} else if (num == IRCConstants.RPL_NAMREPLY || num == IRCConstants.RPL_ENDOFNAMES) {
-		} else if (num == IRCConstants.RPL_WHOREPLY || num == IRCConstants.RPL_ENDOFWHO) {
+		if (num == IRCConstants.RPL_WHOREPLY || num == IRCConstants.RPL_ENDOFWHO) {
 			handleWhoReply(val, msg);
 		} else if (num == IRCConstants.RPL_WHOWASUSER || num == IRCConstants.RPL_ENDOFWHOWAS) {
 			// terminated by RPL_ENDOFWHOWAS
-		} else if (num == IRCConstants.RPL_WHOISUSER 
-				|| num == IRCConstants.RPL_WHOISSERVER
-				|| num == IRCConstants.RPL_WHOISCHANNELS
-				|| num == IRCConstants.RPL_WHOISOPERATOR
-				|| num == IRCConstants.RPL_WHOISIDLE
-				|| num == IRCConstants.RPL_WHOISAUTHNAME
-				|| num == IRCConstants.RPL_ENDOFWHOIS) {
-		} else if (num == IRCConstants.RPL_AWAY) {
-			handleAwayReply(val, msg);
 		} else if (num == IRCConstants.RPL_LIST) {
 			// terminated by RPL_ENDOFLIST
-		} else if (num == IRCConstants.RPL_BANLIST || num == IRCConstants.RPL_ENDOFBANLIST) {
-			handleBanlistReply(val, msg);
 		} else if (num == IRCConstants.RPL_LINKS || num == IRCConstants.RPL_ENDOFLINKS) {
 			// terminated by RPL_ENDOFLINKS
-		} else if (num == IRCConstants.RPL_MOTDSTART || num == IRCConstants.RPL_MOTD 
-				|| num == IRCConstants.RPL_ENDOFMOTD) {
-			handleMOTDReply(msg);
-		} else {
+		}
+		
+		if (!handled) {
 			NumericEvent event = new NumericEvent(owner, num, val, msg); 
 			owner.fireNumericReplyReceived(event);
 		}
@@ -198,6 +187,34 @@ class BasicListener implements IRCEventListener {
 			TopicEvent event = new TopicEvent(owner, topic);
 			owner.fireTopicReceived(event);
 			topic.getChannel().fireTopicReceived(event);
+		}
+	};
+	
+	private NumericEventChain banlistChain = new NumericEventChain(
+			IRCConstants.RPL_BANLIST, IRCConstants.RPL_ENDOFBANLIST) {
+		class Banlist {
+			Channel channel;
+			Vector list = new Vector();
+			
+			Banlist(Channel channel) { this.channel = channel; }
+		}
+		
+		protected Object getInitObject(String id) {
+			return new Banlist(owner.resolveChannel(id));
+		}
+
+		protected void handle(Object obj, int num, String val,
+				String msg) {
+			Banlist banlist = (Banlist)obj;
+			banlist.list.add(msg);
+		}
+		
+		protected void fire(Object obj) {
+			Banlist banlist = (Banlist)obj;
+			BanlistEvent event = new BanlistEvent(owner, banlist.channel, 
+					banlist.list);
+			owner.fireBanlistReceived(event);
+			banlist.channel.fireBanlistReceived(event);
 		}
 	};
 	
@@ -344,13 +361,15 @@ class BasicListener implements IRCEventListener {
 		
 		protected String getID(int num, String val, String msg) {
 			if (num == IRCConstants.RPL_NAMREPLY) {
-				String str = skipFirstToken(val) +" "+ msg;
+				String str = val +" "+ msg;
 				StringTokenizer tokenizer = new StringTokenizer(str);
-				String first = tokenizer.nextToken();
-				if (first.equals("@") || first.equals("*") || first.equals("=")) {
-					tokenizer.nextToken();
+				tokenizer.nextToken();
+				String tok = tokenizer.nextToken();
+				if (tok.equals("@") || tok.equals("*") || tok.equals("=")) {
+					return tokenizer.nextToken();
+				} else {
+					return tok;
 				}
-				return tokenizer.nextToken();
 			} else {
 				return super.getID(num, val, msg);
 			}
@@ -361,6 +380,27 @@ class BasicListener implements IRCEventListener {
 			NamesEvent event = new NamesEvent(owner, names.channel, names.channelUsers);
 			owner.fireNamesReceived(event);
 			names.channel.fireNamesReceived(event);
+		}
+	};
+	
+	private NumericEventChain motdChain = new NumericEventChain(
+			IRCConstants.RPL_MOTDSTART,
+			new int[] { IRCConstants.RPL_MOTDSTART, IRCConstants.RPL_MOTD }, 
+			IRCConstants.RPL_ENDOFMOTD
+			) {
+		protected Object getInitObject(String id) {
+			return new LinkedList();
+		}
+
+		protected void handle(Object obj, int num, String val,
+				String msg) {
+			List motd = (List)obj;
+			motd.add(msg);
+		}
+		
+		protected void fire(Object obj) {
+			MOTDEvent event = new MOTDEvent(owner, (List)obj);
+			owner.fireMotdReceived(event);
 		}
 	};
 	
@@ -375,110 +415,6 @@ class BasicListener implements IRCEventListener {
 			}
 		}
 		return "";
-	}
-	
-	private void handleTopicReply(String val, String msg) {
-		val = skipFirstToken(val); // skip own name
-		StringTokenizer valTok = new StringTokenizer(val);
-		final Channel channel = owner.resolveChannel(valTok.nextToken());
-		final Message message = (msg == null || msg.trim().length() > 0) ? new Message(msg) : null;
-		
-		new NumericEventWaiter(owner) {
-			private User user = null;
-			private Date date = null;
-			
-			protected boolean handle(NumericEvent event) {
-				if (event.getNumber() == IRCConstants.RPL_TOPICINFO) {
-					String val = skipFirstToken(event.getValue()); // skip own name
-					StringTokenizer valTok = new StringTokenizer(val);
-					Channel secondChannel = owner.resolveChannel(valTok.nextToken());
-					if (secondChannel.isSame(channel)) {
-						user = owner.resolveUser(valTok.nextToken());
-						try {
-							String seconds = event.getMessage();
-							long millis = Long.parseLong(seconds) * 1000;
-							date = new Date(millis);
-						} catch (Exception exc) {
-							date = null;
-						}
-					}
-					return false;
-				} else {
-					return true;
-				}
-			}
-			
-			protected void fire() {
-				Topic topic = new Topic(channel, message, user, date);
-				channel.setTopic(topic);
-				TopicEvent event = new TopicEvent(owner, topic);
-				owner.fireTopicReceived(event);
-				channel.fireTopicReceived(event);
-			}
-		};
-	}
-	
-	private Set blockedNamesChannels = Collections.synchronizedSet(new HashSet());
-	
-	private void handleNamesReply(String val, String msg) {
-		val = skipFirstToken(val); // skip own name
-		final Channel channel = owner.resolveChannel(val);
-		if (blockedNamesChannels.contains(channel)) {
-			return;
-		}
-		blockedNamesChannels.add(channel);
-		final List names = new Vector();
-		String nicks = skipFirstToken(val) + " "+ msg;
-		handleNamesLine(names, channel, nicks);
-		new NumericEventWaiter(owner) {
-			protected boolean handle(NumericEvent event) {
-				if (event.getNumber() == IRCConstants.RPL_NAMREPLY || event.getNumber() == IRCConstants.RPL_ENDOFNAMES) {
-					String val = skipFirstToken(event.getValue()); // skip own name
-					Channel secondChannel = owner.resolveChannel(val);
-					boolean rightChannel = channel.isSame(secondChannel);
-					if (rightChannel && event.getNumber() == IRCConstants.RPL_NAMREPLY) {
-						String nicks = skipFirstToken(val) +" "+ event.getMessage();
-						handleNamesLine(names, channel, nicks);
-						return true;
-					} else if (rightChannel && event.getNumber() == IRCConstants.RPL_ENDOFNAMES) {
-						return false;
-					}
-				}
-				return true;
-			}
-			
-			protected void fire() {
-				blockedNamesChannels.remove(channel);
-				NamesEvent event = new NamesEvent(owner, channel, names);
-				owner.fireNamesReceived(event);
-				channel.fireNamesReceived(event);
-			}
-		};
-	}
-	
-	private void handleNamesLine(List names, Channel channel, String nicks) {
-		StringTokenizer tok = new StringTokenizer(nicks);
-		while (tok.hasMoreTokens()) {
-			String name = tok.nextToken();
-			int status = ChannelUser.NONE;
-			if (name.charAt(0) == '@') {
-				status = ChannelUser.OPERATOR;
-				name = name.substring(1);
-			} else if (name.charAt(0) == '+') {
-				status = ChannelUser.VOICED;
-				name = name.substring(1);
-			}
-			User user = owner.resolveUser(name);
-			ChannelUser chanUser = new ChannelUser(channel, user, status);
-			names.add(chanUser);
-			ChannelUser origChanUser = channel.getUser(chanUser);
-			if (origChanUser != null
-					&& origChanUser.getStatus() != chanUser.getStatus()) {
-				UserStatusEvent event = new UserStatusEvent(owner, channel, 
-						chanUser);
-				channel.fireUserStatusChanged(event);
-			}
-		}
 	}
 	
 	private Set blockedWhoChannels = Collections.synchronizedSet(new HashSet());
@@ -523,83 +459,6 @@ class BasicListener implements IRCEventListener {
 		// TODO implement, format: <channel> <user> <host> <server> <nick> <H|G>[*][@|+] :<hopcount> <real name>
 	}
 	
-	private Set blockedAwayUsers = Collections.synchronizedSet(new HashSet());
-	
-	private void handleAwayReply(String val, String msg) {
-		String nick = skipFirstToken(val);
-		User user = owner.resolveUser(nick);
-		if (blockedAwayUsers.contains(user)) { // blocked by WHOIS handler
-			return;
-		}
-	}
-	
-	private Set blockedBanlistChannels = Collections.synchronizedSet(new HashSet());
-	
-	private void handleBanlistReply(String val, String msg) {
-		val = skipFirstToken(val); // skip own name
-		StringTokenizer valTok = new StringTokenizer(val);
-		final Channel channel = owner.resolveChannel(valTok.nextToken());
-		if (blockedBanlistChannels.contains(channel)) {
-			return;
-		}
-		blockedBanlistChannels.add(channel);
-		final List banIDs = new Vector();
-		banIDs.add(msg);
-		new NumericEventWaiter(owner) {
-			protected boolean handle(NumericEvent event) {
-				String val = skipFirstToken(event.getValue()); // skip own name
-				StringTokenizer valTok = new StringTokenizer(val);
-				Channel secondChannel = owner.resolveChannel(valTok.nextToken());
-				boolean rightChannel = channel.isSame(secondChannel);
-				if (rightChannel && event.getNumber() == IRCConstants.RPL_BANLIST) {
-					banIDs.add(event.getMessage());
-					return true;
-				} else if (rightChannel && event.getNumber() == IRCConstants.RPL_ENDOFBANLIST) {
-					return false;
-				} else {
-					return true;
-				}
-			}
-			
-			protected void fire() {
-				blockedBanlistChannels.remove(channel);
-				BanlistEvent event = new BanlistEvent(owner, channel, banIDs);
-				channel.setBanIDs(banIDs);
-				owner.fireBanlistReceived(event);
-				channel.fireBanlistReceived(event);
-			}
-		};
-	}
-	
-	private boolean blockMOTD = false;
-	
-	private void handleMOTDReply(String msg) {
-		if (blockMOTD) {
-			return;
-		}
-		blockMOTD = true;
-		final List motd = new LinkedList();
-		motd.add(msg);
-		new NumericEventWaiter(owner) {
-			protected boolean handle(NumericEvent event) {
-				if (event.getNumber() == IRCConstants.RPL_MOTD) {
-					motd.add(event.getMessage());
-					return true;
-				} else if (event.getNumber() == IRCConstants.RPL_ENDOFMOTD) {
-					return false;
-				} else {
-					return true;
-				}
-			}
-			
-			protected void fire() {
-				blockMOTD = false;
-				MOTDEvent event = new MOTDEvent(owner, motd);
-				owner.fireMotdReceived(event);
-			}
-		};
-	}
-
 	public void onNick(IRCUser ircUser, String newNick) {
 		User user = owner.resolveUser(ircUser);
 		String oldNick = user.getNick();

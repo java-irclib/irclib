@@ -4,6 +4,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Provides a mechanism to create a buffer in an IRC event handler that
+ * collects subsequent IRC events and then firesa manager event. 
+ * @author Christoph Schwering &lt;schwering@gmail.com&gt;
+ * @since 2.00
+ * @version 1.00
+ */
 public abstract class NumericEventChain {
 	private int[] starterNums;
 	private int[] bodyNums;
@@ -39,6 +46,7 @@ public abstract class NumericEventChain {
 			String id = getID(num, val, msg);
 			Container container;
 			if (contains(starterNums, num) && !map.containsKey(id)) {
+				System.out.println("ID('"+val+"') = '"+ id +"'");
 				container = new Container(id, getInitObject(id));
 				map.put(id, container);
 				retval = true;
@@ -51,6 +59,9 @@ public abstract class NumericEventChain {
 				container.interrupt();
 				tryFire(container.getObject());
 				retval = true;
+			}
+			if (retval) {
+				millis--;
 			}
 			return retval;
 		}
@@ -70,15 +81,35 @@ public abstract class NumericEventChain {
 	
 	protected abstract void fire(Object obj);
 	
+	/**
+	 * Returns the second token of val+msg in lower case. It's converted
+	 * to lower case, because servers tend to a WHOIS q with replies 
+	 * with 'Q' and a final RPL_ENDOFWHOIS with 'q'. A cleaner way would be
+	 * to tell the list to apply equalsIgnoreCase() instead of equals(), but
+	 * that's not possible (in a straghtforward way).
+	 */
 	protected String getID(int num, String val, String msg) {
-		return getFirstToken(getFirstToken(val));
+		return getFirstToken(skipFirstToken(val)).toLowerCase();
+	}
+	
+	private static String skipFirstToken(String str) {
+		str = str.trim();
+		boolean found = false;
+		for (int i = 0; i < str.length(); i++) {
+			if (!found && Character.isWhitespace(str.charAt(i))) {
+				found = true;
+			} else if (found && !Character.isWhitespace(str.charAt(i))) {
+				return str.substring(i);
+			}
+		}
+		return "";
 	}
 	
 	protected static String getFirstToken(String str) {
 		str = str.trim();
 		for (int i = 0; i < str.length(); i++) {
 			if (Character.isWhitespace(str.charAt(i))) {
-				return str.substring(0, i-1);
+				return str.substring(0, i);
 			}
 		}
 		return str;
@@ -108,11 +139,16 @@ public abstract class NumericEventChain {
 		}
 		
 		public void run() {
-			try {
-				Thread.sleep(millis);
-			} catch (Exception exc) {
-				exc.printStackTrace();
-			}
+			long m;
+			do {
+				m = millis;
+				try {
+					Thread.sleep(millis);
+				} catch (InterruptedException exc) {
+				} catch (Exception exc) {
+					exc.printStackTrace();
+				}
+			} while (millis != m);
 			System.out.println("expired, firing");
 			map.remove(id);
 			tryFire(getObject());

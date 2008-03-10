@@ -157,7 +157,11 @@ public class Channel implements Comparable {
 	}
 	
 	public boolean equals(Object obj) {
-		return name.equalsIgnoreCase(((Channel)obj).name);
+		if (obj instanceof Channel) {
+			return name.equalsIgnoreCase(((Channel)obj).name);
+		} else {
+			return false;
+		}
 	}
 
 	public String toString() {

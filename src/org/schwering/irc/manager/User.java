@@ -110,7 +110,11 @@ public class User implements Comparable {
 	}
 	
 	public boolean equals(Object obj) {
-		return nickname.equalsIgnoreCase(((User)obj).nickname);
+		if (obj instanceof User) {
+			return nickname.equalsIgnoreCase(((User)obj).nickname);
+		} else {
+			return false;
+		}
 	}
 
 	public int hashCode() {
