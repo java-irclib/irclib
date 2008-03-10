@@ -12,18 +12,22 @@ import java.util.Date;
  */
 public class Topic {
 	private Channel channel;
-	private Message topic;
+	private Message message;
 	private User user;
 	private Date date;
 	
-	Topic(Channel channel, Message topic) {
+	Topic(Channel channel) {
 		this.channel = channel;
-		this.topic = topic;
 	}
 	
-	Topic(Channel channel, Message topic, User user, Date date) {
+	Topic(Channel channel, Message topic) {
 		this.channel = channel;
-		this.topic = topic;
+		this.message = topic;
+	}
+	
+	Topic(Channel channel, Message message, User user, Date date) {
+		this.channel = channel;
+		this.message = message;
 		this.user = user;
 		this.date = date;
 	}
@@ -35,12 +39,16 @@ public class Topic {
 		return channel;
 	}
 	
+	void setMessage(Message message) {
+		this.message = message;
+	}
+	
 	/**
 	 * Returns the topic message itself or <code>null</code>. The latter
 	 * is the case if no topic is set.
 	 */
-	public Message getTopic() {
-		return topic;
+	public Message getMessage() {
+		return message;
 	}
 	
 	void setUser(User user) {

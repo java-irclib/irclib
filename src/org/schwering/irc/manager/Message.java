@@ -17,7 +17,7 @@ public class Message {
 	}
 	
 	public boolean isEmpty() {
-		return msg != null && msg.length() > 0;
+		return msg == null || msg.length() == 0;
 	}
 	
 	public String getText() {

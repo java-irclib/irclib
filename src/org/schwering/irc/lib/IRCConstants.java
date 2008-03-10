@@ -672,7 +672,9 @@ public interface IRCConstants {
 	
 	/**
 	 * Format: "&lt;channel&gt; [[@|+]&lt;nick&gt; [[@|+]&lt;nick&gt; 
-	 * [...]]]". <br />
+	 * [...]]]" (RFC 1459) or 
+	 * "( "=" / "*" / "@" ) &lt;channel&gt; :[ "@" / "+" ] &lt;nick&gt;
+	 * *( " " [ "@" / "+" ] &lt;nick&gt; )" (RFC2812). <br />
 	 * To reply to a NAMES message, a reply pair consisting
 	 * of RPL_NAMREPLY and RPL_ENDOFNAMES is sent by the
 	 * server back to the client.  If there is no channel
