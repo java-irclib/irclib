@@ -249,7 +249,8 @@ class BasicListener implements IRCEventListener {
 			list.visibleCount.add(new Integer(visibleCount));
 			if (topicMsg != null && (channel.getTopic() == null 
 					|| channel.getTopic().getMessage() == null 
-					|| channel.getTopic().getMessage().equals(topicMsg))) {
+					|| !channel.getTopic().getMessage().equals(topicMsg))) {
+				channel.setTopic(topic);
 				TopicEvent event = new TopicEvent(owner, topic);
 				owner.fireTopicReceived(event);
 				channel.fireTopicReceived(event);

@@ -27,7 +27,7 @@ public class WhowasEvent {
 	}
 
 	/**
-	 * Returns a user with initialized nickname, username and server.
+	 * Returns a user with initialized nickname, username and host.
 	 */
 	public User getUser() {
 		return user;
