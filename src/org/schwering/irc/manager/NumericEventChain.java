@@ -1,6 +1,5 @@
 package org.schwering.irc.manager;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,11 +60,13 @@ public abstract class NumericEventChain {
 			}
 			if (finalNum == num && (container = (Container)map.remove(id)) != null) {
 				container.interrupt();
+				System.out.println("firing");
 				tryFire(container.getObject());
+				System.out.println("fired");
 				retval = true;
 			}
 			if (retval) {
-				millis--;
+				millis++;
 			}
 			return retval;
 		}
@@ -135,6 +136,8 @@ public abstract class NumericEventChain {
 		public Container(String id, Object obj) {
 			this.id = id;
 			this.obj = obj;
+			setPriority(Thread.MIN_PRIORITY);
+			setName("NumericEventChainContainer"+starterNums[0]);
 			start();
 		}
 		
@@ -160,6 +163,7 @@ public abstract class NumericEventChain {
 					tryFire(getObject());
 				}
 			}
+			System.out.println("expired, fired "+this);
 		}
 	}
 }

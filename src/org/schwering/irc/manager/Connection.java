@@ -85,7 +85,7 @@ public class Connection {
 					username, realname);
 		}
 		conn.setPong(true);
-		conn.setColors(false);
+		conn.setColors(true);
 		conn.addIRCEventListener(new BasicListener(this));
 	}
 
@@ -106,7 +106,7 @@ public class Connection {
 					realname);
 		}
 		conn.setPong(true);
-		conn.setColors(false);
+		conn.setColors(true);
 		conn.addIRCEventListener(new BasicListener(this));
 	}
 	

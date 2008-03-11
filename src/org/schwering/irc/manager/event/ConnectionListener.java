@@ -145,9 +145,9 @@ public interface ConnectionListener extends EventListener {
 	
 	/**
 	 * Fired when a LIST response was received.
-	 * If this reply reveals that a topic of a channel is unknown or has changed
-	 * unnoticed, a <code>topicReceived</code> of this listener and
-	 * <code>ChannelListener</code>s are fired.
+	 * Note that the response is not further processed, i.e. though the
+	 * response contains topics, no <code>topicReceived</code> events
+	 * are fired.
 	 */
 	void listReceived(ListEvent event);
 

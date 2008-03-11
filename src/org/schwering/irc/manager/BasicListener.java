@@ -1,12 +1,9 @@
 package org.schwering.irc.manager;
 
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -220,8 +217,8 @@ class BasicListener implements IRCEventListener {
 			IRCConstants.RPL_LIST,
 			IRCConstants.RPL_LISTEND) {
 		class TopicList {
-			List topics = new Vector();
-			List visibleCount = new Vector();
+			List topics = new LinkedList();
+			List visibleCount = new LinkedList();
 		}
 		
 		protected Object getInitObject(String id) {
@@ -243,18 +240,10 @@ class BasicListener implements IRCEventListener {
 			} catch (Exception exc) {
 				visibleCount = -1;
 			}
-			Message topicMsg = (topicStr != null) ? new Message(topicStr) : null;
+			Message topicMsg = (topicStr != null && topicStr.length() > 0) ? new Message(topicStr) : null;
 			Topic topic = new Topic(channel, topicMsg);
 			list.topics.add(topic);
 			list.visibleCount.add(new Integer(visibleCount));
-			if (topicMsg != null && (channel.getTopic() == null 
-					|| channel.getTopic().getMessage() == null 
-					|| !channel.getTopic().getMessage().equals(topicMsg))) {
-				channel.setTopic(topic);
-				TopicEvent event = new TopicEvent(owner, topic);
-				owner.fireTopicReceived(event);
-				channel.fireTopicReceived(event);
-			}
 		}
 		
 		protected void fire(Object obj) {
@@ -294,6 +283,8 @@ class BasicListener implements IRCEventListener {
 			Date date;
 			try {
 				StringTokenizer tokenizer = new StringTokenizer(val);
+				tokenizer.nextToken();
+				tokenizer.nextToken();
 				id = tokenizer.nextToken();
 				String nick = tokenizer.nextToken();
 				if (!nick.equals("*")) {
@@ -427,10 +418,12 @@ class BasicListener implements IRCEventListener {
 		class Whowas {
 			User user;
 			String realName;
+			
+			Whowas(String id) { user = owner.resolveUser(id); }
 		}
 		
 		protected Object getInitObject(String id) {
-			return new Whowas();
+			return new Whowas(id);
 		}
 
 		protected void handle(Object obj, int num, String val,
@@ -438,14 +431,12 @@ class BasicListener implements IRCEventListener {
 			Whowas whowas = (Whowas)obj;
 			StringTokenizer tokenizer = new StringTokenizer(val);
 			tokenizer.nextToken();
-			String nick = tokenizer.nextToken();
+			tokenizer.nextToken();
 			String userName = tokenizer.nextToken();
 			String host = tokenizer.nextToken();
 			
-			User user = owner.resolveUser(nick);
-			user.setUsername(userName);
-			user.setHost(host);
-			whowas.user = user;
+			whowas.user.setUsername(userName);
+			whowas.user.setHost(host);
 			whowas.realName = msg;
 		}
 
@@ -551,18 +542,15 @@ class BasicListener implements IRCEventListener {
 		protected void handle(Object obj, int num, String val,
 				String msg) {
 			Who who = (Who)obj;
-			String str = skipFirstToken(val);
-			StringTokenizer tokenizer = new StringTokenizer(str);
-			String first = tokenizer.nextToken();
-			if (first.equals("@") || first.equals("*") || first.equals("=")) {
-				tokenizer.nextToken();
-			}
+			StringTokenizer tokenizer = new StringTokenizer(val);
+			tokenizer.nextToken();
 			tokenizer.nextToken(); // skip channel name
+			String userName = tokenizer.nextToken();
 			String host = tokenizer.nextToken();
 			String server = tokenizer.nextToken();
 			String nick = tokenizer.nextToken();
 			String info = tokenizer.nextToken();
-			String hopcountStr = tokenizer.nextToken();
+			String hopcount = tokenizer.nextToken();
 			String realName = msg;
 			
 			boolean away = info.charAt(0) == 'G';
@@ -573,14 +561,9 @@ class BasicListener implements IRCEventListener {
 			} else if (c == '+') {
 				status = ChannelUser.VOICED;
 			}
-			int hopcount;
-			try {
-				hopcount = Integer.parseInt(hopcountStr);
-			} catch (Exception exc) {
-				hopcount = -1;
-			}
 
 			User user = owner.resolveUser(nick);
+			user.setUsername(userName);
 			user.setHost(host);
 			ChannelUser chanUser = who.channel.getUser(user);
 			if (chanUser == null) {
@@ -595,7 +578,7 @@ class BasicListener implements IRCEventListener {
 			who.channelUsers.add(chanUser);
 			who.realNames.add(realName);
 			who.servers.add(server);
-			who.hopcounts.add(new Integer(hopcount));
+			who.hopcounts.add(hopcount);
 		}
 		
 		protected String getID(int num, String val, String msg) {
@@ -649,7 +632,7 @@ class BasicListener implements IRCEventListener {
 	};
 	
 	private NumericEventChain infoChain = new NumericEventChain(
-			IRCConstants.RPL_INFOSTART,
+			new int[] { IRCConstants.RPL_INFOSTART, IRCConstants.RPL_INFO, IRCConstants.RPL_ENDOFINFO },
 			IRCConstants.RPL_INFO,
 			IRCConstants.RPL_ENDOFINFO
 			) {
@@ -698,16 +681,11 @@ class BasicListener implements IRCEventListener {
 			tokenizer.nextToken();
 			tokenizer.nextToken();
 			String server = tokenizer.nextToken();
-			int hopCount;
-			try {
-				hopCount = Integer.parseInt(tokenizer.nextToken());
-			} catch (Exception exc) {
-				hopCount = -1;
-			}
+			String hopCount = tokenizer.nextToken();
 			String info = skipFirstToken(msg);
 			links.servers.add(server);
 			links.serverInfos.add(info);
-			links.hopCounts.add(new Integer(hopCount));
+			links.hopCounts.add(hopCount);
 		}
 		
 		protected void fire(Object obj) {
@@ -755,48 +733,6 @@ class BasicListener implements IRCEventListener {
 			}
 		}
 		return "";
-	}
-	
-	private Set blockedWhoChannels = Collections.synchronizedSet(new HashSet());
-	
-	private void handleWhoReply(String val, String msg) {
-		val = skipFirstToken(val); // skip own name
-		final Channel channel = owner.resolveChannel(val);
-		if (blockedWhoChannels.contains(channel)) {
-			return;
-		}
-		blockedWhoChannels.add(channel);
-		final List who = new Vector();
-		handleWhoLine(who, msg);
-		new NumericEventWaiter(owner) {
-			protected boolean handle(NumericEvent event) {
-				if (event.getNumber() == IRCConstants.RPL_WHOREPLY || event.getNumber() == IRCConstants.RPL_ENDOFWHO) {
-					String val = skipFirstToken(event.getValue()); // skip own name
-					Channel secondChannel = owner.resolveChannel(val);
-					boolean rightChannel = channel.isSame(secondChannel);
-					if (rightChannel && event.getNumber() == IRCConstants.RPL_WHOREPLY) {
-						handleWhoLine(who, event.getMessage());
-						return true;
-					} else if (rightChannel && event.getNumber() == IRCConstants.RPL_ENDOFWHO) {
-						return false;
-					}
-				}
-				return true;
-			}
-			
-			protected void fire() {
-				blockedWhoChannels.remove(channel);
-//				WhoEvent event = new WhoEvent(owner, channel, who);
-//				owner.fireWhoReceived(event);
-//				if (owner.hasChannel(channel)) {
-//					channel.fireWhoReceived(event);
-//				}
-			}
-		};
-	}
-	
-	private void handleWhoLine(List who, String msg) {
-		// TODO implement, format: <channel> <user> <host> <server> <nick> <H|G>[*][@|+] :<hopcount> <real name>
 	}
 	
 	public void onNick(IRCUser ircUser, String newNick) {

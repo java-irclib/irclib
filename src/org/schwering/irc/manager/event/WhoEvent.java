@@ -81,7 +81,7 @@ public class WhoEvent {
 		return (String)realNames.get(i);
 	}
 	
-	public int getHopCount(int i) {
-		return ((Integer)hopCounts.get(i)).intValue();
+	public String getHopCount(int i) {
+		return (String)hopCounts.get(i);
 	}
 }
