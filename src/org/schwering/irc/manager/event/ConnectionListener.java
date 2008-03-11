@@ -42,7 +42,17 @@ public interface ConnectionListener extends EventListener {
 	/**
 	 * Fired when the MOTD was received completely.
 	 */
-	void motdReceived(MOTDEvent event);
+	void motdReceived(MotdEvent event);
+	
+	/**
+	 * Fired when an INFO response was received completely.
+	 */
+	void infoReceived(InfoEvent event);
+	
+	/**
+	 * Fired when an LINKS response was received completely.
+	 */
+	void linksReceived(LinksEvent event);
 
 	/**
 	 * Fired when the server asked for a ping pong.
@@ -102,6 +112,11 @@ public interface ConnectionListener extends EventListener {
 	 */
 	void whoisReceived(WhoisEvent event);
 	
+	/**
+	 * Fired when a WHOWAS of a not-present user was received.
+	 */
+	void whowasReceived(WhowasEvent event);
+	
 	/* Redundant events (with ChannelListener) */
 	
 	/**
@@ -127,6 +142,14 @@ public interface ConnectionListener extends EventListener {
 	 * @see ChannelListener#topicReceived(TopicEvent)
 	 */
 	void topicReceived(TopicEvent event);
+	
+	/**
+	 * Fired when a LIST response was received.
+	 * If this reply reveals that a topic of a channel is unknown or has changed
+	 * unnoticed, a <code>topicReceived</code> of this listener and
+	 * <code>ChannelListener</code>s are fired.
+	 */
+	void listReceived(ListEvent event);
 
 	/**
 	 * Fired when a known user changed his nickname.
@@ -167,6 +190,12 @@ public interface ConnectionListener extends EventListener {
  	 * @see ChannelListener#namesReceived(NamesEvent)
 	 */
 	void namesReceived(NamesEvent event);
+	
+	/**
+	 * Fired when a WHO list of any channel was received.
+	 * @see ChannelListener#whoReceived(WhoEvent)
+	 */
+	void whoReceived(WhoEvent event);
 	
 	/**
 	 * Fired when a banlist of any channel is received.

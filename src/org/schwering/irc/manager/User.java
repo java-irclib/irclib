@@ -62,11 +62,6 @@ public class User implements Comparable {
 		host = user.getHost();
 	}
 	
-	void update(String username, String host) {
-		this.username = username;
-		this.host = host;
-	}
-	
 	void setNick(String newNick) {
 		this.nickname = newNick;
 	}
@@ -75,8 +70,16 @@ public class User implements Comparable {
 		return nickname;
 	}
 	
+	void setHost(String host) {
+		this.host = host;
+	}
+	
 	public String getHost() {
 		return host;
+	}
+	
+	void setUsername(String username) {
+		this.username = username;
 	}
 	
 	public String getUsername() {

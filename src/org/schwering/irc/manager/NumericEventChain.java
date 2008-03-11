@@ -15,7 +15,7 @@ public abstract class NumericEventChain {
 	private int[] starterNums;
 	private int[] bodyNums;
 	private int finalNum;
-	private Map map = Collections.synchronizedMap(new HashMap());
+	private Map map = new HashMap();
 	private long millis = 1500;
 	
 	public NumericEventChain(int bodyNum, int finalNum) {
@@ -28,6 +28,10 @@ public abstract class NumericEventChain {
 	
 	public NumericEventChain(int starterNum, int bodyNum, int finalNum) {
 		this(new int[] { starterNum }, new int[] { bodyNum }, finalNum);
+	}
+	
+	public NumericEventChain(int[] starterNums, int bodyNum, int finalNum) {
+		this(starterNums, new int[] { bodyNum }, finalNum);
 	}
 	
 	public NumericEventChain(int starterNum, int[] bodyNums, int finalNum) {
@@ -149,9 +153,13 @@ public abstract class NumericEventChain {
 					exc.printStackTrace();
 				}
 			} while (millis != m);
-			System.out.println("expired, firing");
-			map.remove(id);
-			tryFire(getObject());
+			System.out.println("expired, firing? "+this);
+			synchronized (map) {
+				if (map.remove(id) != null) {
+					System.out.println("expired, firing! "+this);
+					tryFire(getObject());
+				}
+			}
 		}
 	}
 }

@@ -50,7 +50,21 @@ public class ConnectionAdapter implements ConnectionListener {
 	/* (non-Javadoc)
 	 * @see org.schwering.irc.manager.event.ConnectionListener#motdReceived(org.schwering.irc.manager.event.MOTDEvent)
 	 */
-	public void motdReceived(MOTDEvent event) {
+	public void motdReceived(MotdEvent event) {
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.schwering.irc.manager.event.ConnectionListener#infoReceived(org.schwering.irc.manager.event.InfoEvent)
+	 */
+	public void infoReceived(InfoEvent event) {
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.schwering.irc.manager.event.ConnectionListener#linksReceived(LinksEvent)
+	 */
+	public void linksReceived(LinksEvent event) {
 	}
 
 	/* (non-Javadoc)
@@ -82,6 +96,13 @@ public class ConnectionAdapter implements ConnectionListener {
 	 */
 	public void whoisReceived(WhoisEvent event) {
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.schwering.irc.manager.event.ConnectionListener#whowasReceived(org.schwering.irc.manager.event.WhowasEvent)
+	 */
+	public void whowasReceived(WhowasEvent event) {
+	}
 
 	/* (non-Javadoc)
 	 * @see org.schwering.irc.manager.event.ChannelListener#banlistReceived(org.schwering.irc.manager.event.BanlistEvent)
@@ -106,6 +127,13 @@ public class ConnectionAdapter implements ConnectionListener {
 	 */
 	public void namesReceived(NamesEvent event) {
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.schwering.irc.manager.event.ConnectionListener#whoReceived(org.schwering.irc.manager.event.WhoEvent)
+	 */
+	public void whoReceived(WhoEvent event) {
+	}
 
 	/* (non-Javadoc)
 	 * @see org.schwering.irc.manager.event.ChannelListener#nickChanged(org.schwering.irc.manager.event.NickEvent)
@@ -123,6 +151,13 @@ public class ConnectionAdapter implements ConnectionListener {
 	 * @see org.schwering.irc.manager.event.ChannelListener#topicReceived(org.schwering.irc.manager.event.TopicEvent)
 	 */
 	public void topicReceived(TopicEvent event) {
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.schwering.irc.manager.event.ConnectionListener#listReceived(org.schwering.irc.manager.event.ListEvent)
+	 */
+	public void listReceived(ListEvent event) {
 	}
 
 	/* (non-Javadoc)

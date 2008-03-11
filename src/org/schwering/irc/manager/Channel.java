@@ -18,6 +18,7 @@ import org.schwering.irc.manager.event.NickEvent;
 import org.schwering.irc.manager.event.TopicEvent;
 import org.schwering.irc.manager.event.UserParticipationEvent;
 import org.schwering.irc.manager.event.UserStatusEvent;
+import org.schwering.irc.manager.event.WhoEvent;
 
 /**
  * Represents an IRC channel. This object manages a list of users in the
@@ -33,7 +34,7 @@ public class Channel implements Comparable {
 	private List banIDs;
 	private Collection listeners = new LinkedList();
 	
-	// TODO administer modes (and banlist) of users in channel
+	// TODO administer channel modes 
 	
 	public Channel(String name) {
 		if (name == null) {
@@ -180,61 +181,119 @@ public class Channel implements Comparable {
 	
 	synchronized void fireUserJoined(UserParticipationEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).userJoined(event);
+			try {
+				((ChannelListener)it.next()).userJoined(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
 		}
 	}
 	
 	synchronized void fireUserLeft(UserParticipationEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).userLeft(event);
+			try {
+				((ChannelListener)it.next()).userLeft(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
 		}
 	}
 	
 	synchronized void fireUserStatusChanged(UserStatusEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).userStatusChanged(event);
+			try {
+				((ChannelListener)it.next()).userStatusChanged(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
 		}
 	}
 	
 	synchronized void fireTopicReceived(TopicEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).topicReceived(event);
+			try {
+				((ChannelListener)it.next()).topicReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
 		}
 	}
 	
 	synchronized void fireChannelModeReceived(ChannelModeEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).channelModeReceived(event);
+			try {
+				((ChannelListener)it.next()).channelModeReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
 		}
 	}
 	
 	synchronized void fireNickChanged(NickEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).nickChanged(event);
+			try {
+				((ChannelListener)it.next()).nickChanged(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
 		}
 	}
 	
 	synchronized void fireMessageReceived(MessageEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).messageReceived(event);
+			try {
+				((ChannelListener)it.next()).messageReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
 		}
 	}
 	
 	synchronized void fireNoticeReceived(MessageEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).noticeReceived(event);
+			try {
+				((ChannelListener)it.next()).noticeReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
 		}
 	}
 	
 	synchronized void fireNamesReceived(NamesEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).namesReceived(event);
+			try {
+				((ChannelListener)it.next()).namesReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireWhoReceived(WhoEvent event) {
+		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
+			try {
+				((ChannelListener)it.next()).whoReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
 		}
 	}
 	
 	synchronized void fireBanlistReceived(BanlistEvent event) {
 		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
-			((ChannelListener)it.next()).banlistReceived(event);
+			try {
+				((ChannelListener)it.next()).banlistReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
 		}
+	}
+	
+	/**
+	 * Called by the fire-methods when the handler method of a listener 
+	 * throws an exception.
+	 */
+	private void handleException(Exception exc) {
+		exc.printStackTrace();
 	}
 }

@@ -75,6 +75,11 @@ public interface ChannelListener extends EventListener {
 	void namesReceived(NamesEvent event);
 	
 	/**
+	 * Fired when a WHO list of the channel was received.
+	 */
+	void whoReceived(WhoEvent event);
+	
+	/**
 	 * Fired when the banlist is received.
 	 */
 	void banlistReceived(BanlistEvent event);

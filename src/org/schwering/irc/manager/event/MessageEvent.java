@@ -12,8 +12,11 @@ import org.schwering.irc.manager.User;
  * @since 2.00
  * @version 1.00
  * @see ConnectionListener#messageReceived(MessageEvent)
+ * @see ConnectionListener#noticeReceived(MessageEvent)
  * @see ChannelListener#messageReceived(MessageEvent)
+ * @see ChannelListener#noticeReceived(MessageEvent)
  * @see PrivateMessageListener#messageReceived(MessageEvent)
+ * @see PrivateMessageListener#noticeReceived(MessageEvent)
  */
 public class MessageEvent {
 	private Connection connection;

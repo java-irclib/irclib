@@ -36,6 +36,10 @@ public class ChannelModeEvent {
 		return channel;
 	}
 	
+	/**
+	 * The user who set the modes. <code>null</code> if it's the channel
+	 * modes returned when joining.
+	 */
 	public User getUser() {
 		return user;
 	}

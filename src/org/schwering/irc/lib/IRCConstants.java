@@ -719,7 +719,10 @@ public interface IRCConstants {
 	public static final int RPL_ENDOFLINKS = 365;
 	
 	/**
-	 * Format: "&lt;channel&gt; &lt;banid&gt;". <br />
+	 * Format: "&lt;channel&gt; &lt;banid&gt;" (RFC 1459), or
+	 * "&lt;channel&gt; &lt;banid&gt; &lt;user or *&gt; &lt;seconds&gt;"
+	 * where the seconds are the date when the ban was set (this format is
+	 * not part of any RFC but seems to be used in several networks).<br />
 	 * When listing the active 'bans' for a given channel,
 	 * a server is required to send the list back using the
 	 * RPL_BANLIST and RPL_ENDOFBANLIST messages.  A separate

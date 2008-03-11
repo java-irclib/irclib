@@ -17,13 +17,13 @@ import org.schwering.irc.manager.Connection;
 public class NamesEvent {
 	private Connection connection;
 	private Channel channel;
-	private List userStatusPairs;
+	private List channelUsers;
 
 	public NamesEvent(Connection connection, Channel channel, 
-			List userStatusPairs) {
+			List channelUsers) {
 		this.connection = connection;
 		this.channel = channel;
-		this.userStatusPairs = userStatusPairs;
+		this.channelUsers = channelUsers;
 	}
 
 	public Connection getConnection() {
@@ -41,6 +41,6 @@ public class NamesEvent {
 	 * Returns a list of <code>ChannelUser</code>s.
 	 */
 	public List getChannelUsers() {
-		return Collections.unmodifiableList(userStatusPairs);
+		return Collections.unmodifiableList(channelUsers);
 	}
 }
