@@ -47,8 +47,8 @@ public class Channel implements Comparable {
 		return name;
 	}
 	
-	public Set getChannelUsers() {
-		return Collections.unmodifiableSet(users.entrySet());
+	public Collection getChannelUsers() {
+		return Collections.unmodifiableCollection(users.values());
 	}
 	
 	public ChannelUser getUser(String nick) {

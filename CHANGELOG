@@ -1,6 +1,6 @@
 Changelog of IRClib (IRC client library):
 
-IRClib 1.xx (04.11.2007):
+IRClib 1.11 (xx.xx.2008):
  * Fixed:   IRCUtil.parseColors() decremented i by (j-i) instead of 1 which
             could result in a IndexOutOfBoundsException in the buf.charAt(i)
             line.

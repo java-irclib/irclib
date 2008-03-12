@@ -20,15 +20,17 @@ import org.schwering.irc.manager.Connection;
 public class WhoEvent {
 	private Connection connection;
 	private Channel channel;
+	private boolean hasNewUsers;
 	private List channelUsers;
 	private List servers;
 	private List realNames;
 	private List hopCounts;
 
-	public WhoEvent(Connection connection, Channel channel, 
+	public WhoEvent(Connection connection, Channel channel, boolean hasNewUsers, 
 			List channelUsers, List realNames, List servers, List hopCounts) {
 		this.connection = connection;
 		this.channel = channel;
+		this.hasNewUsers = hasNewUsers;
 		this.channelUsers = channelUsers;
 		this.servers = servers;
 		this.realNames = realNames;
@@ -44,6 +46,18 @@ public class WhoEvent {
 	 */
 	public Channel getChannel() {
 		return channel;
+	}
+	
+	/**
+	 * Returns <code>true</code> if the connection participates in the channel
+	 * and the names in the WHO reply contains new users that weren't seen 
+	 * before. This is the case when you've joined a channel and don't know who 
+	 * joined the channel before you. This flag is intended to let you know 
+	 * when you have to update your nicklist on incoming WHO and NAMES replies 
+	 * and when you don't have to.
+	 */
+	public boolean hasNewUsers() {
+		return hasNewUsers;
 	}
 
 	/**

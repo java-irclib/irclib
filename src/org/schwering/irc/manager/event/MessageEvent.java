@@ -53,7 +53,7 @@ public class MessageEvent {
 		return destinationUser;
 	}
 
-	public User getSender() {
+	public User getUser() {
 		return sender;
 	}
 

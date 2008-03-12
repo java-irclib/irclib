@@ -44,7 +44,7 @@ public class ChannelModeEvent {
 		return user;
 	}
 
-	public IRCModeParser getIrcModeParser() {
+	public IRCModeParser getIRCModeParser() {
 		return ircModeParser;
 	}
 }

@@ -37,7 +37,7 @@ public class ChannelUser extends User {
 	}
 	
 	ChannelUser(Channel channel, User user, int status) {
-		super(null, null, null);
+		super("(avoid NPE)", null, null);
 		if (user instanceof ChannelUser) {
 			throw new RuntimeException("Wrapping a ChannelUser in a " +
 					"ChannelUser is a bad idea; this exception shows " +

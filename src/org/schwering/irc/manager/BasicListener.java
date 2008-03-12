@@ -225,8 +225,7 @@ class BasicListener implements IRCEventListener {
 			return new TopicList();
 		}
 		
-		protected void handle(Object obj, int num, String val,
-				String msg) {
+		protected void handle(Object obj, int num, String val, String msg) {
 			TopicList list = (TopicList)obj;
 			StringTokenizer tokenizer = new StringTokenizer(val +" "+ msg);
 			tokenizer.nextToken();
@@ -454,6 +453,7 @@ class BasicListener implements IRCEventListener {
 			IRCConstants.RPL_ENDOFNAMES) {
 		class Names {
 			Channel channel;
+			boolean hasNewUsers = false;
 			List channelUsers = new LinkedList();
 			
 			Names(String id) { channel = owner.resolveChannel(id); }
@@ -487,6 +487,10 @@ class BasicListener implements IRCEventListener {
 				ChannelUser chanUser = names.channel.getUser(user);
 				if (chanUser == null) {
 					chanUser = new ChannelUser(names.channel, user, status);
+					if (owner.hasChannel(names.channel)) {
+						names.channel.addUser(chanUser);
+						names.hasNewUsers |= true;
+					}
 				} else if (chanUser != null && chanUser.getStatus() != status) {
 					chanUser.addStatus(status);
 					UserStatusEvent event = new UserStatusEvent(owner, 
@@ -515,7 +519,8 @@ class BasicListener implements IRCEventListener {
 		
 		protected void fire(Object obj) {
 			Names names = (Names)obj;
-			NamesEvent event = new NamesEvent(owner, names.channel, names.channelUsers);
+			NamesEvent event = new NamesEvent(owner, names.channel, 
+					names.hasNewUsers, names.channelUsers);
 			owner.fireNamesReceived(event);
 			names.channel.fireNamesReceived(event);
 		}
@@ -527,6 +532,7 @@ class BasicListener implements IRCEventListener {
 			IRCConstants.RPL_ENDOFWHO) {
 		class Who {
 			Channel channel;
+			boolean hasNewUsers = false;
 			List channelUsers = new Vector();
 			List servers = new Vector();
 			List realNames = new Vector();
@@ -568,6 +574,10 @@ class BasicListener implements IRCEventListener {
 			ChannelUser chanUser = who.channel.getUser(user);
 			if (chanUser == null) {
 				chanUser = new ChannelUser(who.channel, user, status);
+				if (owner.hasChannel(who.channel)) {
+					who.channel.addUser(chanUser);
+					who.hasNewUsers |= true;
+				}
 			} else if (chanUser != null && chanUser.getStatus() != status) {
 				chanUser.addStatus(status);
 				UserStatusEvent event = new UserStatusEvent(owner, 
@@ -599,8 +609,8 @@ class BasicListener implements IRCEventListener {
 		
 		protected void fire(Object obj) {
 			Who who = (Who)obj;
-			WhoEvent event = new WhoEvent(owner, who.channel, who.channelUsers,
-					who.realNames, who.servers, who.hopcounts);
+			WhoEvent event = new WhoEvent(owner, who.channel, who.hasNewUsers, 
+					who.channelUsers, who.realNames, who.servers, who.hopcounts);
 			owner.fireWhoReceived(event);
 			who.channel.fireWhoReceived(event);
 		}
@@ -758,7 +768,7 @@ class BasicListener implements IRCEventListener {
 
 	public void onQuit(IRCUser ircUser, String msg) {
 		User user = owner.resolveUser(ircUser);
-		if (user.getNick().equals(owner.getNick())) {
+		if (user.getNick().equalsIgnoreCase(owner.getNick())) {
 			for (Iterator it = owner.getChannels().iterator(); it.hasNext(); ) {
 				Channel channel = (Channel)it.next();
 				UserParticipationEvent event = new UserParticipationEvent(owner,
@@ -830,7 +840,7 @@ class BasicListener implements IRCEventListener {
 		User user = owner.resolveUser(ircUser);
 		UserParticipationEvent event = new UserParticipationEvent(owner, 
 				channel, user, UserParticipationEvent.JOIN);
-		if (user.getNick().equals(owner.getNick())) {
+		if (user.getNick().equalsIgnoreCase(owner.getNick())) {
 			owner.addChannel(channel);
 			channel.addUser(user);
 			owner.fireChannelJoined(event);
@@ -851,7 +861,7 @@ class BasicListener implements IRCEventListener {
 		UserParticipationEvent event = new UserParticipationEvent(owner, 
 				channel, user, UserParticipationEvent.PART, 
 				new Message(msg));
-		if (user.getNick().equals(owner.getNick())) {
+		if (user.getNick().equalsIgnoreCase(owner.getNick())) {
 			owner.fireChannelLeft(event);
 			channel.removeUser(user);
 			owner.removeChannel(channel);
@@ -871,7 +881,7 @@ class BasicListener implements IRCEventListener {
 		UserParticipationEvent event = new UserParticipationEvent(owner, 
 				channel, user, UserParticipationEvent.KICK, 
 				new Message(msg), kickingUser);
-		if (user.getNick().equals(owner.getNick())) {
+		if (user.getNick().equalsIgnoreCase(owner.getNick())) {
 			owner.fireChannelLeft(event);
 			channel.removeUser(kickedUser);
 			owner.removeChannel(channel);

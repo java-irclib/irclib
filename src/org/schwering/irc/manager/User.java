@@ -36,22 +36,21 @@ public class User implements Comparable {
 	}
 	
 	User(IRCUser user) {
+		if (user.getNick() == null) {
+			throw new RuntimeException("nickname must not be null");
+		}
 		this.nickname = user.getNick();
 		this.username = user.getUsername();
 		this.host = user.getHost();
 	}
 	
 	User(String nickname, String username, String host) {
+		if (nickname == null) {
+			throw new RuntimeException("nickname must not be null");
+		}
 		this.nickname = nickname;
 		this.username = username;
 		this.host = host;
-	}
-	
-	User(User oldUser, String newNick) {
-		this.nickname = newNick;
-		this.username = oldUser.username;
-		this.host = oldUser.host;
-		this.away = oldUser.away;
 	}
 	
 	void update(IRCUser user) {

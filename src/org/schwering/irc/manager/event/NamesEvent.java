@@ -17,12 +17,14 @@ import org.schwering.irc.manager.Connection;
 public class NamesEvent {
 	private Connection connection;
 	private Channel channel;
+	private boolean hasNewUsers;
 	private List channelUsers;
 
 	public NamesEvent(Connection connection, Channel channel, 
-			List channelUsers) {
+			boolean hasNewUsers, List channelUsers) {
 		this.connection = connection;
 		this.channel = channel;
+		this.hasNewUsers = hasNewUsers;
 		this.channelUsers = channelUsers;
 	}
 
@@ -35,6 +37,23 @@ public class NamesEvent {
 	 */
 	public Channel getChannel() {
 		return channel;
+	}
+
+	/**
+	 * Returns <code>true</code> if the connection participates in the channel
+	 * and the names in the NAMES reply contains new users that weren't seen 
+	 * before. This is the case when you've joined a channel and don't know who 
+	 * joined the channel before you. This flag is intended to let you know 
+	 * when you have to update your nicklist on incoming WHO and NAMES replies 
+	 * and when you don't have to.
+	 * <p>
+	 * Normally, IRC servers send a NAMES reply when one joins a channel.
+	 * This initial NAMES reply is intended to inform the joining user who
+	 * currently is in the channel he joined. This flag is primarily for this
+	 * case, and in this case, it returns <code>true</code>.
+	 */
+	public boolean hasNewUsers() {
+		return hasNewUsers;
 	}
 
 	/**
