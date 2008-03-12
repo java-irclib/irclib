@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -28,6 +27,10 @@ import org.schwering.irc.manager.event.WhoEvent;
  * @version 1.00
  */
 public class Channel implements Comparable {
+	public static final int NONE = 0;
+	public static final int VOICED = 1;
+	public static final int OPERATOR = 2;
+	
 	private String name;
 	private SortedMap users = new TreeMap();
 	private Topic topic;

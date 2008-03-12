@@ -21,6 +21,13 @@ import org.schwering.irc.lib.IRCUser;
  * The connection isn't even informed about potential nick changes of that 
  * user. Hence, though a <code>UserListener</code> would be nice, that concept
  * barely exists in IRC. 
+ * <p>
+ * Some words about the implementation: In <code>User</code> one should
+ * use the get- and setters instead of direct access of class fields, because
+ * of the special subclass <code>ChannelUser</code>. Using 
+ * <code>getNick()</code> in <code>equals()</code>, for example, guarantees
+ * proper behavior of <code>equals()</code> for <code>ChannelUser</code>
+ * objects, too.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
@@ -54,11 +61,11 @@ public class User implements Comparable {
 	}
 	
 	void update(IRCUser user) {
-		if (!nickname.equals(user.getNick())) {
+		if (!getNick().equals(user.getNick())) {
 			throw new IllegalArgumentException();
 		}
-		username = user.getUsername();
-		host = user.getHost();
+		setUsername(user.getUsername());
+		setHost(user.getHost());
 	}
 	
 	void setNick(String newNick) {
@@ -98,14 +105,14 @@ public class User implements Comparable {
 	}
 
 	public int compareTo(Object other) {
-		return nickname.compareToIgnoreCase(((User)other).nickname);
+		return getNick().compareToIgnoreCase(((User)other).getNick());
 	}
 	
 	public boolean isSame(Object obj) {
 		if (obj instanceof User) {
-			return nickname.equalsIgnoreCase(((User)obj).nickname);
+			return getNick().equalsIgnoreCase(((User)obj).getNick());
 		} else if (obj instanceof String) {
-			return nickname.equalsIgnoreCase((String)obj);
+			return getNick().equalsIgnoreCase((String)obj);
 		} else {
 			return false;
 		}
@@ -113,13 +120,13 @@ public class User implements Comparable {
 	
 	public boolean equals(Object obj) {
 		if (obj instanceof User) {
-			return nickname.equalsIgnoreCase(((User)obj).nickname);
+			return getNick().equalsIgnoreCase(((User)obj).getNick());
 		} else {
 			return false;
 		}
 	}
 
 	public int hashCode() {
-		return nickname.hashCode();
+		return getNick().hashCode();
 	}
 }

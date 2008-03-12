@@ -475,12 +475,12 @@ class BasicListener implements IRCEventListener {
 			}
 			while (tokenizer.hasMoreTokens()) {
 				String tok = tokenizer.nextToken();
-				int status = ChannelUser.NONE;
+				int status = Channel.NONE;
 				if (tok.charAt(0) == '@') {
-					status = ChannelUser.OPERATOR;
+					status = Channel.OPERATOR;
 					tok = tok.substring(1);
 				} else if (tok.charAt(0) == '+') {
-					status = ChannelUser.VOICED;
+					status = Channel.VOICED;
 					tok = tok.substring(1);
 				}
 				User user = owner.resolveUser(tok);
@@ -561,11 +561,11 @@ class BasicListener implements IRCEventListener {
 			
 			boolean away = info.charAt(0) == 'G';
 			char c = info.charAt(info.length()-1);
-			int status = ChannelUser.NONE;
+			int status = Channel.NONE;
 			if (c == '@') {
-				status = ChannelUser.OPERATOR;
+				status = Channel.OPERATOR;
 			} else if (c == '+') {
-				status = ChannelUser.VOICED;
+				status = Channel.VOICED;
 			}
 
 			User user = owner.resolveUser(nick);
@@ -914,8 +914,8 @@ class BasicListener implements IRCEventListener {
 		for (int i = 0; i < modeParser.getCount(); i++) { // user status changed
 			int mode = modeParser.getModeAt(i);
 			if (mode == 'o' || mode == 'v') {
-				int status = (mode == 'o') ? ChannelUser.OPERATOR
-						: ChannelUser.VOICED;
+				int status = (mode == 'o') ? Channel.OPERATOR
+						: Channel.VOICED;
 				int oper = modeParser.getOperatorAt(i);
 				String arg = modeParser.getArgAt(i);
 				ChannelUser chanUser = channel.getUser(arg);

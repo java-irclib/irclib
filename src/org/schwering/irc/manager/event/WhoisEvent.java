@@ -138,11 +138,11 @@ public class WhoisEvent {
 	public int getChannelStatus(int i) {
 		char c = ((String)channels.get(i)).charAt(0);
 		if (c == '@') {
-			return ChannelUser.OPERATOR;
+			return Channel.OPERATOR;
 		} else if (c == '+') {
-			return ChannelUser.VOICED;
+			return Channel.VOICED;
 		} else {
-			return ChannelUser.NONE;
+			return Channel.NONE;
 		}
 	}
 	

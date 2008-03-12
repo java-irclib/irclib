@@ -1,7 +1,5 @@
 package org.schwering.irc.manager;
 
-import org.schwering.irc.lib.IRCUser;
-
 /**
  * Pair of a user and its staus (operator, voiced or none). Used for the
  * status of a user in a channel.
@@ -24,16 +22,12 @@ import org.schwering.irc.lib.IRCUser;
  * @version 1.00
  */
 public class ChannelUser extends User {
-	public static final int NONE = 0;
-	public static final int VOICED = 1;
-	public static final int OPERATOR = 2;
-	
 	private Channel channel;
 	private User user;
 	private int status;
 	
 	ChannelUser(Channel channel, User user) {
-		this(channel, user, NONE);
+		this(channel, user, Channel.NONE);
 	}
 	
 	ChannelUser(Channel channel, User user, int status) {
@@ -76,15 +70,11 @@ public class ChannelUser extends User {
 	}
 	
 	public boolean isOperator() {
-		return status == OPERATOR;
+		return status == Channel.OPERATOR;
 	}
 	
 	public boolean isVoiced() {
-		return status == VOICED;
-	}
-
-	public int compareTo(Object other) {
-		return user.compareTo(other);
+		return status == Channel.VOICED;
 	}
 
 	public String getHost() {
@@ -99,27 +89,11 @@ public class ChannelUser extends User {
 		return user.getUsername();
 	}
 
-	public int hashCode() {
-		return user.hashCode();
-	}
-
 	public boolean isAway() {
 		return user.isAway();
 	}
 
-	public boolean isSame(Object obj) {
-		return user.isSame(obj);
-	}
-
 	public void setAway(boolean away) {
 		user.setAway(away);
-	}
-
-	public String toString() {
-		return user.toString();
-	}
-
-	void update(IRCUser user) {
-		this.user.update(user);
 	}
 }
