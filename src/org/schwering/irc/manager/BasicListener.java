@@ -752,9 +752,12 @@ class BasicListener implements IRCEventListener {
 		NickEvent event = new NickEvent(owner, user, oldNick);
 		for (Iterator it = owner.getChannels().iterator(); it.hasNext(); ) {
 			Channel channel = (Channel)it.next();
-			if (channel.hasUser(oldNick)) {
-				channel.removeUser(oldNick); // re-add user with new nick
-				channel.addUser(user);
+			System.out.println("status(user) = status("+ event.getUser() +") = "+ channel.getUserStatus(event.getUser()));
+			System.out.println("status(oldNick) = status("+ event.getOldNick() +") = "+ channel.getUserStatus(event.getOldNick()));
+			System.out.println("readding in "+ channel);
+			if (channel.hasUser(oldNick)) { // re-add user with new nick
+				ChannelUser channelUser = channel.removeUser(oldNick);
+				channel.addUser(channelUser);
 			}
 		}
 		owner.fireNickChanged(event);

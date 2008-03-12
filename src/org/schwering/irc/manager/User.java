@@ -43,10 +43,14 @@ public class User implements Comparable {
 	}
 	
 	User(IRCUser user) {
-		if (user.getNick() == null) {
+		if (user.getNick() == null && user.getHost() != null) {
 			throw new RuntimeException("nickname must not be null");
 		}
-		this.nickname = user.getNick();
+		if (user.getNick() != null) {
+			this.nickname = user.getNick();
+		} else {
+			this.nickname = user.getUsername();
+		}
 		this.username = user.getUsername();
 		this.host = user.getHost();
 	}

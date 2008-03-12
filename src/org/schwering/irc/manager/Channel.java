@@ -78,12 +78,12 @@ public class Channel implements Comparable {
 		users.put(user.getNick(), user);
 	}
 	
-	void removeUser(String nick) {
-		users.remove(nick);
+	ChannelUser removeUser(String nick) {
+		return (ChannelUser) users.remove(nick);
 	}
 	
-	void removeUser(User user) {
-		users.remove(user.getNick());
+	ChannelUser removeUser(User user) {
+		return (ChannelUser) users.remove(user.getNick());
 	}
 	
 	void setUserStatus(String nick, int status) {
