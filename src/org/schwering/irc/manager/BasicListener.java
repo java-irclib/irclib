@@ -938,7 +938,7 @@ class BasicListener implements IRCEventListener {
 				modeParser);
 		owner.fireChannelModeReceived(event);
 		channel.fireChannelModeReceived(event);
-		for (int i = 0; i < modeParser.getCount(); i++) { // user status changed
+		for (int i = 1; i <= modeParser.getCount(); i++) { // user status changed
 			int mode = modeParser.getModeAt(i);
 			if (mode == 'o' || mode == 'v') {
 				int status = (mode == 'o') ? Channel.OPERATOR
