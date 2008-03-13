@@ -79,6 +79,13 @@ public interface ConnectionListener extends EventListener {
 	void invitationReceived(InvitationEvent event);
 	
 	/**
+	 * Fired when the invitation was successfully delivered to somebody.
+	 * <p>
+	 * Note: The inviting user is always you.
+	 */
+	void invitationDeliveryReceived(InvitationEvent event);
+	
+	/**
 	 * Fired when a numeric reply is received.
 	 * <p>
 	 * Note: Many queries are answered with numeric replies, for example

@@ -46,6 +46,13 @@ public class ConnectionAdapter implements ConnectionListener {
 	 */
 	public void invitationReceived(InvitationEvent event) {
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.schwering.irc.manager.event.ConnectionListener#invitationDeliveryReceived(org.schwering.irc.manager.event.InvitationEvent)
+	 */
+	public void invitationDeliveryReceived(InvitationEvent event) {
+	}
 
 	/* (non-Javadoc)
 	 * @see org.schwering.irc.manager.event.ConnectionListener#motdReceived(org.schwering.irc.manager.event.MOTDEvent)

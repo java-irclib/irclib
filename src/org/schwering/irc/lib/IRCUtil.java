@@ -101,7 +101,7 @@ public class IRCUtil implements IRCConstants {
 	public static boolean isChan(String str) {
 		int c;
 		return (str.length() >= 2) 
-		&& ((c = str.charAt(0)) == 35 || c == 38 || c == 33 || c == 43);
+		&& ((c = str.charAt(0)) == '#' || c == '&' || c == '!' || c == '+');
 	}
 	
 // ------------------------------

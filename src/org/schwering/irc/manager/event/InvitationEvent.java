@@ -6,6 +6,8 @@ import org.schwering.irc.manager.User;
 
 /**
  * Fired when someone is invited by someone else to a channel.
+ * Either the invited or the inviting user is the user represented by this
+ * connection.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00

@@ -1,15 +1,12 @@
 package org.schwering.irc.manager;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.SocketException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -375,6 +372,14 @@ public class Connection {
 	}
 	
 	/**
+	 * Returns <code>true</code> if the user is the one represented by this
+	 * connection.
+	 */
+	public boolean isMe(User user) {
+		return user.isSame(conn.getNick());
+	}
+	
+	/**
 	 * Adds a pure <code>IRCEventListener</code> to the pure
 	 * <code>IRCConnection</code>.
 	 */
@@ -494,6 +499,16 @@ public class Connection {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			try {
 				((ConnectionListener)it.next()).invitationReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireInvitationDeliveryReceived(InvitationEvent event) {
+		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
+			try {
+				((ConnectionListener)it.next()).invitationDeliveryReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}

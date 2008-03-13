@@ -49,7 +49,6 @@ public abstract class NumericEventChain {
 			String id = getID(num, val, msg);
 			Container container;
 			if (contains(starterNums, num) && !map.containsKey(id)) {
-				System.out.println("ID('"+val+"') = '"+ id +"'");
 				container = new Container(id, getInitObject(id));
 				map.put(id, container);
 				retval = true;

@@ -167,6 +167,11 @@ class BasicListener implements IRCEventListener {
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
+		try {
+			handled |= handleInviting(num, val, msg);
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
 		
 		if (!handled) {
 			NumericEvent event = new NumericEvent(owner, num, val, msg); 
@@ -326,7 +331,7 @@ class BasicListener implements IRCEventListener {
 					IRCConstants.RPL_WHOISOPERATOR,
 					IRCConstants.RPL_WHOISIDLE,
 					IRCConstants.RPL_WHOISAUTHNAME },
-					IRCConstants.RPL_ENDOFWHO
+					IRCConstants.RPL_ENDOFWHOIS
 			) {
 		class Whois {
 			User user;
@@ -527,7 +532,6 @@ class BasicListener implements IRCEventListener {
 	};
 	
 	private NumericEventChain whoChain = new NumericEventChain(
-			new int[] { IRCConstants.RPL_WHOREPLY, IRCConstants.RPL_ENDOFWHO }, 
 			IRCConstants.RPL_WHOREPLY, 
 			IRCConstants.RPL_ENDOFWHO) {
 		class Who {
@@ -548,7 +552,7 @@ class BasicListener implements IRCEventListener {
 		protected void handle(Object obj, int num, String val,
 				String msg) {
 			Who who = (Who)obj;
-			StringTokenizer tokenizer = new StringTokenizer(val);
+			StringTokenizer tokenizer = new StringTokenizer(val +" "+ msg);
 			tokenizer.nextToken();
 			tokenizer.nextToken(); // skip channel name
 			String userName = tokenizer.nextToken();
@@ -557,7 +561,7 @@ class BasicListener implements IRCEventListener {
 			String nick = tokenizer.nextToken();
 			String info = tokenizer.nextToken();
 			String hopcount = tokenizer.nextToken();
-			String realName = msg;
+			String realName = skipFirstToken(msg);
 			
 			boolean away = info.charAt(0) == 'G';
 			char c = info.charAt(info.length()-1);
@@ -722,6 +726,29 @@ class BasicListener implements IRCEventListener {
 		return true;
 	}
 	
+	private boolean handleInviting(int num, String val, String msg) {
+		if (num != IRCConstants.RPL_INVITING) {
+			return false;
+		}
+		StringTokenizer tokenizer = new StringTokenizer(val +" "+ msg);
+		User invitingUser = owner.resolveUser(tokenizer.nextToken());
+		String s = tokenizer.nextToken();
+		String t = tokenizer.nextToken();
+		Channel channel;
+		User invitedUser;
+		if (IRCUtil.isChan(s)) { // the RFCs say: <channel> <user> ...
+			channel = owner.resolveChannel(s);
+			invitedUser = owner.resolveUser(t);
+		} else { // ... implementations say: <user> <channel>
+			invitedUser = owner.resolveUser(s);
+			channel = owner.resolveChannel(t);
+		}
+		InvitationEvent event = new InvitationEvent(owner, channel, 
+				invitingUser, invitedUser);
+		owner.fireInvitationDeliveryReceived(event);
+		return true;
+	}
+	
 	private static String getFirstToken(String str) {
 		str = str.trim();
 		for (int i = 0; i < str.length(); i++) {
@@ -752,9 +779,6 @@ class BasicListener implements IRCEventListener {
 		NickEvent event = new NickEvent(owner, user, oldNick);
 		for (Iterator it = owner.getChannels().iterator(); it.hasNext(); ) {
 			Channel channel = (Channel)it.next();
-			System.out.println("status(user) = status("+ event.getUser() +") = "+ channel.getUserStatus(event.getUser()));
-			System.out.println("status(oldNick) = status("+ event.getOldNick() +") = "+ channel.getUserStatus(event.getOldNick()));
-			System.out.println("readding in "+ channel);
 			if (channel.hasUser(oldNick)) { // re-add user with new nick
 				ChannelUser channelUser = channel.removeUser(oldNick);
 				channel.addUser(channelUser);
@@ -843,7 +867,7 @@ class BasicListener implements IRCEventListener {
 		User user = owner.resolveUser(ircUser);
 		UserParticipationEvent event = new UserParticipationEvent(owner, 
 				channel, user, UserParticipationEvent.JOIN);
-		if (user.getNick().equalsIgnoreCase(owner.getNick())) {
+		if (user.isSame(owner.getNick())) {
 			owner.addChannel(channel);
 			channel.addUser(user);
 			owner.fireChannelJoined(event);
@@ -864,7 +888,7 @@ class BasicListener implements IRCEventListener {
 		UserParticipationEvent event = new UserParticipationEvent(owner, 
 				channel, user, UserParticipationEvent.PART, 
 				new Message(msg));
-		if (user.getNick().equalsIgnoreCase(owner.getNick())) {
+		if (user.isSame(owner.getNick())) {
 			owner.fireChannelLeft(event);
 			channel.removeUser(user);
 			owner.removeChannel(channel);
@@ -884,7 +908,7 @@ class BasicListener implements IRCEventListener {
 		UserParticipationEvent event = new UserParticipationEvent(owner, 
 				channel, user, UserParticipationEvent.KICK, 
 				new Message(msg), kickingUser);
-		if (user.getNick().equalsIgnoreCase(owner.getNick())) {
+		if (user.isSame(owner.getNick())) {
 			owner.fireChannelLeft(event);
 			channel.removeUser(kickedUser);
 			owner.removeChannel(channel);
