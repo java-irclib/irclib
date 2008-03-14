@@ -215,6 +215,10 @@ class BasicListener implements IRCEventListener {
 			owner.fireTopicReceived(event);
 			topic.getChannel().fireTopicReceived(event);
 		}
+		
+		public String toString() {
+			return "TOPIChandler";
+		}
 	};
 	
 	private NumericEventChain listChain = new NumericEventChain(
@@ -259,6 +263,10 @@ class BasicListener implements IRCEventListener {
 		
 		protected String getID(int num, String val, String msg) {
 			return "";
+		}
+		
+		public String toString() {
+			return "LISThandler";
 		}
 	};
 	
@@ -315,16 +323,13 @@ class BasicListener implements IRCEventListener {
 			owner.fireBanlistReceived(event);
 			banlist.channel.fireBanlistReceived(event);
 		}
+		
+		public String toString() {
+			return "BANLISThandler";
+		}
 	};
 	
 	private NumericEventChain whoisChain = new NumericEventChain(
-			new int[] { IRCConstants.RPL_WHOISUSER,
-					IRCConstants.RPL_WHOISSERVER,
-					IRCConstants.RPL_WHOISCHANNELS,
-					IRCConstants.RPL_WHOISOPERATOR,
-					IRCConstants.RPL_WHOISIDLE,
-					IRCConstants.RPL_WHOISAUTHNAME,
-					IRCConstants.RPL_ENDOFWHO },
 			new int[] { IRCConstants.RPL_WHOISUSER,
 					IRCConstants.RPL_WHOISSERVER,
 					IRCConstants.RPL_WHOISCHANNELS,
@@ -413,6 +418,10 @@ class BasicListener implements IRCEventListener {
 					whois.channels);
 			owner.fireWhoisReceived(event);
 		}
+		
+		public String toString() {
+			return "WHOIShandler";
+		}
 	};
 	
 	private NumericEventChain whowasChain = new NumericEventChain(
@@ -449,6 +458,10 @@ class BasicListener implements IRCEventListener {
 			WhowasEvent event = new WhowasEvent(owner, whowas.user,
 					whowas.realName);
 			owner.fireWhowasReceived(event);
+		}
+		
+		public String toString() {
+			return "WHOWAShandler";
 		}
 	};
 	
@@ -528,6 +541,10 @@ class BasicListener implements IRCEventListener {
 					names.hasNewUsers, names.channelUsers);
 			owner.fireNamesReceived(event);
 			names.channel.fireNamesReceived(event);
+		}
+		
+		public String toString() {
+			return "NAMEShandler";
 		}
 	};
 	
@@ -618,6 +635,10 @@ class BasicListener implements IRCEventListener {
 			owner.fireWhoReceived(event);
 			who.channel.fireWhoReceived(event);
 		}
+		
+		public String toString() {
+			return "WHOhandler";
+		}
 	};
 	
 	private NumericEventChain motdChain = new NumericEventChain(
@@ -643,6 +664,10 @@ class BasicListener implements IRCEventListener {
 		protected String getID(int num, String val, String msg) {
 			return "";
 		}
+		
+		public String toString() {
+			return "MOTDhandler";
+		}
 	};
 	
 	private NumericEventChain infoChain = new NumericEventChain(
@@ -667,6 +692,10 @@ class BasicListener implements IRCEventListener {
 		
 		protected String getID(int num, String val, String msg) {
 			return "";
+		}
+		
+		public String toString() {
+			return "INFOhandler";
 		}
 	};
 	
@@ -707,6 +736,10 @@ class BasicListener implements IRCEventListener {
 			LinksEvent event = new LinksEvent(owner, links.mask, links.servers, 
 					links.serverInfos, links.hopCounts);
 			owner.fireLinksReceived(event);
+		}
+		
+		public String toString() {
+			return "LINKShandler";
 		}
 	};
 	

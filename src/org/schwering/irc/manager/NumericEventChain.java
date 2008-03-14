@@ -59,12 +59,11 @@ public abstract class NumericEventChain {
 			}
 			if (finalNum == num && (container = (Container)map.remove(id)) != null) {
 				container.interrupt();
-				System.out.println("firing");
 				tryFire(container.getObject());
-				System.out.println("fired");
 				retval = true;
 			}
 			if (retval) {
+				System.out.println("handled by: "+ this.toString());
 				millis++;
 			}
 			return retval;
@@ -155,14 +154,11 @@ public abstract class NumericEventChain {
 					exc.printStackTrace();
 				}
 			} while (millis != m);
-			System.out.println("expired, firing? "+this);
 			synchronized (map) {
 				if (map.remove(id) != null) {
-					System.out.println("expired, firing! "+this);
 					tryFire(getObject());
 				}
 			}
-			System.out.println("expired, fired "+this);
 		}
 	}
 }
