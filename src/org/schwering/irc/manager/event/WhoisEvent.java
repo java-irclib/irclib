@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.schwering.irc.manager.Channel;
-import org.schwering.irc.manager.ChannelUser;
 import org.schwering.irc.manager.Connection;
 import org.schwering.irc.manager.Message;
 import org.schwering.irc.manager.User;
