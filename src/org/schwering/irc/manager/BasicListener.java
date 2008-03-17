@@ -4,7 +4,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import org.schwering.irc.lib.IRCEventListener;
@@ -172,6 +174,13 @@ class BasicListener implements IRCEventListener {
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
+		try {
+			handled |= statsChain.numericReceived(num, val, msg);
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+
+		// TODO STATS, LUSERS, ADMIN
 		
 		if (!handled) {
 			NumericEvent event = new NumericEvent(owner, num, val, msg); 
@@ -740,6 +749,157 @@ class BasicListener implements IRCEventListener {
 		
 		public String toString() {
 			return "LINKShandler";
+		}
+	};
+	
+	private NumericEventChain statsChain = new NumericEventChain(
+			new int[] { IRCConstants.RPL_STATSLINKINFO,
+					IRCConstants.RPL_STATSCOMMANDS,
+					IRCConstants.RPL_STATSUPTIME,
+					IRCConstants.RPL_STATSCLINE,
+					IRCConstants.RPL_STATSILINE,
+					IRCConstants.RPL_STATSKLINE,
+					IRCConstants.RPL_STATSLLINE,
+					IRCConstants.RPL_STATSNLINE,
+					IRCConstants.RPL_STATSYLINE,
+					IRCConstants.RPL_STATSHLINE,
+					IRCConstants.RPL_STATSOLINE },
+			IRCConstants.RPL_ENDOFSTATS) {
+		class Stats {
+			String linkName; int sendQ, sentM, sentKB, recvM, recvKB; long millisOpen;
+			Map commandMap = new TreeMap();
+			String uptime;
+			String clineHost, clineName, clineClass; int clinePort;
+			String nlineHost, nlineName, nlineClass; int nlinePort;
+			String ilineHost, ilineHost2, ilineClass; int ilinePort;
+			String klineHost, klineUserName, klineClass;int klinePort;
+			String llineHostMask, llineServerName; int llineMaxDepth;
+			String ylineClass; int ylinePingFreq, ylineConnectFreq, ylineMaxSendQ;
+			String olineHostmask, olineName;
+			String hlineHostmask, hlineServerName;
+		}
+		class Command {
+			String command;
+			int count, byteCount, remoteCount;
+		}
+		
+		protected Object getInitObject(String id) {
+			return new Stats();
+		}
+		
+		private int tryParseInt(String str) {
+			try {
+				return Integer.parseInt(str);
+			} catch (Exception exc) {
+				return -1;
+			}
+		}
+
+		protected void handle(Object obj, int num, String val,
+				String msg) {
+			Stats stats = (Stats)obj;
+			StringTokenizer tokenizer = new StringTokenizer(val +" "+ msg);
+			tokenizer.nextToken();
+			switch (num) {
+			case IRCConstants.RPL_STATSCLINE:
+				tokenizer.nextToken();
+				stats.clineHost = tokenizer.nextToken();
+				tokenizer.nextToken();
+				stats.clineName = tokenizer.nextToken();
+				stats.clinePort = tryParseInt(tokenizer.nextToken());
+				stats.clineClass = tokenizer.nextToken();
+				break;
+			case IRCConstants.RPL_STATSNLINE:
+				tokenizer.nextToken();
+				stats.nlineHost = tokenizer.nextToken();
+				tokenizer.nextToken();
+				stats.nlineName = tokenizer.nextToken();
+				stats.nlinePort = tryParseInt(tokenizer.nextToken());
+				stats.nlineClass = tokenizer.nextToken();
+				break;
+			case IRCConstants.RPL_STATSILINE:
+				tokenizer.nextToken();
+				stats.ilineHost = tokenizer.nextToken();
+				tokenizer.nextToken();
+				stats.ilineHost2 = tokenizer.nextToken();
+				stats.ilinePort = tryParseInt(tokenizer.nextToken());
+				stats.ilineClass = tokenizer.nextToken();
+				break;
+			case IRCConstants.RPL_STATSLLINE:
+				tokenizer.nextToken();
+				stats.llineHostMask = tokenizer.nextToken();
+				tokenizer.nextToken();
+				stats.llineServerName = tokenizer.nextToken();
+				stats.llineMaxDepth = tryParseInt(tokenizer.nextToken());
+				break;
+			case IRCConstants.RPL_STATSKLINE:
+				tokenizer.nextToken();
+				stats.klineHost = tokenizer.nextToken();
+				tokenizer.nextElement();
+				stats.klineUserName = tokenizer.nextToken();
+				stats.klinePort = tryParseInt(tokenizer.nextToken());
+				stats.klineClass = tokenizer.nextToken();
+				break;
+			case IRCConstants.RPL_STATSYLINE:
+				tokenizer.nextToken();
+				stats.ylineClass = tokenizer.nextToken();
+				stats.ylinePingFreq = tryParseInt(tokenizer.nextToken());
+				stats.ylineConnectFreq = tryParseInt(tokenizer.nextToken());
+				stats.ylineMaxSendQ = tryParseInt(tokenizer.nextToken());
+				break;
+			case IRCConstants.RPL_STATSHLINE:
+				tokenizer.nextToken();
+				stats.hlineHostmask = tokenizer.nextToken();
+				tokenizer.nextToken();
+				stats.hlineServerName = tokenizer.nextToken();
+				break;
+			case IRCConstants.RPL_STATSOLINE:
+				tokenizer.nextToken();
+				stats.olineHostmask = tokenizer.nextToken();
+				tokenizer.nextToken();
+				stats.olineName = tokenizer.nextToken();
+				break;
+			case IRCConstants.RPL_STATSCOMMANDS:
+				Command command = new Command();
+				command.command = tokenizer.nextToken();
+				command.count = tryParseInt(tokenizer.nextToken());
+				try {
+					command.byteCount = tryParseInt(tokenizer.nextToken());
+				} catch (Exception exc) {
+					exc.printStackTrace();
+				}
+				try {
+					command.remoteCount = tryParseInt(tokenizer.nextToken());
+				} catch (Exception exc) {
+					exc.printStackTrace();
+				}
+				stats.commandMap.put(command.command, command);
+				break;
+			case IRCConstants.RPL_STATSLINKINFO:
+				stats.linkName = tokenizer.nextToken();
+				stats.sendQ = tryParseInt(tokenizer.nextToken());
+				stats.sentM = tryParseInt(tokenizer.nextToken());
+				stats.sentKB = tryParseInt(tokenizer.nextToken());
+				stats.recvM = tryParseInt(tokenizer.nextToken());
+				stats.recvKB = tryParseInt(tokenizer.nextToken());
+				try {
+					stats.millisOpen = Long.parseLong(tokenizer.nextToken()) * 1000;
+				} catch (Exception exc) {
+					stats.millisOpen = -1;
+				}
+				break;
+			case IRCConstants.RPL_STATSUPTIME:
+				stats.uptime = msg;
+				break;
+			}
+		}
+		
+		protected void fire(Object obj) {
+			Stats stats = (Stats)obj;
+		}
+		
+		public String toString() {
+			return "STATShandler";
 		}
 	};
 	
