@@ -18,6 +18,7 @@ public class StatsEvent {
 	private String linkName;
 	private int queuedSendData;
 	private int sentMessages;
+	private int sentBytes;
 	private int receivedMessages;
 	private int receivedBytes;
 	private long millisOpen;
@@ -32,7 +33,7 @@ public class StatsEvent {
 	private String hLineHostMask, hLineServerName;
 	
 	public StatsEvent(Connection connection, String linkName,
-			int queuedSendData, int sentMessages, int receivedMessages,
+			int queuedSendData, int sentMessages, int sentBytes, int receivedMessages,
 			int receivedBytes, long millisOpen, String uptime, String lineHost,
 			String lineName, String lineClass, int linePort, String lineHost2,
 			String lineName2, String lineClass2, int linePort2,
@@ -48,6 +49,7 @@ public class StatsEvent {
 		this.linkName = linkName;
 		this.queuedSendData = queuedSendData;
 		this.sentMessages = sentMessages;
+		this.sentBytes = sentBytes;
 		this.receivedMessages = receivedMessages;
 		this.receivedBytes = receivedBytes;
 		this.millisOpen = millisOpen;
@@ -95,6 +97,10 @@ public class StatsEvent {
 
 	public int getSentMessages() {
 		return sentMessages;
+	}
+	
+	public int getSentBytes() {
+		return sentBytes;
 	}
 
 	public int getReceivedMessages() {

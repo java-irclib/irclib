@@ -767,7 +767,7 @@ class BasicListener implements IRCEventListener {
 					IRCConstants.RPL_STATSOLINE },
 			IRCConstants.RPL_ENDOFSTATS) {
 		class Stats {
-			String linkName; int sendQ, sentM, sentKB, recvM, recvKB; long millisOpen;
+			String linkName; int sendQ, sentM, sentB, recvM, recvB; long millisOpen;
 			Map commandMap = new TreeMap();
 			String uptime;
 			String clineHost, clineName, clineClass; int clinePort;
@@ -880,9 +880,9 @@ class BasicListener implements IRCEventListener {
 				stats.linkName = tokenizer.nextToken();
 				stats.sendQ = tryParseInt(tokenizer.nextToken());
 				stats.sentM = tryParseInt(tokenizer.nextToken());
-				stats.sentKB = tryParseInt(tokenizer.nextToken());
+				stats.sentB = tryParseInt(tokenizer.nextToken());
 				stats.recvM = tryParseInt(tokenizer.nextToken());
-				stats.recvKB = tryParseInt(tokenizer.nextToken());
+				stats.recvB = tryParseInt(tokenizer.nextToken());
 				try {
 					stats.millisOpen = Long.parseLong(tokenizer.nextToken()) * 1000;
 				} catch (Exception exc) {
@@ -898,8 +898,8 @@ class BasicListener implements IRCEventListener {
 		protected void fire(Object obj) {
 			Stats stats = (Stats)obj;
 			StatsEvent event = new StatsEvent(owner, 
-					stats.linkName, stats.sendQ, stats.sentM, stats.recvM, 
-					stats.recvKB, stats.millisOpen, stats.uptime, 
+					stats.linkName, stats.sendQ, stats.sentM, stats.sentB, 
+					stats.recvM, stats.recvB, stats.millisOpen, stats.uptime, 
 					stats.clineHost, stats.clineName, stats.clineClass, stats.clinePort, 
 					stats.nlineHost, stats.nlineName, stats.nlineClass, stats.nlinePort, 
 					stats.ilineHost, stats.ilineHost2, stats.ilineClass, stats.ilinePort, 
