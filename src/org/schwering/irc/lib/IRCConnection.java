@@ -369,6 +369,7 @@ public class IRCConnection extends Thread {
 			String line;
 			while (!isInterrupted()) {
 				line = in.readLine();
+				System.out.println("IN:  "+ line);
 				if (line != null)
 					get(line);
 				else
@@ -391,6 +392,7 @@ public class IRCConnection extends Thread {
 	 */
 	public void send(String line) {
 		try {
+			System.out.println("OUT: "+ line);
 			out.write(line +"\r\n");
 			out.flush();
 			if (level == 1) { // not registered
