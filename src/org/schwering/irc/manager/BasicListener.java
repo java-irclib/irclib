@@ -28,6 +28,7 @@ import org.schwering.irc.manager.event.NamesEvent;
 import org.schwering.irc.manager.event.NickEvent;
 import org.schwering.irc.manager.event.NumericEvent;
 import org.schwering.irc.manager.event.PingEvent;
+import org.schwering.irc.manager.event.StatsEvent;
 import org.schwering.irc.manager.event.TopicEvent;
 import org.schwering.irc.manager.event.UnexpectedEvent;
 import org.schwering.irc.manager.event.UserModeEvent;
@@ -896,6 +897,18 @@ class BasicListener implements IRCEventListener {
 		
 		protected void fire(Object obj) {
 			Stats stats = (Stats)obj;
+			StatsEvent event = new StatsEvent(owner, 
+					stats.linkName, stats.sendQ, stats.sentM, stats.recvM, 
+					stats.recvKB, stats.millisOpen, stats.uptime, 
+					stats.clineHost, stats.clineName, stats.clineClass, stats.clinePort, 
+					stats.nlineHost, stats.nlineName, stats.nlineClass, stats.nlinePort, 
+					stats.ilineHost, stats.ilineHost2, stats.ilineClass, stats.ilinePort, 
+					stats.klineHost, stats.klineUserName, stats.klineClass, stats.klinePort, 
+					stats.llineHostMask, stats.llineServerName, stats.llineMaxDepth, 
+					stats.ylineClass, stats.ylinePingFreq, stats.ylineConnectFreq, stats.ylineMaxSendQ, 
+					stats.olineHostmask, stats.olineName, 
+					stats.hlineHostmask, stats.hlineServerName);
+			owner.fireStatsReceived(event);
 		}
 		
 		public String toString() {

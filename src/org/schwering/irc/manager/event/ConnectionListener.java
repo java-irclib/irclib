@@ -53,6 +53,11 @@ public interface ConnectionListener extends EventListener {
 	 * Fired when an LINKS response was received completely.
 	 */
 	void linksReceived(LinksEvent event);
+	
+	/**
+	 * Fired when a STATS response was received completely.
+	 */
+	void statsReceived(StatsEvent event);
 
 	/**
 	 * Fired when the server asked for a ping pong.

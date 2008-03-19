@@ -31,6 +31,7 @@ import org.schwering.irc.manager.event.NickEvent;
 import org.schwering.irc.manager.event.NumericEvent;
 import org.schwering.irc.manager.event.PingEvent;
 import org.schwering.irc.manager.event.PrivateMessageListener;
+import org.schwering.irc.manager.event.StatsEvent;
 import org.schwering.irc.manager.event.TopicEvent;
 import org.schwering.irc.manager.event.UnexpectedEvent;
 import org.schwering.irc.manager.event.UnexpectedEventListener;
@@ -459,6 +460,16 @@ public class Connection {
 		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
 			try {
 				((ConnectionListener)it.next()).linksReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireStatsReceived(StatsEvent event) {
+		for (Iterator it = connectionListeners.iterator(); it.hasNext(); ) {
+			try {
+				((ConnectionListener)it.next()).statsReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}

@@ -74,6 +74,13 @@ public class ConnectionAdapter implements ConnectionListener {
 	public void linksReceived(LinksEvent event) {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.schwering.irc.manager.event.ConnectionListener#statsReceived(org.schwering.irc.manager.event.StatsEvent)
+	 */
+	public void statsReceived(StatsEvent event) {
+	}
+
 	/* (non-Javadoc)
 	 * @see org.schwering.irc.manager.event.ConnectionListener#pingReceived(org.schwering.irc.manager.event.PingEvent)
 	 */
