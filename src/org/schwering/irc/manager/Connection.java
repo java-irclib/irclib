@@ -1,6 +1,7 @@
 package org.schwering.irc.manager;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.SocketException;
 import java.util.Collection;
 import java.util.Collections;
@@ -175,6 +176,23 @@ public class Connection {
 	 */
 	public void setTimeout(int millis) {
 		conn.setTimeout(millis);
+	}
+	
+	/**
+	 * Enables or disables debugging.
+	 * @see IRCConnection#setDebug(boolean)
+	 */
+	public void setDebug(boolean debug) {
+		conn.setDebug(debug);
+	}
+	
+	/**
+	 * Sets the debug writer. <code>null</code> (default) means 
+	 * <code>System.out</code>.
+	 * @see IRCConnection#setDebugWriter(PrintWriter)
+	 */
+	public void setDebugWriter(PrintWriter debugWriter) {
+		conn.setDebugWriter(debugWriter);
 	}
 	
 	/**

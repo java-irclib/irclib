@@ -167,6 +167,16 @@ public class IRCConnection extends Thread {
 	 */
 	private String username;
 	
+	/**
+	 * Activiates or deactivates output of incoming and outgoing lines.
+	 */
+	private boolean debug = false;
+	
+	/**
+	 * The writer used for debugging output.
+	 */
+	private PrintWriter debugWriter;
+	
 // ------------------------------
 	
 	/**
@@ -369,7 +379,12 @@ public class IRCConnection extends Thread {
 			String line;
 			while (!isInterrupted()) {
 				line = in.readLine();
-				System.out.println("IN:  "+ line);
+				if (debug) {
+					if (debugWriter != null)
+						debugWriter.println("IN:  "+ line);
+					else
+						System.out.println("IN:  "+ line);
+				}
 				if (line != null)
 					get(line);
 				else
@@ -392,7 +407,12 @@ public class IRCConnection extends Thread {
 	 */
 	public void send(String line) {
 		try {
-			System.out.println("OUT: "+ line);
+			if (debug) {
+				if (debugWriter != null)
+					debugWriter.println("OUT: "+ line);
+				else
+					System.out.println("OUT: "+ line);
+			}
 			out.write(line +"\r\n");
 			out.flush();
 			if (level == 1) { // not registered
@@ -733,7 +753,7 @@ public class IRCConnection extends Thread {
 	 * This can be ISO-8859-1 or UTF-8 for example.
 	 * This property must be set before a call to the <code>connect()</code> 
 	 * method.
-	 * @param encoding 
+	 * @param encoding The new encoding string, e.g. <code>"UTF-8"</code>.
 	 */
 	public void setEncoding(String encoding) {
 		this.encoding	= encoding;
@@ -743,16 +763,44 @@ public class IRCConnection extends Thread {
 	
 	/**
 	 * Sets the connection's timeout in milliseconds. <br />
-	 * The default is <code>1000 * 60 15</code> millis which are 15 minutes. 
+	 * The default is <code>1000 * 60 15</code> millis which are 15 minutes.
+	 * @param millis The socket's timeout in milliseconds. 
 	 */
 	public void setTimeout(int millis) {
-		if (socket != null)
+		if (socket != null) {
 			try {
 				socket.setSoTimeout(millis);
 			} catch (IOException exc) {
 				exc.printStackTrace();
 			}
-			timeout = millis;
+		}
+		timeout = millis;
+	}
+	
+// ------------------------------
+	
+	/**
+	 * Enables or disables debugging output. By default, it's disabled.
+	 * If debugging is enabled, each incoming and outgoing line is printed
+	 * rawly.
+	 * @param debug <code>true</code> enables debugging mode.
+	 * @see #setDebugWriter(PrintWriter)
+	 */
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+	
+// ------------------------------
+	
+	/**
+	 * Sets the debug writer. If <code>debugWriter</code> is <code>null</code>,
+	 * the debugging lines are printed to <code>System.out</code>.
+	 * @param debugWriter The writer used to print the incoming and outgoing
+	 *                    lines if debugging is enabled.
+	 * @see #setDebug(boolean)
+	 */
+	public void setDebugWriter(PrintWriter debugWriter) {
+		this.debugWriter = debugWriter;
 	}
 	
 // ------------------------------
