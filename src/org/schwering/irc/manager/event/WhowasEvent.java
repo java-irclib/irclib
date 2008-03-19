@@ -9,8 +9,7 @@ import org.schwering.irc.manager.User;
  * @since 2.00
  * @version 1.00
  * @see ConnectionListener#whowasReceived(WhowasEvent)
- * @see ChannelListener#whowasReceived(WhowasEvent)
- */
+*/
 public class WhowasEvent {
 	private Connection connection;
 	private User user;
