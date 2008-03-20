@@ -6,7 +6,7 @@ package org.schwering.irc.manager.event;
  * @since 2.00
  * @version 1.00
  */
-public class CtcpAdapter2 implements CTCPListener {
+public class CtcpAdapter implements CtcpListener {
 	public void actionReceived(CtcpActionEvent event) {
 	}
 
@@ -22,7 +22,7 @@ public class CtcpAdapter2 implements CTCPListener {
 	public void fingerReceived(CtcpFingerEvent event) {
 	}
 
-	public void pingReceived(CTCPPingEvent event) {
+	public void pingReceived(CtcpPingEvent event) {
 	}
 
 	public void sedReceived(CtcpSedEvent event) {

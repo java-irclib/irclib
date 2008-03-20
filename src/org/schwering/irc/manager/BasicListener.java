@@ -15,6 +15,18 @@ import org.schwering.irc.lib.IRCUser;
 import org.schwering.irc.lib.IRCConstants;
 import org.schwering.irc.lib.IRCUtil;
 import org.schwering.irc.manager.event.BanlistEvent;
+import org.schwering.irc.manager.event.CtcpActionEvent;
+import org.schwering.irc.manager.event.CtcpClientinfoEvent;
+import org.schwering.irc.manager.event.CtcpDccEvent;
+import org.schwering.irc.manager.event.CtcpErrmsgEvent;
+import org.schwering.irc.manager.event.CtcpFingerEvent;
+import org.schwering.irc.manager.event.CtcpPingEvent;
+import org.schwering.irc.manager.event.CtcpSedEvent;
+import org.schwering.irc.manager.event.CtcpSourceEvent;
+import org.schwering.irc.manager.event.CtcpTimeEvent;
+import org.schwering.irc.manager.event.CtcpUnknownEvent;
+import org.schwering.irc.manager.event.CtcpUserinfoEvent;
+import org.schwering.irc.manager.event.CtcpVersionEvent;
 import org.schwering.irc.manager.event.ChannelModeEvent;
 import org.schwering.irc.manager.event.ConnectionEvent;
 import org.schwering.irc.manager.event.ErrorEvent;
@@ -1036,6 +1048,14 @@ class BasicListener implements IRCEventListener {
 	}
 	
 	public void onNotice(String target, IRCUser ircUser, String msgStr) {
+		if (owner.isCtcpEnabled()) {
+			onNoticeCtcp(target, ircUser, msgStr);
+		} else {
+			onNoticeNoCtcp(target, ircUser, msgStr);
+		}
+	}
+	
+	public void onNoticeNoCtcp(String target, IRCUser ircUser, String msgStr) {
 		User sender = owner.resolveUser(ircUser);
 		Message msg = new Message(owner, msgStr);
 		if (IRCUtil.isChan(target)) {
@@ -1051,7 +1071,54 @@ class BasicListener implements IRCEventListener {
 		}
 	}
 
+	public void onNoticeCtcp(String target, IRCUser ircUser, String msgStr) {
+		User sender = owner.resolveUser(ircUser);
+		List tokens = CtcpUtil.ctcpTokenize(msgStr);
+		Iterator it = tokens.iterator();
+		if (IRCUtil.isChan(target)) {
+			Channel channel = owner.resolveChannel(target);
+			for (int i = 0; it.hasNext(); i++) {
+				String str = (String)it.next();
+				if (str == null) {
+					continue;
+				}
+				if ((i % 2) == 0) {
+					Message msg = new Message(owner, str);
+					MessageEvent event = new MessageEvent(owner, sender, channel, msg);
+					owner.fireNoticeReceived(event);
+					channel.fireNoticeReceived(event);
+				} else {
+					handleCtcp(sender, channel, str);
+				}
+			}
+		} else {
+			User user = owner.resolveUser(target);
+			for (int i = 0; it.hasNext(); i++) {
+				String str = (String)it.next();
+				if (str == null) {
+					continue;
+				}
+				if ((i % 2) == 0) {
+					Message msg = new Message(owner, str);
+					MessageEvent event = new MessageEvent(owner, sender, user, msg); 
+					owner.fireNoticeReceived(event);
+					owner.firePrivateNoticeReceived(event);
+				} else {
+					handleCtcp(sender, user, str);
+				}
+			}
+		}
+	}
+
 	public void onPrivmsg(String target, IRCUser ircUser, String msgStr) {
+		if (owner.isCtcpEnabled()) {
+			onPrivmsgCtcp(target, ircUser, msgStr);
+		} else {
+			onPrivmsgNoCtcp(target, ircUser, msgStr);
+		}
+	}
+	
+	public void onPrivmsgNoCtcp(String target, IRCUser ircUser, String msgStr) {
 		User sender = owner.resolveUser(ircUser);
 		Message msg = new Message(owner, msgStr);
 		if (IRCUtil.isChan(target)) {
@@ -1064,6 +1131,175 @@ class BasicListener implements IRCEventListener {
 			MessageEvent event = new MessageEvent(owner, sender, user, msg);
 			owner.fireMessageReceived(event);
 			owner.firePrivateMessageReceived(event);
+		}
+	}
+	
+	public void onPrivmsgCtcp(String target, IRCUser ircUser, String msgStr) {
+		User sender = owner.resolveUser(ircUser);
+		List tokens = CtcpUtil.ctcpTokenize(msgStr);
+		Iterator it = tokens.iterator();
+		if (IRCUtil.isChan(target)) {
+			Channel channel = owner.resolveChannel(target);
+			for (int i = 0; it.hasNext(); i++) {
+				String str = (String)it.next();
+				if (str == null) {
+					continue;
+				}
+				if ((i % 2) == 0) {
+					Message msg = new Message(owner, str);
+					MessageEvent event = new MessageEvent(owner, 
+							sender, channel, msg);
+					owner.fireMessageReceived(event);
+					channel.fireMessageReceived(event);
+				} else {
+					handleCtcp(sender, channel, str);
+				}
+			}
+		} else {
+			User user = owner.resolveUser(target);
+			for (int i = 0; it.hasNext(); i++) {
+				String str = (String)it.next();
+				if (str == null) {
+					continue;
+				}
+				if ((i % 2) == 0) {
+					Message msg = new Message(owner, str);
+					MessageEvent event = new MessageEvent(owner, 
+							sender, user, msg); 
+					owner.fireMessageReceived(event);
+					owner.firePrivateMessageReceived(event);
+				} else {
+					handleCtcp(sender, user, str);
+				}
+			}
+		}
+	}
+	
+	private void handleCtcp(User sender, Channel dest, String msg) {
+		msg = CtcpUtil.ctcpDequote(CtcpUtil.lowDequote(msg));
+		try {
+			String command = getFirstToken(msg);
+			String rest = skipFirstToken(msg);
+			if (command == null) {
+				CtcpUnknownEvent event = new CtcpUnknownEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpUnknownEventReceived(event);
+				dest.fireCtcpUnknownEventReceived(event);
+			} else if (command.equals("ACTION")) {
+				CtcpActionEvent event = new CtcpActionEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpActionReceived(event);
+				dest.fireCtcpActionReceived(event);
+			} else if (command.equals("DCC")) {
+				CtcpDccEvent event = new CtcpDccEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpDccReceived(event);
+				dest.fireCtcpDccReceived(event);
+			} else if (command.equals("SED")) {
+				CtcpSedEvent event = new CtcpSedEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpSedReceived(event);
+				dest.fireCtcpSedReceived(event);
+			} else if (command.equals("FINGER")) {
+				CtcpFingerEvent event = new CtcpFingerEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpFingerReceived(event);
+				dest.fireCtcpFingerReceived(event);
+			} else if (command.equals("VERSION")) {
+				CtcpVersionEvent event = new CtcpVersionEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpVersionReceived(event);
+				dest.fireCtcpVersionReceived(event);
+			} else if (command.equals("SOURCE")) {
+				CtcpSourceEvent event = new CtcpSourceEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpSourceReceived(event);
+				dest.fireCtcpSourceReceived(event);
+			} else if (command.equals("USERINFO")) {
+				CtcpUserinfoEvent event = new CtcpUserinfoEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpUserinfoReceived(event);
+				dest.fireCtcpUserinfoReceived(event);
+			} else if (command.equals("CLIENTINFO")) {
+				CtcpClientinfoEvent event = new CtcpClientinfoEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpClientinfoReceived(event);
+				dest.fireCtcpClientinfoReceived(event);
+			} else if (command.equals("ERRMSG")) {
+				CtcpErrmsgEvent event = new CtcpErrmsgEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpErrmsgReceived(event);
+				dest.fireCtcpErrmsgReceived(event);
+			} else if (command.equals("PING")) {
+				CtcpPingEvent event = new CtcpPingEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpPingReceived(event);
+				dest.fireCtcpPingReceived(event);
+			} else if (command.equals("TIME")) {
+				CtcpTimeEvent event = new CtcpTimeEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpTimeReceived(event);
+				dest.fireCtcpTimeReceived(event);
+			} else {
+				CtcpUnknownEvent event = new CtcpUnknownEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpUnknownEventReceived(event);
+				dest.fireCtcpUnknownEventReceived(event);
+			}
+		} catch (Exception exc) {
+			System.err.println("Error with msg='"+msg+"':");
+			exc.printStackTrace();
+		}
+	}
+	
+	private void handleCtcp(User sender, User dest, String msg) {
+		msg = CtcpUtil.ctcpDequote(CtcpUtil.lowDequote(msg));
+		try {
+			String command = getFirstToken(msg);
+			String rest = skipFirstToken(msg);
+			if (command == null) {
+				CtcpUnknownEvent event = new CtcpUnknownEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpUnknownEventReceived(event);
+				owner.firePrivateCtcpUnknownEventReceived(event);
+			} else if (command.equals("ACTION")) {
+				CtcpActionEvent event = new CtcpActionEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpActionReceived(event);
+				owner.firePrivateCtcpActionReceived(event);
+			} else if (command.equals("DCC")) {
+				CtcpDccEvent event = new CtcpDccEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpDccReceived(event);
+				owner.firePrivateCtcpDccReceived(event);
+			} else if (command.equals("SED")) {
+				CtcpSedEvent event = new CtcpSedEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpSedReceived(event);
+				owner.firePrivateCtcpSedReceived(event);
+			} else if (command.equals("FINGER")) {
+				CtcpFingerEvent event = new CtcpFingerEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpFingerReceived(event);
+				owner.firePrivateCtcpFingerReceived(event);
+			} else if (command.equals("VERSION")) {
+				CtcpVersionEvent event = new CtcpVersionEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpVersionReceived(event);
+				owner.firePrivateCtcpVersionReceived(event);
+			} else if (command.equals("SOURCE")) {
+				CtcpSourceEvent event = new CtcpSourceEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpSourceReceived(event);
+				owner.firePrivateCtcpSourceReceived(event);
+			} else if (command.equals("USERINFO")) {
+				CtcpUserinfoEvent event = new CtcpUserinfoEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpUserinfoReceived(event);
+				owner.firePrivateCtcpUserinfoReceived(event);
+			} else if (command.equals("CLIENTINFO")) {
+				CtcpClientinfoEvent event = new CtcpClientinfoEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpClientinfoReceived(event);
+				owner.firePrivateCtcpClientinfoReceived(event);
+			} else if (command.equals("ERRMSG")) {
+				CtcpErrmsgEvent event = new CtcpErrmsgEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpErrmsgReceived(event);
+				owner.firePrivateCtcpErrmsgReceived(event);
+			} else if (command.equals("PING")) {
+				CtcpPingEvent event = new CtcpPingEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpPingReceived(event);
+				owner.firePrivateCtcpPingReceived(event);
+			} else if (command.equals("TIME")) {
+				CtcpTimeEvent event = new CtcpTimeEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpTimeReceived(event);
+				owner.firePrivateCtcpTimeReceived(event);
+			} else {
+				CtcpUnknownEvent event = new CtcpUnknownEvent(owner, sender, dest, command, rest);
+				owner.fireCtcpUnknownEventReceived(event);
+				owner.firePrivateCtcpUnknownEventReceived(event);
+			}
+		} catch (Exception exc) {
+			System.err.println("Error with msg='"+msg+"':");
+			exc.printStackTrace();
 		}
 	}
 	

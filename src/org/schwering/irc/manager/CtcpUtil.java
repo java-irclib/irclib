@@ -39,7 +39,7 @@ import org.schwering.irc.lib.IRCConstants;
  * @since 2.00
  * @version 1.00
  */
-class CtcpUtil2 {
+class CtcpUtil {
 	public static final char MQUOTE = 0020;
 	public static final char XDELIM = IRCConstants.CTCP_DELIMITER;
 	public static final char XQUOTE = 0134;

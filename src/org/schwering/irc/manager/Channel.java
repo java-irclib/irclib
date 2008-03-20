@@ -9,6 +9,19 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.schwering.irc.manager.event.BanlistEvent;
+import org.schwering.irc.manager.event.CtcpActionEvent;
+import org.schwering.irc.manager.event.CtcpClientinfoEvent;
+import org.schwering.irc.manager.event.CtcpDccEvent;
+import org.schwering.irc.manager.event.CtcpErrmsgEvent;
+import org.schwering.irc.manager.event.CtcpFingerEvent;
+import org.schwering.irc.manager.event.CtcpListener;
+import org.schwering.irc.manager.event.CtcpPingEvent;
+import org.schwering.irc.manager.event.CtcpSedEvent;
+import org.schwering.irc.manager.event.CtcpSourceEvent;
+import org.schwering.irc.manager.event.CtcpTimeEvent;
+import org.schwering.irc.manager.event.CtcpUnknownEvent;
+import org.schwering.irc.manager.event.CtcpUserinfoEvent;
+import org.schwering.irc.manager.event.CtcpVersionEvent;
 import org.schwering.irc.manager.event.ChannelListener;
 import org.schwering.irc.manager.event.MessageEvent;
 import org.schwering.irc.manager.event.ChannelModeEvent;
@@ -21,7 +34,9 @@ import org.schwering.irc.manager.event.WhoEvent;
 
 /**
  * Represents an IRC channel. This object manages a list of users in the
- * channel, the channel's topic and a list of <code>ChannelListener</code>s.
+ * channel, the channel's topic and a list of <code>ChannelListener</code>s
+ * and a list of <code>CtcpListener</code>s which handle Ctcp events sent
+ * to a whole channel.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
@@ -35,7 +50,8 @@ public class Channel implements Comparable {
 	private SortedMap users = new TreeMap();
 	private Topic topic;
 	private List banIDs;
-	private Collection listeners = new LinkedList();
+	private Collection channelListeners = new LinkedList();
+	private Collection ctcpListeners = new LinkedList();
 	
 	// TODO administer channel modes 
 	
@@ -175,15 +191,15 @@ public class Channel implements Comparable {
 	/* ChannelListener methods */
 	
 	public synchronized void addChannelListener(ChannelListener listener) {
-		listeners.add(listener);
+		channelListeners.add(listener);
 	}
 	
 	public synchronized void removeChannelListener(ChannelListener listener) {
-		listeners.remove(listener);
+		channelListeners.remove(listener);
 	}
 	
 	synchronized void fireUserJoined(UserParticipationEvent event) {
-		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
+		for (Iterator it = channelListeners.iterator(); it.hasNext(); ) {
 			try {
 				((ChannelListener)it.next()).userJoined(event);
 			} catch (Exception exc) {
@@ -193,7 +209,7 @@ public class Channel implements Comparable {
 	}
 	
 	synchronized void fireUserLeft(UserParticipationEvent event) {
-		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
+		for (Iterator it = channelListeners.iterator(); it.hasNext(); ) {
 			try {
 				((ChannelListener)it.next()).userLeft(event);
 			} catch (Exception exc) {
@@ -203,7 +219,7 @@ public class Channel implements Comparable {
 	}
 	
 	synchronized void fireUserStatusChanged(UserStatusEvent event) {
-		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
+		for (Iterator it = channelListeners.iterator(); it.hasNext(); ) {
 			try {
 				((ChannelListener)it.next()).userStatusChanged(event);
 			} catch (Exception exc) {
@@ -213,7 +229,7 @@ public class Channel implements Comparable {
 	}
 	
 	synchronized void fireTopicReceived(TopicEvent event) {
-		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
+		for (Iterator it = channelListeners.iterator(); it.hasNext(); ) {
 			try {
 				((ChannelListener)it.next()).topicReceived(event);
 			} catch (Exception exc) {
@@ -223,7 +239,7 @@ public class Channel implements Comparable {
 	}
 	
 	synchronized void fireChannelModeReceived(ChannelModeEvent event) {
-		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
+		for (Iterator it = channelListeners.iterator(); it.hasNext(); ) {
 			try {
 				((ChannelListener)it.next()).channelModeReceived(event);
 			} catch (Exception exc) {
@@ -233,7 +249,7 @@ public class Channel implements Comparable {
 	}
 	
 	synchronized void fireNickChanged(NickEvent event) {
-		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
+		for (Iterator it = channelListeners.iterator(); it.hasNext(); ) {
 			try {
 				((ChannelListener)it.next()).nickChanged(event);
 			} catch (Exception exc) {
@@ -243,7 +259,7 @@ public class Channel implements Comparable {
 	}
 	
 	synchronized void fireMessageReceived(MessageEvent event) {
-		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
+		for (Iterator it = channelListeners.iterator(); it.hasNext(); ) {
 			try {
 				((ChannelListener)it.next()).messageReceived(event);
 			} catch (Exception exc) {
@@ -253,7 +269,7 @@ public class Channel implements Comparable {
 	}
 	
 	synchronized void fireNoticeReceived(MessageEvent event) {
-		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
+		for (Iterator it = channelListeners.iterator(); it.hasNext(); ) {
 			try {
 				((ChannelListener)it.next()).noticeReceived(event);
 			} catch (Exception exc) {
@@ -263,7 +279,7 @@ public class Channel implements Comparable {
 	}
 	
 	synchronized void fireNamesReceived(NamesEvent event) {
-		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
+		for (Iterator it = channelListeners.iterator(); it.hasNext(); ) {
 			try {
 				((ChannelListener)it.next()).namesReceived(event);
 			} catch (Exception exc) {
@@ -273,7 +289,7 @@ public class Channel implements Comparable {
 	}
 	
 	synchronized void fireWhoReceived(WhoEvent event) {
-		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
+		for (Iterator it = channelListeners.iterator(); it.hasNext(); ) {
 			try {
 				((ChannelListener)it.next()).whoReceived(event);
 			} catch (Exception exc) {
@@ -283,9 +299,139 @@ public class Channel implements Comparable {
 	}
 	
 	synchronized void fireBanlistReceived(BanlistEvent event) {
-		for (Iterator it = listeners.iterator(); it.hasNext(); ) {
+		for (Iterator it = channelListeners.iterator(); it.hasNext(); ) {
 			try {
 				((ChannelListener)it.next()).banlistReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	/* Ctcp listener methods */
+	
+	public synchronized void addCtcpListener(CtcpListener listener) {
+		ctcpListeners.add(listener);
+	}
+	
+	public synchronized void removeCtcpListener(CtcpListener listener) {
+		ctcpListeners.remove(listener);
+	}
+	
+	synchronized void fireCtcpDccReceived(CtcpDccEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).dccReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpSedReceived(CtcpSedEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).sedReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpActionReceived(CtcpActionEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).actionReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpPingReceived(CtcpPingEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).pingReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpTimeReceived(CtcpTimeEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).timeReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpVersionReceived(CtcpVersionEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).versionReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpFingerReceived(CtcpFingerEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).fingerReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpSourceReceived(CtcpSourceEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).sourceReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpUserinfoReceived(CtcpUserinfoEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).userinfoReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpClientinfoReceived(CtcpClientinfoEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).clientinfoReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpUnknownEventReceived(CtcpUnknownEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).unknownEventReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpErrmsgReceived(CtcpErrmsgEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).errmsgReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}

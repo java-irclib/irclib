@@ -16,7 +16,19 @@ import org.schwering.irc.lib.IRCEventListener;
 import org.schwering.irc.lib.IRCUser;
 import org.schwering.irc.lib.ssl.SSLIRCConnection;
 import org.schwering.irc.manager.event.BanlistEvent;
-import org.schwering.irc.manager.event.CTCPListener;
+import org.schwering.irc.manager.event.CtcpActionEvent;
+import org.schwering.irc.manager.event.CtcpClientinfoEvent;
+import org.schwering.irc.manager.event.CtcpDccEvent;
+import org.schwering.irc.manager.event.CtcpErrmsgEvent;
+import org.schwering.irc.manager.event.CtcpFingerEvent;
+import org.schwering.irc.manager.event.CtcpListener;
+import org.schwering.irc.manager.event.CtcpPingEvent;
+import org.schwering.irc.manager.event.CtcpSedEvent;
+import org.schwering.irc.manager.event.CtcpSourceEvent;
+import org.schwering.irc.manager.event.CtcpTimeEvent;
+import org.schwering.irc.manager.event.CtcpUnknownEvent;
+import org.schwering.irc.manager.event.CtcpUserinfoEvent;
+import org.schwering.irc.manager.event.CtcpVersionEvent;
 import org.schwering.irc.manager.event.ChannelModeEvent;
 import org.schwering.irc.manager.event.ConnectionEvent;
 import org.schwering.irc.manager.event.ConnectionListener;
@@ -48,7 +60,7 @@ import org.schwering.irc.manager.event.WhowasEvent;
  * <p>
  * This class manages the wrapped <code>IRCConnection</code> object and
  * a set of the joined channels. Additionally, a connection is the point where 
- * <code>ConnectionListener</code>s, <code>CTCPListener</code>s,
+ * <code>ConnectionListener</code>s, <code>CtcpListener</code>s,
  * <code>PrivateMessageListener</code>s, and
  * <code>UnexpectedEventListener</code>s are registered.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
@@ -60,9 +72,11 @@ public class Connection {
 	private SortedMap channels = new TreeMap();
 	private boolean requestModes = true;
 	private boolean colorsEnabled = true;
+	private boolean ctcpEnabled = true;
 	private NickGenerator nickGenerator = new DefaultNickGenerator();
 	private List connectionListeners = new LinkedList();
 	private List ctcpListeners = new LinkedList();
+	private List privateCtcpListeners = new LinkedList();
 	private List privateMessageListeners = new LinkedList();
 	private List unexpectedEventListeners = new LinkedList();
 	
@@ -297,6 +311,14 @@ public class Connection {
 	 */
 	public boolean isColorsEnabled() {
 		return colorsEnabled;
+	}
+	
+	public void setCtcp(boolean enableCtcp) {
+		this.ctcpEnabled = enableCtcp;
+	}
+	
+	public boolean isCtcpEnabled() {
+		return ctcpEnabled;
 	}
 	
 	/**
@@ -753,14 +775,264 @@ public class Connection {
 		}
 	}
 	
-	/* CTCP listener methods (TODO: fireEvent() methods!) */
+	/* Ctcp listener methods */
 	
-	public synchronized void addCTCPListener(CTCPListener listener) {
+	public synchronized void addCtcpListener(CtcpListener listener) {
 		ctcpListeners.add(listener);
 	}
 	
-	public synchronized void removeCTCPListener(CTCPListener listener) {
+	public synchronized void removeCtcpListener(CtcpListener listener) {
 		ctcpListeners.remove(listener);
+	}
+	
+	synchronized void fireCtcpDccReceived(CtcpDccEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).dccReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpSedReceived(CtcpSedEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).sedReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpActionReceived(CtcpActionEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).actionReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpPingReceived(CtcpPingEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).pingReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpTimeReceived(CtcpTimeEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).timeReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpVersionReceived(CtcpVersionEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).versionReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpFingerReceived(CtcpFingerEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).fingerReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpSourceReceived(CtcpSourceEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).sourceReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpUserinfoReceived(CtcpUserinfoEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).userinfoReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpClientinfoReceived(CtcpClientinfoEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).clientinfoReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpUnknownEventReceived(CtcpUnknownEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).unknownEventReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void fireCtcpErrmsgReceived(CtcpErrmsgEvent event) {
+		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).errmsgReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	/* private Ctcp listener methods */
+	
+	public synchronized void addPrivateCtcpListener(CtcpListener listener) {
+		privateCtcpListeners.add(listener);
+	}
+	
+	public synchronized void removePrivateCtcpListener(CtcpListener listener) {
+		privateCtcpListeners.remove(listener);
+	}
+	
+	synchronized void firePrivateCtcpDccReceived(CtcpDccEvent event) {
+		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).dccReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void firePrivateCtcpSedReceived(CtcpSedEvent event) {
+		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).sedReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void firePrivateCtcpActionReceived(CtcpActionEvent event) {
+		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).actionReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void firePrivateCtcpPingReceived(CtcpPingEvent event) {
+		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).pingReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void firePrivateCtcpTimeReceived(CtcpTimeEvent event) {
+		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).timeReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void firePrivateCtcpVersionReceived(CtcpVersionEvent event) {
+		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).versionReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void firePrivateCtcpFingerReceived(CtcpFingerEvent event) {
+		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).fingerReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void firePrivateCtcpSourceReceived(CtcpSourceEvent event) {
+		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).sourceReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void firePrivateCtcpUserinfoReceived(CtcpUserinfoEvent event) {
+		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).userinfoReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void firePrivateCtcpClientinfoReceived(CtcpClientinfoEvent event) {
+		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).clientinfoReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void firePrivateCtcpUnknownEventReceived(CtcpUnknownEvent event) {
+		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).unknownEventReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
+	}
+	
+	synchronized void firePrivateCtcpErrmsgReceived(CtcpErrmsgEvent event) {
+		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
+			try {
+				((CtcpListener)it.next()).errmsgReceived(event);
+			} catch (Exception exc) {
+				handleException(exc);
+			}
+		}
 	}
 	
 	/* UnexpectedEventListener methods */
