@@ -5,11 +5,11 @@ import org.schwering.irc.manager.Connection;
 import org.schwering.irc.manager.User;
 
 /**
- * Fired when a CTCP Clientinfo request has been received.
+ * Fired when a CTCP CLIENTINFO request has been received.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
- * @see CTCPListener#ClientinfoReceived(CTCPClientinfoEvent)
+ * @see CtcpListener#clientinfoReceived(CtcpClientinfoEvent)
  */
 public class CtcpClientinfoEvent {
 	private Connection connection;

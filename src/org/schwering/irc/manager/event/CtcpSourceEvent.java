@@ -5,11 +5,11 @@ import org.schwering.irc.manager.Connection;
 import org.schwering.irc.manager.User;
 
 /**
- * Fired when a CTCP Source request has been received.
+ * Fired when a CTCP SOURCE request has been received.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
- * @see CTCPListener#SourceReceived(CTCPSourceEvent)
+ * @see CtcpListener#sourceReceived(CtcpSourceEvent)
  */
 public class CtcpSourceEvent {
 	private Connection connection;

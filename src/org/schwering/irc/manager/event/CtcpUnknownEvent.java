@@ -9,7 +9,7 @@ import org.schwering.irc.manager.User;
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
- * @see CTCPListener#UnknownEventReceived(CTCPUnknownEvent)
+ * @see CtcpListener#unknownEventReceived(CtcpUnknownEvent)
  */
 public class CtcpUnknownEvent {
 	private Connection connection;

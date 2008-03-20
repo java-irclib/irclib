@@ -5,11 +5,11 @@ import org.schwering.irc.manager.Connection;
 import org.schwering.irc.manager.User;
 
 /**
- * Fired when a CTCP Finger request has been received.
+ * Fired when a CTCP FINGER request has been received.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
- * @see CTCPListener#FingerReceived(CTCPFingerEvent)
+ * @see CtcpListener#fingerReceived(CtcpFingerEvent)
  */
 public class CtcpFingerEvent {
 	private Connection connection;
