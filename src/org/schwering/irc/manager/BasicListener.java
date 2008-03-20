@@ -200,7 +200,7 @@ class BasicListener implements IRCEventListener {
 				String msg) {
 			Topic topic = (Topic)obj;
 			if (num == IRCConstants.RPL_TOPIC) {
-				Message message = new Message(msg);
+				Message message = new Message(owner, msg);
 				topic.setMessage(message);
 			} else if (num == IRCConstants.RPL_NOTOPIC) {
 				topic.setMessage(null);
@@ -258,7 +258,8 @@ class BasicListener implements IRCEventListener {
 			} catch (Exception exc) {
 				visibleCount = -1;
 			}
-			Message topicMsg = (topicStr != null && topicStr.length() > 0) ? new Message(topicStr) : null;
+			Message topicMsg = (topicStr != null && topicStr.length() > 0) ? 
+					new Message(owner, topicStr) : null;
 			Topic topic = new Topic(channel, topicMsg);
 			list.topics.add(topic);
 			list.visibleCount.add(new Integer(visibleCount));
@@ -1006,19 +1007,19 @@ class BasicListener implements IRCEventListener {
 				Channel channel = (Channel)it.next();
 				UserParticipationEvent event = new UserParticipationEvent(owner,
 						channel, user, UserParticipationEvent.QUIT, 
-						new Message(msg));
+						new Message(owner, msg));
 				owner.fireChannelLeft(event);
 				owner.removeChannel(channel);
 			}
 		} else {
 			UserParticipationEvent event = new UserParticipationEvent(owner,
-					null, user, UserParticipationEvent.QUIT, new Message(msg));
+					null, user, UserParticipationEvent.QUIT, new Message(owner, msg));
 			owner.fireUserLeft(event);
 			for (Iterator it = owner.getChannels().iterator(); it.hasNext(); ) {
 				Channel channel = (Channel)it.next();
 				UserParticipationEvent event2 = new UserParticipationEvent(owner,
 						channel, user, UserParticipationEvent.QUIT, 
-						new Message(msg));
+						new Message(owner, msg));
 				if (channel.hasUser(user)) {
 					channel.fireUserLeft(event2);
 					channel.removeUser(user);
@@ -1034,8 +1035,9 @@ class BasicListener implements IRCEventListener {
 		owner.fireUnexpectedEventReceived(event);
 	}
 	
-	public void onNotice(String target, IRCUser ircUser, String msg) {
+	public void onNotice(String target, IRCUser ircUser, String msgStr) {
 		User sender = owner.resolveUser(ircUser);
+		Message msg = new Message(owner, msgStr);
 		if (IRCUtil.isChan(target)) {
 			Channel channel = owner.resolveChannel(target);
 			MessageEvent event = new MessageEvent(owner, sender, channel, msg);
@@ -1043,15 +1045,15 @@ class BasicListener implements IRCEventListener {
 			channel.fireNoticeReceived(event);
 		} else {
 			User user = owner.resolveUser(target);
-			MessageEvent event = new MessageEvent(owner, sender, user, 
-					new Message(msg));
+			MessageEvent event = new MessageEvent(owner, sender, user, msg); 
 			owner.fireNoticeReceived(event);
 			owner.firePrivateNoticeReceived(event);
 		}
 	}
 
-	public void onPrivmsg(String target, IRCUser ircUser, String msg) {
+	public void onPrivmsg(String target, IRCUser ircUser, String msgStr) {
 		User sender = owner.resolveUser(ircUser);
+		Message msg = new Message(owner, msgStr);
 		if (IRCUtil.isChan(target)) {
 			Channel channel = owner.resolveChannel(target);
 			MessageEvent event = new MessageEvent(owner, sender, channel, msg);
@@ -1059,8 +1061,7 @@ class BasicListener implements IRCEventListener {
 			channel.fireMessageReceived(event);
 		} else {
 			User user = owner.resolveUser(target);
-			MessageEvent event = new MessageEvent(owner, sender, user, 
-					new Message(msg));
+			MessageEvent event = new MessageEvent(owner, sender, user, msg);
 			owner.fireMessageReceived(event);
 			owner.firePrivateMessageReceived(event);
 		}
@@ -1093,7 +1094,7 @@ class BasicListener implements IRCEventListener {
 		User user = owner.resolveUser(ircUser);
 		UserParticipationEvent event = new UserParticipationEvent(owner, 
 				channel, user, UserParticipationEvent.PART, 
-				new Message(msg));
+				new Message(owner, msg));
 		if (user.isSame(owner.getNick())) {
 			owner.fireChannelLeft(event);
 			channel.removeUser(user);
@@ -1113,7 +1114,7 @@ class BasicListener implements IRCEventListener {
 		User kickedUser = owner.resolveUser(passiveNick);
 		UserParticipationEvent event = new UserParticipationEvent(owner, 
 				channel, user, UserParticipationEvent.KICK, 
-				new Message(msg), kickingUser);
+				new Message(owner, msg), kickingUser);
 		if (user.isSame(owner.getNick())) {
 			owner.fireChannelLeft(event);
 			channel.removeUser(kickedUser);
@@ -1127,7 +1128,8 @@ class BasicListener implements IRCEventListener {
 	
 	public void onTopic(String chan, IRCUser ircUser, String msg) {
 		Channel channel = owner.resolveChannel(chan);
-		Message message = (msg == null || msg.trim().length() > 0) ? new Message(msg) : null;
+		Message message = (msg == null || msg.trim().length() > 0) ? 
+				new Message(owner, msg) : null;
 		User user = owner.resolveUser(ircUser);
 		Date date = new Date();
 		Topic topic = new Topic(channel, message, user, date);

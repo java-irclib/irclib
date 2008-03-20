@@ -34,11 +34,11 @@ public class MessageEvent {
 	}
 
 	public MessageEvent(Connection connection, User sender, 
-			Channel destinationChannel, String msg) {
+			Channel destinationChannel, Message msg) {
 		this.connection = connection;
 		this.destinationChannel = destinationChannel;
 		this.sender = sender;
-		this.message = new Message(msg);
+		this.message = msg;
 	}
 
 	public Connection getConnection() {

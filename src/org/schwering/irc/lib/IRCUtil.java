@@ -134,8 +134,70 @@ public class IRCUtil implements IRCConstants {
 	 * @return A line cleaned from any mIRC colorcodes.
 	 * @see #parseColors(StringBuffer)
 	 */
+	public static String stripColors(String str) {
+		return parseColors(new StringBuffer(str), false).toString();
+	}
+	
+	
+// ------------------------------
+		
+	/** 
+	 * Erases the mIRC colorcodes from a StringBuffer. 
+	 * The documentation of the evil color codes is available on
+	 * <a href="http://www.mirc.co.uk/help/color.txt" 
+	 * target="_blank">http://www.mirc.co.uk/help/color.txt</a>. 
+	 * This method links to the <code>parseColors(StringBuffer)</code> method.
+	 * @param buf The line which should be parsed. 
+	 * @return A line cleaned from any mIRC colorcodes.
+	 * @see #parseColors(StringBuffer)
+	 */
+	public static StringBuffer stripColors(StringBuffer buf) {
+		return parseColors(buf, false);
+	}
+	
+	
+// ------------------------------
+		
+	/** 
+	 * Erases the mIRC colorcodes and CTCP delimiters from a String. 
+	 * The documentation of the evil color codes is available on
+	 * <a href="http://www.mirc.co.uk/help/color.txt" 
+	 * target="_blank">http://www.mirc.co.uk/help/color.txt</a>. 
+	 * This method links to the <code>parseColors(StringBuffer)</code> method.
+	 * <p>
+	 * <b>Note:</b> This method also removed <code>CTCP_DELIMITER</code>s,
+	 *             which are not part of mIRC color codes. You probably want
+	 *             to use {@link #stripColors(String)}, which leaves these
+	 *             <code>CTCP_DELIMITER</code>s so that you can deal with them
+	 *             the way you want.
+	 * @param str The line which should be parsed. 
+	 * @return A line cleaned from any mIRC colorcodes.
+	 * @see #parseColors(StringBuffer)
+	 */
 	public static String parseColors(String str) {
 		return parseColors(new StringBuffer(str)).toString();
+	}
+	
+	
+// ------------------------------
+		
+	/** 
+	 * Erases the mIRC colorcodes and CTCP delimiters from a StringBuffer. 
+	 * The documentation of the evil color codes is available on 
+	 * <a href="http://www.mirc.co.uk/help/color.txt" 
+	 * target="_blank">http://www.mirc.co.uk/help/color.txt</a>. 
+	 * <p>
+	 * <b>Note:</b> This method also removed <code>CTCP_DELIMITER</code>s,
+	 *             which are not part of mIRC color codes. You probably want
+	 *             to use {@link #stripColors(String)}, which leaves these
+	 *             <code>CTCP_DELIMITER</code>s so that you can deal with them
+	 *             the way you want.
+	 * @param buf The line which should be parsed. 
+	 * @return A line as <code>StringBuffer</code> object which is cleaned from 
+	 *         any mIRC colorcodes.
+	 */
+	public static StringBuffer parseColors(StringBuffer buf) {
+		return parseColors(buf, true);
 	}
 	
 // ------------------------------
@@ -145,12 +207,18 @@ public class IRCUtil implements IRCConstants {
 	 * The documentation of the evil color codes is available on 
 	 * <a href="http://www.mirc.co.uk/help/color.txt" 
 	 * target="_blank">http://www.mirc.co.uk/help/color.txt</a>. 
+	 * <p>
+	 * This method is the old version of <code>parseColors</code> modified
+	 * so that with <code>removeCTCP</code> the treatment of 
+	 * <code>CTCP_DELIMITER</code>s can be controlled.
 	 * @param buf The line which should be parsed. 
+	 * @param removeCTCP If <code>false</code>, <code>CTCP_DELIMITER</code>s
+	 *                   are left untouched in the string. 
 	 * @return A line as <code>StringBuffer</code> object which is cleaned from 
 	 *         any mIRC colorcodes.
-	 * @see #parseColors(String)
 	 */
-	public static StringBuffer parseColors(StringBuffer buf) {
+	static StringBuffer parseColors(StringBuffer buf, 
+			boolean removeCTCP) {
 		int len = buf.length();
 		
 		for (int i = 0, j = 0, c; i < len; i++, j = i) {
@@ -174,9 +242,11 @@ public class IRCUtil implements IRCConstants {
 					}
 					// CTCP / BOLD / UNDERLINE / COLOR END 
 					// (format: <ctcpDelimiter> / <boldIndicator> etc.)
-				} else if (c == CTCP_DELIMITER || c == BOLD_INDICATOR || 
-						c == UNDERLINE_INDICATOR || c == COLOR_END_INDICATOR ||
-						c == COLOR_REVERSE_INDICATOR) {
+				} else if ((removeCTCP && c == CTCP_DELIMITER)
+						|| c == BOLD_INDICATOR 
+						|| c == UNDERLINE_INDICATOR 
+						|| c == COLOR_END_INDICATOR 
+						|| c == COLOR_REVERSE_INDICATOR) {
 					j++;
 				}
 			} catch(StringIndexOutOfBoundsException exc) {

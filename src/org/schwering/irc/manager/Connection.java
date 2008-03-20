@@ -59,14 +59,12 @@ public class Connection {
 	private IRCConnection conn;
 	private SortedMap channels = new TreeMap();
 	private boolean requestModes = true;
+	private boolean colorsEnabled = true;
 	private NickGenerator nickGenerator = new DefaultNickGenerator();
 	private List connectionListeners = new LinkedList();
 	private List ctcpListeners = new LinkedList();
 	private List privateMessageListeners = new LinkedList();
 	private List unexpectedEventListeners = new LinkedList();
-	
-	// TODO what about CTCP? The messages MUST be parsed in BasicListener
-	// already to fire the CTCP events, don't they?
 	
 	/**
 	 * Initializes a new connection. This means that the internal
@@ -278,6 +276,27 @@ public class Connection {
 	 */
 	public void setRequestModes(boolean requestModes) {
 		this.requestModes = requestModes;
+	}
+	
+	/**
+	 * Enables or disables colors. By colors, the mIRC color codes are meant.
+	 * If they're disabled, these color codes are removed from all incoming
+	 * messages (NOTICE, PRIVMSG and KICK, PART, QUIT messages).
+	 * By default, <code>enableColors</code> is <code>true</code>.
+	 */
+	public void setColors(boolean enableColors) {
+		this.colorsEnabled = enableColors;
+	}
+	
+	/**
+	 * Indicates whether colors are enabled. By colors, the mIRC color codes 
+	 * are meant. By default, <code>isColorsEnabled()</code> is 
+	 * <code>true</code>.
+	 * @return <code>false</code> means that color codes are removed from
+	 * all incoming messages (NOTICE, PRIVMSG and KICK, PART, QUIT messages).
+	 */
+	public boolean isColorsEnabled() {
+		return colorsEnabled;
 	}
 	
 	/**
