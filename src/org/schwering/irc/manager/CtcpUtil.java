@@ -149,7 +149,9 @@ class CtcpUtil {
 		for (int i = 0; i < msg.length(); i++) {
 			if (msg.charAt(i) == XDELIM) {
 				if (from != i) {
-					list.add(msg.substring(from, i));
+					String str = msg.substring(from, i);
+					str = ctcpDequote(lowDequote(str));
+					list.add(str);
 				} else {
 					list.add(null);
 				}
@@ -157,7 +159,9 @@ class CtcpUtil {
 			}
 		}
 		if (from != msg.length()-1) {
-			list.add(msg.substring(from));
+			String str = msg.substring(from);
+			str = ctcpDequote(lowDequote(str));
+			list.add(str);
 		}
 		return list;
 	}
