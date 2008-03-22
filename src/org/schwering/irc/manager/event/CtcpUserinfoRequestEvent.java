@@ -5,13 +5,13 @@ import org.schwering.irc.manager.Connection;
 import org.schwering.irc.manager.User;
 
 /**
- * Fired when a CTCP FINGER request has been received.
+ * Fired when a CTCP USERINFO request has been received.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
- * @see CtcpListener#fingerReceived(CtcpFingerEvent)
+ * @see CtcpListener#userinfoRequestReceived(CtcpUserinfoRequestEvent)
  */
-public class CtcpFingerEvent {
+public class CtcpUserinfoRequestEvent {
 	private Connection connection;
 	private User sender;
 	private User destUser;
@@ -19,7 +19,7 @@ public class CtcpFingerEvent {
 	private String command;
 	private String rest;
 
-	public CtcpFingerEvent(Connection connection, User sender, User destUser,
+	public CtcpUserinfoRequestEvent(Connection connection, User sender, User destUser,
 			String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;
@@ -28,7 +28,7 @@ public class CtcpFingerEvent {
 		this.rest = rest;
 	}
 
-	public CtcpFingerEvent(Connection connection, User sender,
+	public CtcpUserinfoRequestEvent(Connection connection, User sender,
 			Channel destChannel, String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;

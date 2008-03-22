@@ -5,13 +5,13 @@ import org.schwering.irc.manager.Connection;
 import org.schwering.irc.manager.User;
 
 /**
- * Fired when a CTCP DCC request has been received.
+ * Fired when a CTCP TIME request has been received.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
- * @see CtcpListener#dccReceived(CtcpDccEvent)
+ * @see CtcpListener#timeRequestReceived(CtcpTimeRequestEvent)
  */
-public class CtcpDccEvent {
+public class CtcpTimeRequestEvent {
 	private Connection connection;
 	private User sender;
 	private User destUser;
@@ -19,7 +19,7 @@ public class CtcpDccEvent {
 	private String command;
 	private String rest;
 
-	public CtcpDccEvent(Connection connection, User sender, User destUser,
+	public CtcpTimeRequestEvent(Connection connection, User sender, User destUser,
 			String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;
@@ -28,7 +28,7 @@ public class CtcpDccEvent {
 		this.rest = rest;
 	}
 
-	public CtcpDccEvent(Connection connection, User sender,
+	public CtcpTimeRequestEvent(Connection connection, User sender,
 			Channel destChannel, String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;

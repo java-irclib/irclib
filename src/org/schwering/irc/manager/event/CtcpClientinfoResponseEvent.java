@@ -5,13 +5,13 @@ import org.schwering.irc.manager.Connection;
 import org.schwering.irc.manager.User;
 
 /**
- * Fired when a CTCP ERRMSG request has been received.
+ * Fired when a CTCP CLIENTINFO response has been received.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
- * @see CtcpListener#errmsgReceived(CtcpErrmsgEvent)
+ * @see CtcpListener#clientinfoResponseReceived(CtcpClientinfoResponseEvent)
  */
-public class CtcpErrmsgEvent {
+public class CtcpClientinfoResponseEvent {
 	private Connection connection;
 	private User sender;
 	private User destUser;
@@ -19,8 +19,8 @@ public class CtcpErrmsgEvent {
 	private String command;
 	private String rest;
 
-	public CtcpErrmsgEvent(Connection connection, User sender, User destUser,
-			String command, String rest) {
+	public CtcpClientinfoResponseEvent(Connection connection, User sender, 
+			User destUser, String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;
 		this.destUser = destUser;
@@ -28,7 +28,7 @@ public class CtcpErrmsgEvent {
 		this.rest = rest;
 	}
 
-	public CtcpErrmsgEvent(Connection connection, User sender,
+	public CtcpClientinfoResponseEvent(Connection connection, User sender,
 			Channel destChannel, String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;

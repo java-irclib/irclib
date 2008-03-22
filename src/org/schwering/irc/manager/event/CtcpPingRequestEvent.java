@@ -9,9 +9,9 @@ import org.schwering.irc.manager.User;
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
- * @see CtcpListener#pingReceived(CtcpPingEvent)
+ * @see CtcpListener#pingRequestReceived(CtcpPingRequestEvent)
  */
-public class CtcpPingEvent {
+public class CtcpPingRequestEvent {
 	private Connection connection;
 	private User sender;
 	private User destUser;
@@ -19,7 +19,7 @@ public class CtcpPingEvent {
 	private String command;
 	private String rest;
 
-	public CtcpPingEvent(Connection connection, User sender, User destUser,
+	public CtcpPingRequestEvent(Connection connection, User sender, User destUser,
 			String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;
@@ -28,7 +28,7 @@ public class CtcpPingEvent {
 		this.rest = rest;
 	}
 
-	public CtcpPingEvent(Connection connection, User sender,
+	public CtcpPingRequestEvent(Connection connection, User sender,
 			Channel destChannel, String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;

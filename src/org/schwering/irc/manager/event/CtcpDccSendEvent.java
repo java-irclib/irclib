@@ -5,13 +5,13 @@ import org.schwering.irc.manager.Connection;
 import org.schwering.irc.manager.User;
 
 /**
- * Fired when a CTCP VERSION request has been received.
+ * Fired when a CTCP DCC SEND request has been received.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
- * @see CtcpListener#versionReceived(CtcpVersionEvent)
+ * @see CtcpListener#dccSendReceived(CtcpDccSendEvent)
  */
-public class CtcpVersionEvent {
+public class CtcpDccSendEvent {
 	private Connection connection;
 	private User sender;
 	private User destUser;
@@ -19,7 +19,7 @@ public class CtcpVersionEvent {
 	private String command;
 	private String rest;
 
-	public CtcpVersionEvent(Connection connection, User sender, User destUser,
+	public CtcpDccSendEvent(Connection connection, User sender, User destUser,
 			String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;
@@ -28,7 +28,7 @@ public class CtcpVersionEvent {
 		this.rest = rest;
 	}
 
-	public CtcpVersionEvent(Connection connection, User sender,
+	public CtcpDccSendEvent(Connection connection, User sender,
 			Channel destChannel, String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;

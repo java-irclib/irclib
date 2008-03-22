@@ -5,13 +5,13 @@ import org.schwering.irc.manager.Connection;
 import org.schwering.irc.manager.User;
 
 /**
- * Fired when a CTCP CLIENTINFO request has been received.
+ * Fired when a CTCP SOURCE request has been received.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
- * @see CtcpListener#clientinfoReceived(CtcpClientinfoEvent)
+ * @see CtcpListener#sourceRequestReceived(CtcpSourceRequestEvent)
  */
-public class CtcpClientinfoEvent {
+public class CtcpSourceRequestEvent {
 	private Connection connection;
 	private User sender;
 	private User destUser;
@@ -19,7 +19,7 @@ public class CtcpClientinfoEvent {
 	private String command;
 	private String rest;
 
-	public CtcpClientinfoEvent(Connection connection, User sender, User destUser,
+	public CtcpSourceRequestEvent(Connection connection, User sender, User destUser,
 			String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;
@@ -28,7 +28,7 @@ public class CtcpClientinfoEvent {
 		this.rest = rest;
 	}
 
-	public CtcpClientinfoEvent(Connection connection, User sender,
+	public CtcpSourceRequestEvent(Connection connection, User sender,
 			Channel destChannel, String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;
