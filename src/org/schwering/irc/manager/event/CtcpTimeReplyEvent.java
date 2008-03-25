@@ -5,13 +5,13 @@ import org.schwering.irc.manager.Connection;
 import org.schwering.irc.manager.User;
 
 /**
- * Fired when a CTCP PING response has been received.
+ * Fired when a CTCP TIME reply has been received.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
- * @see CtcpListener#pingResponseReceived(CtcpPingResponseEvent)
+ * @see CtcpListener#timeReplyReceived(CtcpTimeReplyEvent)
  */
-public class CtcpPingResponseEvent {
+public class CtcpTimeReplyEvent {
 	private Connection connection;
 	private User sender;
 	private User destUser;
@@ -19,7 +19,7 @@ public class CtcpPingResponseEvent {
 	private String command;
 	private String rest;
 
-	public CtcpPingResponseEvent(Connection connection, User sender, User destUser,
+	public CtcpTimeReplyEvent(Connection connection, User sender, User destUser,
 			String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;
@@ -28,7 +28,7 @@ public class CtcpPingResponseEvent {
 		this.rest = rest;
 	}
 
-	public CtcpPingResponseEvent(Connection connection, User sender,
+	public CtcpTimeReplyEvent(Connection connection, User sender,
 			Channel destChannel, String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;

@@ -5,13 +5,13 @@ import org.schwering.irc.manager.Connection;
 import org.schwering.irc.manager.User;
 
 /**
- * Fired when a CTCP VERSION response has been received.
+ * Fired when a CTCP FINGER reply has been received.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
- * @see CtcpListener#versionResponseReceived(CtcpVersionResponseEvent)
+ * @see CtcpListener#fingerReplyReceived(CtcpFingerReplyEvent)
  */
-public class CtcpVersionResponseEvent {
+public class CtcpFingerReplyEvent {
 	private Connection connection;
 	private User sender;
 	private User destUser;
@@ -19,7 +19,7 @@ public class CtcpVersionResponseEvent {
 	private String command;
 	private String rest;
 
-	public CtcpVersionResponseEvent(Connection connection, User sender, User destUser,
+	public CtcpFingerReplyEvent(Connection connection, User sender, User destUser,
 			String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;
@@ -28,7 +28,7 @@ public class CtcpVersionResponseEvent {
 		this.rest = rest;
 	}
 
-	public CtcpVersionResponseEvent(Connection connection, User sender,
+	public CtcpFingerReplyEvent(Connection connection, User sender,
 			Channel destChannel, String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;

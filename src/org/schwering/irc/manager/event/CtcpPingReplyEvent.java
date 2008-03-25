@@ -5,13 +5,13 @@ import org.schwering.irc.manager.Connection;
 import org.schwering.irc.manager.User;
 
 /**
- * Fired when an unknown CTCP response has been received.
+ * Fired when a CTCP PING reply has been received.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
- * @see CtcpListener#unknownEventResponseReceived(CtcpUnknownResponseEvent)
+ * @see CtcpListener#pingReplyReceived(CtcpPingReplyEvent)
  */
-public class CtcpUnknownResponseEvent {
+public class CtcpPingReplyEvent {
 	private Connection connection;
 	private User sender;
 	private User destUser;
@@ -19,8 +19,8 @@ public class CtcpUnknownResponseEvent {
 	private String command;
 	private String rest;
 
-	public CtcpUnknownResponseEvent(Connection connection, User sender, 
-			User destUser, String command, String rest) {
+	public CtcpPingReplyEvent(Connection connection, User sender, User destUser,
+			String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;
 		this.destUser = destUser;
@@ -28,7 +28,7 @@ public class CtcpUnknownResponseEvent {
 		this.rest = rest;
 	}
 
-	public CtcpUnknownResponseEvent(Connection connection, User sender,
+	public CtcpPingReplyEvent(Connection connection, User sender,
 			Channel destChannel, String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;

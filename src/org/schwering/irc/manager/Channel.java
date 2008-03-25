@@ -11,28 +11,28 @@ import java.util.TreeMap;
 import org.schwering.irc.manager.event.BanlistEvent;
 import org.schwering.irc.manager.event.CtcpActionEvent;
 import org.schwering.irc.manager.event.CtcpClientinfoRequestEvent;
-import org.schwering.irc.manager.event.CtcpClientinfoResponseEvent;
+import org.schwering.irc.manager.event.CtcpClientinfoReplyEvent;
 import org.schwering.irc.manager.event.CtcpDccChatEvent;
 import org.schwering.irc.manager.event.CtcpDccSendEvent;
 import org.schwering.irc.manager.event.CtcpErrmsgRequestEvent;
-import org.schwering.irc.manager.event.CtcpErrmsgResponseEvent;
+import org.schwering.irc.manager.event.CtcpErrmsgReplyEvent;
 import org.schwering.irc.manager.event.CtcpFingerRequestEvent;
-import org.schwering.irc.manager.event.CtcpFingerResponseEvent;
+import org.schwering.irc.manager.event.CtcpFingerReplyEvent;
 import org.schwering.irc.manager.event.CtcpListener;
 import org.schwering.irc.manager.event.CtcpPingRequestEvent;
-import org.schwering.irc.manager.event.CtcpPingResponseEvent;
+import org.schwering.irc.manager.event.CtcpPingReplyEvent;
 import org.schwering.irc.manager.event.CtcpSedEvent;
 import org.schwering.irc.manager.event.ChannelListener;
 import org.schwering.irc.manager.event.CtcpSourceRequestEvent;
-import org.schwering.irc.manager.event.CtcpSourceResponseEvent;
+import org.schwering.irc.manager.event.CtcpSourceReplyEvent;
 import org.schwering.irc.manager.event.CtcpTimeRequestEvent;
-import org.schwering.irc.manager.event.CtcpTimeResponseEvent;
+import org.schwering.irc.manager.event.CtcpTimeReplyEvent;
 import org.schwering.irc.manager.event.CtcpUnknownRequestEvent;
-import org.schwering.irc.manager.event.CtcpUnknownResponseEvent;
+import org.schwering.irc.manager.event.CtcpUnknownReplyEvent;
 import org.schwering.irc.manager.event.CtcpUserinfoRequestEvent;
-import org.schwering.irc.manager.event.CtcpUserinfoResponseEvent;
+import org.schwering.irc.manager.event.CtcpUserinfoReplyEvent;
 import org.schwering.irc.manager.event.CtcpVersionRequestEvent;
-import org.schwering.irc.manager.event.CtcpVersionResponseEvent;
+import org.schwering.irc.manager.event.CtcpVersionReplyEvent;
 import org.schwering.irc.manager.event.MessageEvent;
 import org.schwering.irc.manager.event.ChannelModeEvent;
 import org.schwering.irc.manager.event.NamesEvent;
@@ -459,91 +459,91 @@ public class Channel implements Comparable {
 		}
 	}
 	
-	synchronized void fireCtcpPingResponseReceived(CtcpPingResponseEvent event) {
+	synchronized void fireCtcpPingReplyReceived(CtcpPingReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).pingResponseReceived(event);
+				((CtcpListener)it.next()).pingReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void fireCtcpTimeResponseReceived(CtcpTimeResponseEvent event) {
+	synchronized void fireCtcpTimeReplyReceived(CtcpTimeReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).timeResponseReceived(event);
+				((CtcpListener)it.next()).timeReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void fireCtcpVersionResponseReceived(CtcpVersionResponseEvent event) {
+	synchronized void fireCtcpVersionReplyReceived(CtcpVersionReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).versionResponseReceived(event);
+				((CtcpListener)it.next()).versionReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void fireCtcpFingerResponseReceived(CtcpFingerResponseEvent event) {
+	synchronized void fireCtcpFingerReplyReceived(CtcpFingerReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).fingerResponseReceived(event);
+				((CtcpListener)it.next()).fingerReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void fireCtcpSourceResponseReceived(CtcpSourceResponseEvent event) {
+	synchronized void fireCtcpSourceReplyReceived(CtcpSourceReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).sourceResponseReceived(event);
+				((CtcpListener)it.next()).sourceReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void fireCtcpUserinfoResponseReceived(CtcpUserinfoResponseEvent event) {
+	synchronized void fireCtcpUserinfoReplyReceived(CtcpUserinfoReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).userinfoResponseReceived(event);
+				((CtcpListener)it.next()).userinfoReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void fireCtcpClientinfoResponseReceived(CtcpClientinfoResponseEvent event) {
+	synchronized void fireCtcpClientinfoReplyReceived(CtcpClientinfoReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).clientinfoResponseReceived(event);
+				((CtcpListener)it.next()).clientinfoReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void fireCtcpErrmsgResponseReceived(CtcpErrmsgResponseEvent event) {
+	synchronized void fireCtcpErrmsgReplyReceived(CtcpErrmsgReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).errmsgResponseReceived(event);
+				((CtcpListener)it.next()).errmsgReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void fireCtcpUnknownResponseEventReceived(
-			CtcpUnknownResponseEvent event) {
+	synchronized void fireCtcpUnknownReplyEventReceived(
+			CtcpUnknownReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).unknownResponseEventReceived(event);
+				((CtcpListener)it.next()).unknownReplyEventReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}

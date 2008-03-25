@@ -53,11 +53,30 @@ public class CtcpFingerRequestEvent {
 		return destUser;
 	}
 	
+	/**
+	 * Should return VERSION.
+	 */
 	public String getCommand() {
 		return command;
 	}
-	
+
+	/**
+	 * Should return an empty string.
+	 */
 	public String getArguments() {
 		return rest;
+	}
+	
+	/**
+	 * @param clientName e.g. "IRClib"
+	 * @param clientVersion e.g. "2.0"
+	 * @param environment e.g. "Java 1.6"
+	 */
+	public void reply(String clientName, String clientVersion, 
+			String environment) {
+		String dest = (destUser != null) ? destUser.getNick() 
+				: destChannel.getName();
+		connection.sendCtcpReply(dest, clientName +":"+ clientVersion
+				+":"+ environment);
 	}
 }

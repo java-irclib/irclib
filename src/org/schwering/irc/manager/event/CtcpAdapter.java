@@ -14,7 +14,7 @@ public class CtcpAdapter implements CtcpListener {
 	public void clientinfoRequestReceived(CtcpClientinfoRequestEvent event) {
 	}
 
-	public void clientinfoResponseReceived(CtcpClientinfoResponseEvent event) {
+	public void clientinfoReplyReceived(CtcpClientinfoReplyEvent event) {
 	}
 
 	public void dccChatReceived(CtcpDccChatEvent event) {
@@ -26,19 +26,19 @@ public class CtcpAdapter implements CtcpListener {
 	public void errmsgRequestReceived(CtcpErrmsgRequestEvent event) {
 	}
 
-	public void errmsgResponseReceived(CtcpErrmsgResponseEvent event) {
+	public void errmsgReplyReceived(CtcpErrmsgReplyEvent event) {
 	}
 
 	public void fingerRequestReceived(CtcpFingerRequestEvent event) {
 	}
 
-	public void fingerResponseReceived(CtcpFingerResponseEvent event) {
+	public void fingerReplyReceived(CtcpFingerReplyEvent event) {
 	}
 
 	public void pingRequestReceived(CtcpPingRequestEvent event) {
 	}
 
-	public void pingResponseReceived(CtcpPingResponseEvent event) {
+	public void pingReplyReceived(CtcpPingReplyEvent event) {
 	}
 
 	public void sedReceived(CtcpSedEvent event) {
@@ -47,30 +47,30 @@ public class CtcpAdapter implements CtcpListener {
 	public void sourceRequestReceived(CtcpSourceRequestEvent event) {
 	}
 
-	public void sourceResponseReceived(CtcpSourceResponseEvent event) {
+	public void sourceReplyReceived(CtcpSourceReplyEvent event) {
 	}
 
 	public void timeRequestReceived(CtcpTimeRequestEvent event) {
 	}
 
-	public void timeResponseReceived(CtcpTimeResponseEvent event) {
+	public void timeReplyReceived(CtcpTimeReplyEvent event) {
 	}
 
 	public void unknownRequestEventReceived(CtcpUnknownRequestEvent event) {
 	}
 
-	public void unknownResponseEventReceived(CtcpUnknownResponseEvent event) {
+	public void unknownReplyEventReceived(CtcpUnknownReplyEvent event) {
 	}
 
 	public void userinfoRequestReceived(CtcpUserinfoRequestEvent event) {
 	}
 
-	public void userinfoResponseReceived(CtcpUserinfoResponseEvent event) {
+	public void userinfoReplyReceived(CtcpUserinfoReplyEvent event) {
 	}
 
 	public void versionRequestReceived(CtcpVersionRequestEvent event) {
 	}
 
-	public void versionResponseReceived(CtcpVersionResponseEvent event) {
+	public void versionReplyReceived(CtcpVersionReplyEvent event) {
 	}
 }

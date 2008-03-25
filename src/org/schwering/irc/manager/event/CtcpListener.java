@@ -35,13 +35,13 @@ public interface CtcpListener extends EventListener {
 	void timeRequestReceived(CtcpTimeRequestEvent event);
 	void unknownRequestEventReceived(CtcpUnknownRequestEvent event);
 
-	void errmsgResponseReceived(CtcpErrmsgResponseEvent event);
-	void userinfoResponseReceived(CtcpUserinfoResponseEvent event);
-	void clientinfoResponseReceived(CtcpClientinfoResponseEvent event);
-	void pingResponseReceived(CtcpPingResponseEvent event);
-	void sourceResponseReceived(CtcpSourceResponseEvent event);
-	void versionResponseReceived(CtcpVersionResponseEvent event);
-	void fingerResponseReceived(CtcpFingerResponseEvent event);
-	void timeResponseReceived(CtcpTimeResponseEvent event);
-	void unknownResponseEventReceived(CtcpUnknownResponseEvent event);
+	void errmsgReplyReceived(CtcpErrmsgReplyEvent event);
+	void userinfoReplyReceived(CtcpUserinfoReplyEvent event);
+	void clientinfoReplyReceived(CtcpClientinfoReplyEvent event);
+	void pingReplyReceived(CtcpPingReplyEvent event);
+	void sourceReplyReceived(CtcpSourceReplyEvent event);
+	void versionReplyReceived(CtcpVersionReplyEvent event);
+	void fingerReplyReceived(CtcpFingerReplyEvent event);
+	void timeReplyReceived(CtcpTimeReplyEvent event);
+	void unknownReplyEventReceived(CtcpUnknownReplyEvent event);
 }

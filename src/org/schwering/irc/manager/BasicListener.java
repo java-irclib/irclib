@@ -19,26 +19,26 @@ import org.schwering.irc.manager.event.CtcpActionEvent;
 import org.schwering.irc.manager.event.ChannelModeEvent;
 import org.schwering.irc.manager.event.ConnectionEvent;
 import org.schwering.irc.manager.event.CtcpClientinfoRequestEvent;
-import org.schwering.irc.manager.event.CtcpClientinfoResponseEvent;
+import org.schwering.irc.manager.event.CtcpClientinfoReplyEvent;
 import org.schwering.irc.manager.event.CtcpDccChatEvent;
 import org.schwering.irc.manager.event.CtcpDccSendEvent;
 import org.schwering.irc.manager.event.CtcpErrmsgRequestEvent;
-import org.schwering.irc.manager.event.CtcpErrmsgResponseEvent;
+import org.schwering.irc.manager.event.CtcpErrmsgReplyEvent;
 import org.schwering.irc.manager.event.CtcpFingerRequestEvent;
-import org.schwering.irc.manager.event.CtcpFingerResponseEvent;
+import org.schwering.irc.manager.event.CtcpFingerReplyEvent;
 import org.schwering.irc.manager.event.CtcpPingRequestEvent;
-import org.schwering.irc.manager.event.CtcpPingResponseEvent;
+import org.schwering.irc.manager.event.CtcpPingReplyEvent;
 import org.schwering.irc.manager.event.CtcpSedEvent;
 import org.schwering.irc.manager.event.CtcpSourceRequestEvent;
-import org.schwering.irc.manager.event.CtcpSourceResponseEvent;
+import org.schwering.irc.manager.event.CtcpSourceReplyEvent;
 import org.schwering.irc.manager.event.CtcpTimeRequestEvent;
-import org.schwering.irc.manager.event.CtcpTimeResponseEvent;
+import org.schwering.irc.manager.event.CtcpTimeReplyEvent;
 import org.schwering.irc.manager.event.CtcpUnknownRequestEvent;
-import org.schwering.irc.manager.event.CtcpUnknownResponseEvent;
+import org.schwering.irc.manager.event.CtcpUnknownReplyEvent;
 import org.schwering.irc.manager.event.CtcpUserinfoRequestEvent;
-import org.schwering.irc.manager.event.CtcpUserinfoResponseEvent;
+import org.schwering.irc.manager.event.CtcpUserinfoReplyEvent;
 import org.schwering.irc.manager.event.CtcpVersionRequestEvent;
-import org.schwering.irc.manager.event.CtcpVersionResponseEvent;
+import org.schwering.irc.manager.event.CtcpVersionReplyEvent;
 import org.schwering.irc.manager.event.ErrorEvent;
 import org.schwering.irc.manager.event.InfoEvent;
 import org.schwering.irc.manager.event.InvitationEvent;
@@ -1102,9 +1102,9 @@ class BasicListener implements IRCEventListener {
 						String command = getFirstToken(str);
 						String rest = skipFirstToken(str);
 						if (command == null) {
-							CtcpUnknownResponseEvent event = new CtcpUnknownResponseEvent(owner, sender, channel, command, rest);
-							owner.fireCtcpUnknownResponseEventReceived(event);
-							channel.fireCtcpUnknownResponseEventReceived(event);
+							CtcpUnknownReplyEvent event = new CtcpUnknownReplyEvent(owner, sender, channel, command, rest);
+							owner.fireCtcpUnknownReplyEventReceived(event);
+							channel.fireCtcpUnknownReplyEventReceived(event);
 						} else if (command.equals("ACTION")) {
 							CtcpActionEvent event = new CtcpActionEvent(owner, sender, channel, command, rest);
 							owner.fireCtcpActionReceived(event);
@@ -1124,41 +1124,41 @@ class BasicListener implements IRCEventListener {
 							owner.fireCtcpSedReceived(event);
 							channel.fireCtcpSedReceived(event);
 						} else if (command.equals("FINGER")) {
-							CtcpFingerResponseEvent event = new CtcpFingerResponseEvent(owner, sender, channel, command, rest);
-							owner.fireCtcpFingerResponseReceived(event);
-							channel.fireCtcpFingerResponseReceived(event);
+							CtcpFingerReplyEvent event = new CtcpFingerReplyEvent(owner, sender, channel, command, rest);
+							owner.fireCtcpFingerReplyReceived(event);
+							channel.fireCtcpFingerReplyReceived(event);
 						} else if (command.equals("VERSION")) {
-							CtcpVersionResponseEvent event = new CtcpVersionResponseEvent(owner, sender, channel, command, rest);
-							owner.fireCtcpVersionResponseReceived(event);
-							channel.fireCtcpVersionResponseReceived(event);
+							CtcpVersionReplyEvent event = new CtcpVersionReplyEvent(owner, sender, channel, command, rest);
+							owner.fireCtcpVersionReplyReceived(event);
+							channel.fireCtcpVersionReplyReceived(event);
 						} else if (command.equals("SOURCE")) {
-							CtcpSourceResponseEvent event = new CtcpSourceResponseEvent(owner, sender, channel, command, rest);
-							owner.fireCtcpSourceResponseReceived(event);
-							channel.fireCtcpSourceResponseReceived(event);
+							CtcpSourceReplyEvent event = new CtcpSourceReplyEvent(owner, sender, channel, command, rest);
+							owner.fireCtcpSourceReplyReceived(event);
+							channel.fireCtcpSourceReplyReceived(event);
 						} else if (command.equals("USERINFO")) {
-							CtcpUserinfoResponseEvent event = new CtcpUserinfoResponseEvent(owner, sender, channel, command, rest);
-							owner.fireCtcpUserinfoResponseReceived(event);
-							channel.fireCtcpUserinfoResponseReceived(event);
+							CtcpUserinfoReplyEvent event = new CtcpUserinfoReplyEvent(owner, sender, channel, command, rest);
+							owner.fireCtcpUserinfoReplyReceived(event);
+							channel.fireCtcpUserinfoReplyReceived(event);
 						} else if (command.equals("CLIENTINFO")) {
-							CtcpClientinfoResponseEvent event = new CtcpClientinfoResponseEvent(owner, sender, channel, command, rest);
-							owner.fireCtcpClientinfoResponseReceived(event);
-							channel.fireCtcpClientinfoResponseReceived(event);
+							CtcpClientinfoReplyEvent event = new CtcpClientinfoReplyEvent(owner, sender, channel, command, rest);
+							owner.fireCtcpClientinfoReplyReceived(event);
+							channel.fireCtcpClientinfoReplyReceived(event);
 						} else if (command.equals("ERRMSG")) {
-							CtcpErrmsgResponseEvent event = new CtcpErrmsgResponseEvent(owner, sender, channel, command, rest);
-							owner.fireCtcpErrmsgResponseReceived(event);
-							channel.fireCtcpErrmsgResponseReceived(event);
+							CtcpErrmsgReplyEvent event = new CtcpErrmsgReplyEvent(owner, sender, channel, command, rest);
+							owner.fireCtcpErrmsgReplyReceived(event);
+							channel.fireCtcpErrmsgReplyReceived(event);
 						} else if (command.equals("PING")) {
-							CtcpPingResponseEvent event = new CtcpPingResponseEvent(owner, sender, channel, command, rest);
-							owner.fireCtcpPingResponseReceived(event);
-							channel.fireCtcpPingResponseReceived(event);
+							CtcpPingReplyEvent event = new CtcpPingReplyEvent(owner, sender, channel, command, rest);
+							owner.fireCtcpPingReplyReceived(event);
+							channel.fireCtcpPingReplyReceived(event);
 						} else if (command.equals("TIME")) {
-							CtcpTimeResponseEvent event = new CtcpTimeResponseEvent(owner, sender, channel, command, rest);
-							owner.fireCtcpTimeResponseReceived(event);
-							channel.fireCtcpTimeResponseReceived(event);
+							CtcpTimeReplyEvent event = new CtcpTimeReplyEvent(owner, sender, channel, command, rest);
+							owner.fireCtcpTimeReplyReceived(event);
+							channel.fireCtcpTimeReplyReceived(event);
 						} else {
-							CtcpUnknownResponseEvent event = new CtcpUnknownResponseEvent(owner, sender, channel, command, rest);
-							owner.fireCtcpUnknownResponseEventReceived(event);
-							channel.fireCtcpUnknownResponseEventReceived(event);
+							CtcpUnknownReplyEvent event = new CtcpUnknownReplyEvent(owner, sender, channel, command, rest);
+							owner.fireCtcpUnknownReplyEventReceived(event);
+							channel.fireCtcpUnknownReplyEventReceived(event);
 						}
 					} catch (Exception exc) {
 						System.err.println("Error with msg='"+str+"':");
@@ -1183,9 +1183,9 @@ class BasicListener implements IRCEventListener {
 						String command = getFirstToken(str);
 						String rest = skipFirstToken(str);
 						if (command == null) {
-							CtcpUnknownResponseEvent event = new CtcpUnknownResponseEvent(owner, sender, user, command, rest);
-							owner.fireCtcpUnknownResponseEventReceived(event);
-							owner.firePrivateCtcpUnknownResponseEventReceived(event);
+							CtcpUnknownReplyEvent event = new CtcpUnknownReplyEvent(owner, sender, user, command, rest);
+							owner.fireCtcpUnknownReplyEventReceived(event);
+							owner.firePrivateCtcpUnknownReplyEventReceived(event);
 						} else if (command.equals("ACTION")) {
 							CtcpActionEvent event = new CtcpActionEvent(owner, sender, user, command, rest);
 							owner.fireCtcpActionReceived(event);
@@ -1205,41 +1205,41 @@ class BasicListener implements IRCEventListener {
 							owner.fireCtcpSedReceived(event);
 							owner.firePrivateCtcpSedReceived(event);
 						} else if (command.equals("FINGER")) {
-							CtcpFingerResponseEvent event = new CtcpFingerResponseEvent(owner, sender, user, command, rest);
-							owner.fireCtcpFingerResponseReceived(event);
-							owner.firePrivateCtcpFingerResponseReceived(event);
+							CtcpFingerReplyEvent event = new CtcpFingerReplyEvent(owner, sender, user, command, rest);
+							owner.fireCtcpFingerReplyReceived(event);
+							owner.firePrivateCtcpFingerReplyReceived(event);
 						} else if (command.equals("VERSION")) {
-							CtcpVersionResponseEvent event = new CtcpVersionResponseEvent(owner, sender, user, command, rest);
-							owner.fireCtcpVersionResponseReceived(event);
-							owner.firePrivateCtcpVersionResponseReceived(event);
+							CtcpVersionReplyEvent event = new CtcpVersionReplyEvent(owner, sender, user, command, rest);
+							owner.fireCtcpVersionReplyReceived(event);
+							owner.firePrivateCtcpVersionReplyReceived(event);
 						} else if (command.equals("SOURCE")) {
-							CtcpSourceResponseEvent event = new CtcpSourceResponseEvent(owner, sender, user, command, rest);
-							owner.fireCtcpSourceResponseReceived(event);
-							owner.firePrivateCtcpSourceResponseReceived(event);
+							CtcpSourceReplyEvent event = new CtcpSourceReplyEvent(owner, sender, user, command, rest);
+							owner.fireCtcpSourceReplyReceived(event);
+							owner.firePrivateCtcpSourceReplyReceived(event);
 						} else if (command.equals("USERINFO")) {
-							CtcpUserinfoResponseEvent event = new CtcpUserinfoResponseEvent(owner, sender, user, command, rest);
-							owner.fireCtcpUserinfoResponseReceived(event);
-							owner.firePrivateCtcpUserinfoResponseReceived(event);
+							CtcpUserinfoReplyEvent event = new CtcpUserinfoReplyEvent(owner, sender, user, command, rest);
+							owner.fireCtcpUserinfoReplyReceived(event);
+							owner.firePrivateCtcpUserinfoReplyReceived(event);
 						} else if (command.equals("CLIENTINFO")) {
-							CtcpClientinfoResponseEvent event = new CtcpClientinfoResponseEvent(owner, sender, user, command, rest);
-							owner.fireCtcpClientinfoResponseReceived(event);
-							owner.firePrivateCtcpClientinfoResponseReceived(event);
+							CtcpClientinfoReplyEvent event = new CtcpClientinfoReplyEvent(owner, sender, user, command, rest);
+							owner.fireCtcpClientinfoReplyReceived(event);
+							owner.firePrivateCtcpClientinfoReplyReceived(event);
 						} else if (command.equals("ERRMSG")) {
-							CtcpErrmsgResponseEvent event = new CtcpErrmsgResponseEvent(owner, sender, user, command, rest);
-							owner.fireCtcpErrmsgResponseReceived(event);
-							owner.firePrivateCtcpErrmsgResponseReceived(event);
+							CtcpErrmsgReplyEvent event = new CtcpErrmsgReplyEvent(owner, sender, user, command, rest);
+							owner.fireCtcpErrmsgReplyReceived(event);
+							owner.firePrivateCtcpErrmsgReplyReceived(event);
 						} else if (command.equals("PING")) {
-							CtcpPingResponseEvent event = new CtcpPingResponseEvent(owner, sender, user, command, rest);
-							owner.fireCtcpPingResponseReceived(event);
-							owner.firePrivateCtcpPingResponseReceived(event);
+							CtcpPingReplyEvent event = new CtcpPingReplyEvent(owner, sender, user, command, rest);
+							owner.fireCtcpPingReplyReceived(event);
+							owner.firePrivateCtcpPingReplyReceived(event);
 						} else if (command.equals("TIME")) {
-							CtcpTimeResponseEvent event = new CtcpTimeResponseEvent(owner, sender, user, command, rest);
-							owner.fireCtcpTimeResponseReceived(event);
-							owner.firePrivateCtcpTimeResponseReceived(event);
+							CtcpTimeReplyEvent event = new CtcpTimeReplyEvent(owner, sender, user, command, rest);
+							owner.fireCtcpTimeReplyReceived(event);
+							owner.firePrivateCtcpTimeReplyReceived(event);
 						} else {
-							CtcpUnknownResponseEvent event = new CtcpUnknownResponseEvent(owner, sender, user, command, rest);
-							owner.fireCtcpUnknownResponseEventReceived(event);
-							owner.firePrivateCtcpUnknownResponseEventReceived(event);
+							CtcpUnknownReplyEvent event = new CtcpUnknownReplyEvent(owner, sender, user, command, rest);
+							owner.fireCtcpUnknownReplyEventReceived(event);
+							owner.firePrivateCtcpUnknownReplyEventReceived(event);
 						}
 					} catch (Exception exc) {
 						System.err.println("Error with msg='"+str+"':");

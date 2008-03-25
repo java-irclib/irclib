@@ -5,13 +5,13 @@ import org.schwering.irc.manager.Connection;
 import org.schwering.irc.manager.User;
 
 /**
- * Fired when a CTCP SOURCE response has been received.
+ * Fired when a CTCP SOURCE reply has been received.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 2.00
  * @version 1.00
- * @see CtcpListener#sourceResponseReceived(CtcpSourceResponseEvent)
+ * @see CtcpListener#sourceReplyReceived(CtcpSourceReplyEvent)
  */
-public class CtcpSourceResponseEvent {
+public class CtcpSourceReplyEvent {
 	private Connection connection;
 	private User sender;
 	private User destUser;
@@ -19,7 +19,7 @@ public class CtcpSourceResponseEvent {
 	private String command;
 	private String rest;
 
-	public CtcpSourceResponseEvent(Connection connection, User sender, User destUser,
+	public CtcpSourceReplyEvent(Connection connection, User sender, User destUser,
 			String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;
@@ -28,7 +28,7 @@ public class CtcpSourceResponseEvent {
 		this.rest = rest;
 	}
 
-	public CtcpSourceResponseEvent(Connection connection, User sender,
+	public CtcpSourceReplyEvent(Connection connection, User sender,
 			Channel destChannel, String command, String rest) {
 		this.connection = connection;
 		this.sender = sender;

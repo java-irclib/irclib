@@ -12,6 +12,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.schwering.irc.lib.IRCConnection;
+import org.schwering.irc.lib.IRCConstants;
 import org.schwering.irc.lib.IRCEventListener;
 import org.schwering.irc.lib.IRCUser;
 import org.schwering.irc.lib.ssl.SSLIRCConnection;
@@ -29,19 +30,19 @@ import org.schwering.irc.manager.event.ConnectionEvent;
 import org.schwering.irc.manager.event.ConnectionListener;
 import org.schwering.irc.manager.event.CtcpSourceRequestEvent;
 import org.schwering.irc.manager.event.CtcpUnknownRequestEvent;
-import org.schwering.irc.manager.event.CtcpUnknownResponseEvent;
+import org.schwering.irc.manager.event.CtcpUnknownReplyEvent;
 import org.schwering.irc.manager.event.CtcpVersionRequestEvent;
 import org.schwering.irc.manager.event.CtcpUserinfoRequestEvent;
-import org.schwering.irc.manager.event.CtcpClientinfoResponseEvent;
-import org.schwering.irc.manager.event.CtcpErrmsgResponseEvent;
-import org.schwering.irc.manager.event.CtcpFingerResponseEvent;
+import org.schwering.irc.manager.event.CtcpClientinfoReplyEvent;
+import org.schwering.irc.manager.event.CtcpErrmsgReplyEvent;
+import org.schwering.irc.manager.event.CtcpFingerReplyEvent;
 import org.schwering.irc.manager.event.CtcpPingRequestEvent;
-import org.schwering.irc.manager.event.CtcpPingResponseEvent;
-import org.schwering.irc.manager.event.CtcpSourceResponseEvent;
+import org.schwering.irc.manager.event.CtcpPingReplyEvent;
+import org.schwering.irc.manager.event.CtcpSourceReplyEvent;
 import org.schwering.irc.manager.event.CtcpTimeRequestEvent;
-import org.schwering.irc.manager.event.CtcpTimeResponseEvent;
-import org.schwering.irc.manager.event.CtcpUserinfoResponseEvent;
-import org.schwering.irc.manager.event.CtcpVersionResponseEvent;
+import org.schwering.irc.manager.event.CtcpTimeReplyEvent;
+import org.schwering.irc.manager.event.CtcpUserinfoReplyEvent;
+import org.schwering.irc.manager.event.CtcpVersionReplyEvent;
 import org.schwering.irc.manager.event.ErrorEvent;
 import org.schwering.irc.manager.event.InfoEvent;
 import org.schwering.irc.manager.event.InvitationEvent;
@@ -282,6 +283,60 @@ public class Connection {
 	 */
 	public void send(String line) {
 		conn.send(line);
+	}
+	
+	/**
+	 * Sends a PRIVMSG to a user or a channel.
+	 * <p>
+	 * This is equivalent to <code>send("PRIVMSG "+ dest + " :"+
+	 * CtcpUtil.lowQuote(CtcpUtil.ctcpQuote(msg)));</code>.
+	 * @param dest Either a channel or a nickname.
+	 * @param msg The message itself.
+	 */
+	public void sendPrivmsg(String dest, String msg) {
+		send("PRIVMSG "+ dest + " :"+ 
+				CtcpUtil.lowQuote(CtcpUtil.ctcpQuote(msg)));
+	}
+
+	/**
+	 * Sends a NOTICE to a user or a channel.
+	 * <p>
+	 * This is equivalent to <code>send("NOTICE "+ dest + " :"+
+	 * CtcpUtil.lowQuote(CtcpUtil.ctcpQuote(msg)));</code>.
+	 * @param dest Either a channel or a nickname.
+	 * @param msg The message itself.
+	 */
+	public void sendNotice(String dest, String msg) {
+		send("NOTICE "+ dest + " :"+ 
+				CtcpUtil.lowQuote(CtcpUtil.ctcpQuote(msg)));
+	}
+
+	/**
+	 * Sends a CTCP request. A CTCP reply is always sent as PRIVMSG.
+	 * <p>
+	 * This is equivalent to <code>sendPrivmsg(dest, IRCConstants.CTCP_DELIMITER 
+	 * + msg + IRCConstants.CTCP_DELIMITER);</code>.
+	 * @param dest Either a channel name or a nickname.
+	 * @param msg The reply message.
+	 */
+	public void sendCtcpRequest(String dest, String msg) {
+		sendPrivmsg(dest, IRCConstants.CTCP_DELIMITER + msg
+				+ IRCConstants.CTCP_DELIMITER);
+	}
+
+	/**
+	 * Sends a CTCP reply. A CTCP reply is always sent as NOTICE, because
+	 * as a rule, PRIVMSGs (incoming CTCP requests) should never trigger
+	 * PRIVMSG replies.
+	 * <p>
+	 * This is equivalent to <code>sendNotice(dest, IRCConstants.CTCP_DELIMITER 
+	 * + msg + IRCConstants.CTCP_DELIMITER);</code>.
+	 * @param dest Either a channel name or a nickname.
+	 * @param msg The reply message.
+	 */
+	public void sendCtcpReply(String dest, String msg) {
+		sendNotice(dest, IRCConstants.CTCP_DELIMITER + msg
+				+ IRCConstants.CTCP_DELIMITER);
 	}
 
 	/**
@@ -926,91 +981,91 @@ public class Connection {
 		}
 	}
 	
-	synchronized void fireCtcpPingResponseReceived(CtcpPingResponseEvent event) {
+	synchronized void fireCtcpPingReplyReceived(CtcpPingReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).pingResponseReceived(event);
+				((CtcpListener)it.next()).pingReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void fireCtcpTimeResponseReceived(CtcpTimeResponseEvent event) {
+	synchronized void fireCtcpTimeReplyReceived(CtcpTimeReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).timeResponseReceived(event);
+				((CtcpListener)it.next()).timeReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void fireCtcpVersionResponseReceived(CtcpVersionResponseEvent event) {
+	synchronized void fireCtcpVersionReplyReceived(CtcpVersionReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).versionResponseReceived(event);
+				((CtcpListener)it.next()).versionReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void fireCtcpFingerResponseReceived(CtcpFingerResponseEvent event) {
+	synchronized void fireCtcpFingerReplyReceived(CtcpFingerReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).fingerResponseReceived(event);
+				((CtcpListener)it.next()).fingerReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void fireCtcpSourceResponseReceived(CtcpSourceResponseEvent event) {
+	synchronized void fireCtcpSourceReplyReceived(CtcpSourceReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).sourceResponseReceived(event);
+				((CtcpListener)it.next()).sourceReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void fireCtcpUserinfoResponseReceived(CtcpUserinfoResponseEvent event) {
+	synchronized void fireCtcpUserinfoReplyReceived(CtcpUserinfoReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).userinfoResponseReceived(event);
+				((CtcpListener)it.next()).userinfoReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void fireCtcpClientinfoResponseReceived(CtcpClientinfoResponseEvent event) {
+	synchronized void fireCtcpClientinfoReplyReceived(CtcpClientinfoReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).clientinfoResponseReceived(event);
+				((CtcpListener)it.next()).clientinfoReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void fireCtcpErrmsgResponseReceived(CtcpErrmsgResponseEvent event) {
+	synchronized void fireCtcpErrmsgReplyReceived(CtcpErrmsgReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).errmsgResponseReceived(event);
+				((CtcpListener)it.next()).errmsgReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void fireCtcpUnknownResponseEventReceived(
-			CtcpUnknownResponseEvent event) {
+	synchronized void fireCtcpUnknownReplyEventReceived(
+			CtcpUnknownReplyEvent event) {
 		for (Iterator it = ctcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).unknownResponseEventReceived(event);
+				((CtcpListener)it.next()).unknownReplyEventReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
@@ -1158,91 +1213,91 @@ public class Connection {
 		}
 	}
 	
-	synchronized void firePrivateCtcpPingResponseReceived(CtcpPingResponseEvent event) {
+	synchronized void firePrivateCtcpPingReplyReceived(CtcpPingReplyEvent event) {
 		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).pingResponseReceived(event);
+				((CtcpListener)it.next()).pingReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void firePrivateCtcpTimeResponseReceived(CtcpTimeResponseEvent event) {
+	synchronized void firePrivateCtcpTimeReplyReceived(CtcpTimeReplyEvent event) {
 		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).timeResponseReceived(event);
+				((CtcpListener)it.next()).timeReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void firePrivateCtcpVersionResponseReceived(CtcpVersionResponseEvent event) {
+	synchronized void firePrivateCtcpVersionReplyReceived(CtcpVersionReplyEvent event) {
 		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).versionResponseReceived(event);
+				((CtcpListener)it.next()).versionReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void firePrivateCtcpFingerResponseReceived(CtcpFingerResponseEvent event) {
+	synchronized void firePrivateCtcpFingerReplyReceived(CtcpFingerReplyEvent event) {
 		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).fingerResponseReceived(event);
+				((CtcpListener)it.next()).fingerReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void firePrivateCtcpSourceResponseReceived(CtcpSourceResponseEvent event) {
+	synchronized void firePrivateCtcpSourceReplyReceived(CtcpSourceReplyEvent event) {
 		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).sourceResponseReceived(event);
+				((CtcpListener)it.next()).sourceReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void firePrivateCtcpUserinfoResponseReceived(CtcpUserinfoResponseEvent event) {
+	synchronized void firePrivateCtcpUserinfoReplyReceived(CtcpUserinfoReplyEvent event) {
 		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).userinfoResponseReceived(event);
+				((CtcpListener)it.next()).userinfoReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void firePrivateCtcpClientinfoResponseReceived(CtcpClientinfoResponseEvent event) {
+	synchronized void firePrivateCtcpClientinfoReplyReceived(CtcpClientinfoReplyEvent event) {
 		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).clientinfoResponseReceived(event);
+				((CtcpListener)it.next()).clientinfoReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void firePrivateCtcpErrmsgResponseReceived(CtcpErrmsgResponseEvent event) {
+	synchronized void firePrivateCtcpErrmsgReplyReceived(CtcpErrmsgReplyEvent event) {
 		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).errmsgResponseReceived(event);
+				((CtcpListener)it.next()).errmsgReplyReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
 		}
 	}
 	
-	synchronized void firePrivateCtcpUnknownResponseEventReceived(
-			CtcpUnknownResponseEvent event) {
+	synchronized void firePrivateCtcpUnknownReplyEventReceived(
+			CtcpUnknownReplyEvent event) {
 		for (Iterator it = privateCtcpListeners.iterator(); it.hasNext(); ) {
 			try {
-				((CtcpListener)it.next()).unknownResponseEventReceived(event);
+				((CtcpListener)it.next()).unknownReplyEventReceived(event);
 			} catch (Exception exc) {
 				handleException(exc);
 			}
