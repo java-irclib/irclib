@@ -18,6 +18,8 @@ public class CtcpErrmsgReplyEvent {
 	private Channel destChannel;
 	private String command;
 	private String rest;
+	private String query;
+	private String answer;
 
 	public CtcpErrmsgReplyEvent(Connection connection, User sender, 
 			User destUser, String command, String rest) {
@@ -26,6 +28,11 @@ public class CtcpErrmsgReplyEvent {
 		this.destUser = destUser;
 		this.command = command;
 		this.rest = rest;
+		String[] arr = rest.split(" :", 2);
+		if (arr.length == 2) {
+			query = arr[0];
+			answer = arr[1];
+		}
 	}
 
 	public CtcpErrmsgReplyEvent(Connection connection, User sender,
@@ -35,6 +42,11 @@ public class CtcpErrmsgReplyEvent {
 		this.destChannel = destChannel;
 		this.command = command;
 		this.rest = rest;
+		String[] arr = rest.split(" :", 2);
+		if (arr.length == 2) {
+			query = arr[0];
+			answer = arr[1];
+		}
 	}
 
 	public Connection getConnection() {
@@ -59,5 +71,23 @@ public class CtcpErrmsgReplyEvent {
 	
 	public String getArguments() {
 		return rest;
+	}
+	
+	/**
+	 * Returns the string for which the ERRMSG was originally requested.
+	 * If "ERRMSG xyz" was requested, then the reply is "ERRMSG xyz :bla"
+	 * and the query is "xyz".
+	 */
+	public String getQuery() {
+		return query;
+	}
+	
+	/**
+	 * Returns answer string for the originally reuqested query.
+	 * If "ERRMSG xyz" was requested, then the reply is "ERRMSG xyz :bla"
+	 * and the answer is "bla".
+	 */
+	public String getAnswer() {
+		return answer;
 	}
 }

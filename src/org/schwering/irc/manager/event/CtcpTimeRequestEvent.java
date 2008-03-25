@@ -60,4 +60,10 @@ public class CtcpTimeRequestEvent {
 	public String getArguments() {
 		return rest;
 	}
+	
+	public void reply(String time) {
+		String dest = (destUser != null) ? destUser.getNick() 
+				: destChannel.getName();
+		connection.sendCtcpReply(dest, "TIME", time);
+	}
 }

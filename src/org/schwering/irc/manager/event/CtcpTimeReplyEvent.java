@@ -60,4 +60,11 @@ public class CtcpTimeReplyEvent {
 	public String getArguments() {
 		return rest;
 	}
+	
+	/**
+	 * Returns the time. The format is human-readable.
+	 */
+	public String getTime() {
+		return rest;
+	}
 }

@@ -315,12 +315,32 @@ public class Connection {
 	 * Sends a CTCP request. A CTCP reply is always sent as PRIVMSG.
 	 * <p>
 	 * This is equivalent to <code>sendPrivmsg(dest, IRCConstants.CTCP_DELIMITER 
-	 * + msg + IRCConstants.CTCP_DELIMITER);</code>.
+	 * + command + IRCConstants.CTCP_DELIMITER);</code>.
 	 * @param dest Either a channel name or a nickname.
-	 * @param msg The reply message.
+	 * @param command The CTCP command (e.g. VERSION).
 	 */
-	public void sendCtcpRequest(String dest, String msg) {
-		sendPrivmsg(dest, IRCConstants.CTCP_DELIMITER + msg
+	public void sendCtcpRequest(String dest, String command) {
+		sendPrivmsg(dest, IRCConstants.CTCP_DELIMITER + command
+				+ IRCConstants.CTCP_DELIMITER);
+	}
+
+	/**
+	 * Sends a CTCP request. A CTCP reply is always sent as PRIVMSG.
+	 * <p>
+	 * This is equivalent to <code>sendPrivmsg(dest, IRCConstants.CTCP_DELIMITER 
+	 * + command +" "+ args + IRCConstants.CTCP_DELIMITER);</code>.
+	 * @param dest Either a channel name or a nickname.
+	 * @param command The CTCP command (e.g. VERSION).
+	 * @param args The CTCP command's arguments.
+	 */
+	public void sendCtcpRequest(String dest, String command, String args) {
+		String tmp;
+		if (args != null && args.length() > 0) {
+			tmp = " "+ args;
+		} else {
+			tmp = "";
+		}
+		sendPrivmsg(dest, IRCConstants.CTCP_DELIMITER + command + tmp
 				+ IRCConstants.CTCP_DELIMITER);
 	}
 
@@ -330,12 +350,34 @@ public class Connection {
 	 * PRIVMSG replies.
 	 * <p>
 	 * This is equivalent to <code>sendNotice(dest, IRCConstants.CTCP_DELIMITER 
-	 * + msg + IRCConstants.CTCP_DELIMITER);</code>.
+	 * + command + IRCConstants.CTCP_DELIMITER);</code>.
 	 * @param dest Either a channel name or a nickname.
-	 * @param msg The reply message.
+	 * @param command The CTCP command (e.g. VERSION).
 	 */
-	public void sendCtcpReply(String dest, String msg) {
-		sendNotice(dest, IRCConstants.CTCP_DELIMITER + msg
+	public void sendCtcpReply(String dest, String command) {
+		sendNotice(dest, IRCConstants.CTCP_DELIMITER + command
+				+ IRCConstants.CTCP_DELIMITER);
+	}
+
+	/**
+	 * Sends a CTCP reply. A CTCP reply is always sent as NOTICE, because
+	 * as a rule, PRIVMSGs (incoming CTCP requests) should never trigger
+	 * PRIVMSG replies.
+	 * <p>
+	 * This is equivalent to <code>sendNotice(dest, IRCConstants.CTCP_DELIMITER 
+	 * + command +" "+ args + IRCConstants.CTCP_DELIMITER);</code>.
+	 * @param dest Either a channel name or a nickname.
+	 * @param command The CTCP command (e.g. VERSION).
+	 * @param args The CTCP command's arguments.
+	 */
+	public void sendCtcpReply(String dest, String command, String args) {
+		String tmp;
+		if (args != null && args.length() > 0) {
+			tmp = " "+ args;
+		} else {
+			tmp = "";
+		}
+		sendNotice(dest, IRCConstants.CTCP_DELIMITER + command + tmp
 				+ IRCConstants.CTCP_DELIMITER);
 	}
 

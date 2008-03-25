@@ -18,6 +18,9 @@ public class CtcpSourceReplyEvent {
 	private Channel destChannel;
 	private String command;
 	private String rest;
+	private String host;
+	private String dir;
+	private String files;
 
 	public CtcpSourceReplyEvent(Connection connection, User sender, User destUser,
 			String command, String rest) {
@@ -26,6 +29,12 @@ public class CtcpSourceReplyEvent {
 		this.destUser = destUser;
 		this.command = command;
 		this.rest = rest;
+		String[] arr = rest.split(":", 3);
+		if (arr.length == 3) {
+			this.host = arr[0];
+			this.dir = arr[1];
+			this.files = arr[2];
+		}
 	}
 
 	public CtcpSourceReplyEvent(Connection connection, User sender,
@@ -35,6 +44,12 @@ public class CtcpSourceReplyEvent {
 		this.destChannel = destChannel;
 		this.command = command;
 		this.rest = rest;
+		String[] arr = rest.split(":", 3);
+		if (arr.length == 3) {
+			this.host = arr[0];
+			this.dir = arr[1];
+			this.files = arr[2];
+		}
 	}
 
 	public Connection getConnection() {
@@ -59,5 +74,36 @@ public class CtcpSourceReplyEvent {
 	
 	public String getArguments() {
 		return rest;
+	}
+	
+	/**
+	 * Returns <code>true</code> if this is the end marker. In this case,
+	 * the <code>getHost()</code>, <code>getDirectory()</code> and
+	 * <code>getFiles()</code> method return <code>null</code>.
+	 */
+	public boolean isEndMarker() {
+		return rest == null || rest.length() == 0;
+	}
+	
+	/**
+	 * Returns the host. <code>null</code> if this is the end-marker-reply.
+	 */
+	public String getHost() {
+		return host;
+	}
+	
+	/**
+	 * Returns the directory. <code>null</code> if this is the end-marker-reply.
+	 */
+	public String getDirectory() {
+		return dir;
+	}
+	
+	/**
+	 * Returns the space separated list of files. 
+	 * <code>null</code> if this is the end-marker-reply.
+	 */
+	public String getFiles() {
+		return files;
 	}
 }

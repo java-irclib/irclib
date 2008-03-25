@@ -60,4 +60,26 @@ public class CtcpSourceRequestEvent {
 	public String getArguments() {
 		return rest;
 	}
+	
+	/**
+	 * Informs someone where to get this client.
+	 * @param host Host where the client can be gotton.
+	 * @param dir Directory of the server where the client can be gotton.
+	 * @param files Space separated list of files that can be gotton.
+	 * @see #reply()
+	 */
+	public void reply(String host, String dir, String files) {
+		String dest = (destUser != null) ? destUser.getNick() 
+				: destChannel.getName();
+		connection.sendCtcpReply(dest, "SOURCE", host +":"+ dir +":"+ files);
+	}
+	
+	/**
+	 * Marks the end of a list of {@link #reply(String, String, String)}s.
+	 */
+	public void reply() {
+		String dest = (destUser != null) ? destUser.getNick() 
+				: destChannel.getName();
+		connection.sendCtcpReply(dest, "SOURCE");
+	}
 }

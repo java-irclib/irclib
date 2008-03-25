@@ -60,4 +60,13 @@ public class CtcpPingReplyEvent {
 	public String getArguments() {
 		return rest;
 	}
+	
+	/**
+	 * Returns the received timestamp. This should be exactly the same
+	 * timestamp we originally sent to the user. The format thus depends
+	 * on the format we chose when we sent the timestamp.
+	 */
+	public String getTimestamp() {
+		return rest;
+	}
 }

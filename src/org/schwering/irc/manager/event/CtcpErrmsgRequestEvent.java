@@ -60,4 +60,23 @@ public class CtcpErrmsgRequestEvent {
 	public String getArguments() {
 		return rest;
 	}
+	
+	/**
+	 * Returns the query for which the ERRMSG was requested.
+	 * <p>
+	 * This is equivalent to <code>getArguments()</code>.
+	 */
+	public String getQuery() {
+		return rest;
+	}
+	
+	/**
+	 * Answers another user's ERRMSG request.
+	 * @param msg The error message for <code>getQuery()</code>.
+	 */
+	public void reply(String msg) {
+		String dest = (destUser != null) ? destUser.getNick() 
+				: destChannel.getName();
+		connection.sendCtcpReply(dest, "ERRMSG", getQuery() +" :"+ msg);
+	}
 }

@@ -60,4 +60,23 @@ public class CtcpPingRequestEvent {
 	public String getArguments() {
 		return rest;
 	}
+	
+	/**
+	 * Returns the timestamp. The timestamp is in any format the sending
+	 * client finds convinient and is only important for the sending client.
+	 * <p>
+	 * This is equivalent to <code>getArguments()</code>.
+	 */
+	public String getTimestamp() {
+		return rest;
+	}
+	
+	/**
+	 * Answers a PING message.
+	 */
+	public void reply() {
+		String dest = (destUser != null) ? destUser.getNick() 
+				: destChannel.getName();
+		connection.sendCtcpReply(dest, "PING", getTimestamp());
+	}
 }
