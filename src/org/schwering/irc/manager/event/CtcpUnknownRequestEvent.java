@@ -60,4 +60,8 @@ public class CtcpUnknownRequestEvent {
 	public String getArguments() {
 		return rest;
 	}
+	
+	public void reply(String arguments) {
+		connection.sendCtcpReply(sender.getNick(), command, arguments);
+	}
 }

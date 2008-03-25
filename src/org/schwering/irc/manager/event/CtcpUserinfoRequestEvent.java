@@ -62,8 +62,6 @@ public class CtcpUserinfoRequestEvent {
 	}
 	
 	public void reply(String userinfo) {
-		String dest = (destUser != null) ? destUser.getNick() 
-				: destChannel.getName();
-		connection.sendCtcpReply(dest, "USERINFO", ":"+ userinfo);
+		connection.sendCtcpReply(sender.getNick(), "USERINFO", ":"+ userinfo);
 	}
 }

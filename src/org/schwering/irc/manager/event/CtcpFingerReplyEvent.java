@@ -18,9 +18,6 @@ public class CtcpFingerReplyEvent {
 	private Channel destChannel;
 	private String command;
 	private String rest;
-	private String clientName;
-	private String clientVersion;
-	private String environment;
 
 	public CtcpFingerReplyEvent(Connection connection, User sender, User destUser,
 			String command, String rest) {
@@ -29,12 +26,6 @@ public class CtcpFingerReplyEvent {
 		this.destUser = destUser;
 		this.command = command;
 		this.rest = rest;
-		String[] arr = rest.split(":", 3);
-		if (arr.length == 3) {
-			this.clientName = arr[0];
-			this.clientVersion = arr[1];
-			this.environment = arr[2];
-		}
 	}
 
 	public CtcpFingerReplyEvent(Connection connection, User sender,
@@ -44,12 +35,6 @@ public class CtcpFingerReplyEvent {
 		this.destChannel = destChannel;
 		this.command = command;
 		this.rest = rest;
-		String[] arr = rest.split(":", 3);
-		if (arr.length == 3) {
-			this.clientName = arr[0];
-			this.clientVersion = arr[1];
-			this.environment = arr[2];
-		}
 	}
 
 	public Connection getConnection() {
@@ -76,15 +61,12 @@ public class CtcpFingerReplyEvent {
 		return rest;
 	}
 	
-	public String getClientName() {
-		return clientName;
-	}
-	
-	public String getClientVersion() {
-		return clientVersion;
-	}
-	
-	public String getEnvironment() {
-		return environment;
+	/**
+	 * Returns some user information. This might contain his real name,
+	 * idle time and login name at the client machine.
+	 */
+	public String getInfo() {
+		return rest != null && rest.length() > 0 && rest.charAt(0) == ':' 
+			? rest.substring(1) : rest;
 	}
 }

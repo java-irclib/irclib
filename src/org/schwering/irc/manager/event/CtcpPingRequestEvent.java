@@ -75,8 +75,6 @@ public class CtcpPingRequestEvent {
 	 * Answers a PING message.
 	 */
 	public void reply() {
-		String dest = (destUser != null) ? destUser.getNick() 
-				: destChannel.getName();
-		connection.sendCtcpReply(dest, "PING", getTimestamp());
+		connection.sendCtcpReply(sender.getNick(), "PING", getTimestamp());
 	}
 }

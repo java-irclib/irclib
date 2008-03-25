@@ -60,4 +60,16 @@ public class CtcpVersionRequestEvent {
 	public String getArguments() {
 		return rest;
 	}
+	
+	/**
+	 * Informs a user about this client's name, version and environment.
+	 * @param clientName e.g. "IRClib"
+	 * @param clientVersion e.g. "2.0"
+	 * @param environment e.g. "Java 1.6"
+	 */
+	public void reply(String clientName, String clientVersion, 
+			String environment) {
+		connection.sendCtcpReply(sender.getNick(), "VERSION", 
+				clientName +":"+ clientVersion +":"+ environment);
+	}
 }

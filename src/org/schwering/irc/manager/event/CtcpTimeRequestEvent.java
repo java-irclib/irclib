@@ -62,8 +62,6 @@ public class CtcpTimeRequestEvent {
 	}
 	
 	public void reply(String time) {
-		String dest = (destUser != null) ? destUser.getNick() 
-				: destChannel.getName();
-		connection.sendCtcpReply(dest, "TIME", time);
+		connection.sendCtcpReply(sender.getNick(), "TIME", time);
 	}
 }

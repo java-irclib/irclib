@@ -75,8 +75,7 @@ public class CtcpErrmsgRequestEvent {
 	 * @param msg The error message for <code>getQuery()</code>.
 	 */
 	public void reply(String msg) {
-		String dest = (destUser != null) ? destUser.getNick() 
-				: destChannel.getName();
-		connection.sendCtcpReply(dest, "ERRMSG", getQuery() +" :"+ msg);
+		connection.sendCtcpReply(sender.getNick(), "ERRMSG", 
+				getQuery() +" :"+ msg);
 	}
 }

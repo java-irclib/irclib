@@ -18,6 +18,9 @@ public class CtcpVersionReplyEvent {
 	private Channel destChannel;
 	private String command;
 	private String rest;
+	private String clientName;
+	private String clientVersion;
+	private String environment;
 
 	public CtcpVersionReplyEvent(Connection connection, User sender, User destUser,
 			String command, String rest) {
@@ -26,6 +29,12 @@ public class CtcpVersionReplyEvent {
 		this.destUser = destUser;
 		this.command = command;
 		this.rest = rest;
+		String[] arr = rest.split(":", 3);
+		if (arr.length == 3) {
+			this.clientName = arr[0];
+			this.clientVersion = arr[1];
+			this.environment = arr[2];
+		}
 	}
 
 	public CtcpVersionReplyEvent(Connection connection, User sender,
@@ -35,6 +44,12 @@ public class CtcpVersionReplyEvent {
 		this.destChannel = destChannel;
 		this.command = command;
 		this.rest = rest;
+		String[] arr = rest.split(":", 3);
+		if (arr.length == 3) {
+			this.clientName = arr[0];
+			this.clientVersion = arr[1];
+			this.environment = arr[2];
+		}
 	}
 
 	public Connection getConnection() {
@@ -59,5 +74,17 @@ public class CtcpVersionReplyEvent {
 	
 	public String getArguments() {
 		return rest;
+	}
+	
+	public String getClientName() {
+		return clientName;
+	}
+	
+	public String getClientVersion() {
+		return clientVersion;
+	}
+	
+	public String getEnvironment() {
+		return environment;
 	}
 }

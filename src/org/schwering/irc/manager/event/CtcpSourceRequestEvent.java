@@ -69,17 +69,14 @@ public class CtcpSourceRequestEvent {
 	 * @see #reply()
 	 */
 	public void reply(String host, String dir, String files) {
-		String dest = (destUser != null) ? destUser.getNick() 
-				: destChannel.getName();
-		connection.sendCtcpReply(dest, "SOURCE", host +":"+ dir +":"+ files);
+		connection.sendCtcpReply(sender.getNick(), "SOURCE", 
+				host +":"+ dir +":"+ files);
 	}
 	
 	/**
 	 * Marks the end of a list of {@link #reply(String, String, String)}s.
 	 */
 	public void reply() {
-		String dest = (destUser != null) ? destUser.getNick() 
-				: destChannel.getName();
-		connection.sendCtcpReply(dest, "SOURCE");
+		connection.sendCtcpReply(sender.getNick(), "SOURCE");
 	}
 }
