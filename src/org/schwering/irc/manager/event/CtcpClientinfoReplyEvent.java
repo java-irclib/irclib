@@ -62,9 +62,9 @@ public class CtcpClientinfoReplyEvent {
 	}
 	
 	/**
-	 * Returns the userinfo.
+	 * Returns the clientinfo.
 	 */
-	public String getUserinfo() {
+	public String getClientinfo() {
 		return rest != null && rest.length() > 0 && rest.charAt(0) == ':' 
 			? rest.substring(1) : rest;
 	}

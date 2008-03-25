@@ -2,6 +2,7 @@ package org.schwering.irc.manager.event;
 
 import org.schwering.irc.manager.Channel;
 import org.schwering.irc.manager.Connection;
+import org.schwering.irc.manager.Message;
 import org.schwering.irc.manager.User;
 
 /**
@@ -58,6 +59,10 @@ public class CtcpActionEvent {
 	}
 	
 	public String getArguments() {
+		return rest;
+	}
+	
+	public String getMessage() {
 		return rest;
 	}
 }
