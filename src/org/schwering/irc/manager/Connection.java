@@ -313,14 +313,13 @@ public class Connection {
 
 	/**
 	 * Sends a CTCP request. A CTCP reply is always sent as PRIVMSG.
-	 * <p>
-	 * This is equivalent to <code>sendPrivmsg(dest, IRCConstants.CTCP_DELIMITER 
-	 * + command + IRCConstants.CTCP_DELIMITER);</code>.
 	 * @param dest Either a channel name or a nickname.
 	 * @param command The CTCP command (e.g. VERSION).
 	 */
 	public void sendCtcpRequest(String dest, String command) {
-		sendPrivmsg(dest, IRCConstants.CTCP_DELIMITER + command
+		send("PRIVMSG "+ dest + " :"+ 
+				IRCConstants.CTCP_DELIMITER 
+				+ CtcpUtil.lowQuote(CtcpUtil.ctcpQuote(command))
 				+ IRCConstants.CTCP_DELIMITER);
 	}
 
@@ -340,7 +339,9 @@ public class Connection {
 		} else {
 			tmp = "";
 		}
-		sendPrivmsg(dest, IRCConstants.CTCP_DELIMITER + command + tmp
+		send("PRIVMSG "+ dest + " :"+ 
+				IRCConstants.CTCP_DELIMITER 
+				+ CtcpUtil.lowQuote(CtcpUtil.ctcpQuote(command + tmp))
 				+ IRCConstants.CTCP_DELIMITER);
 	}
 
@@ -355,7 +356,9 @@ public class Connection {
 	 * @param command The CTCP command (e.g. VERSION).
 	 */
 	public void sendCtcpReply(String dest, String command) {
-		sendNotice(dest, IRCConstants.CTCP_DELIMITER + command
+		send("NOTICE "+ dest + " :"+ 
+				IRCConstants.CTCP_DELIMITER 
+				+ CtcpUtil.lowQuote(CtcpUtil.ctcpQuote(command))
 				+ IRCConstants.CTCP_DELIMITER);
 	}
 
@@ -377,7 +380,9 @@ public class Connection {
 		} else {
 			tmp = "";
 		}
-		sendNotice(dest, IRCConstants.CTCP_DELIMITER + command + tmp
+		send("NOTICE "+ dest + " :"+ 
+				IRCConstants.CTCP_DELIMITER 
+				+ CtcpUtil.lowQuote(CtcpUtil.ctcpQuote(command + tmp))
 				+ IRCConstants.CTCP_DELIMITER);
 	}
 

@@ -63,13 +63,13 @@ public class CtcpVersionRequestEvent {
 	
 	/**
 	 * Informs a user about this client's name, version and environment.
-	 * @param clientName e.g. "IRClib"
-	 * @param clientVersion e.g. "2.0"
-	 * @param environment e.g. "Java 1.6"
+	 * <p>
+	 * The CTCP specification says that the version is a string with the format
+	 * <code>clientName:clientVersion:environment</code>, but it seems that
+	 * modern clients ignore this and simply send/receive a string.
+	 * @param version A string describing the version of the client.
 	 */
-	public void reply(String clientName, String clientVersion, 
-			String environment) {
-		connection.sendCtcpReply(sender.getNick(), "VERSION", 
-				clientName +":"+ clientVersion +":"+ environment);
+	public void reply(String version) {
+		connection.sendCtcpReply(sender.getNick(), "VERSION", version);
 	}
 }

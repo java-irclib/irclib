@@ -55,6 +55,7 @@ public class CtcpDccSendEvent {
 	private void init(String rest) {
 		try {
 			StringTokenizer st = new StringTokenizer(rest);
+			st.nextToken(); // skip "SEND"
 			String tmpfile = st.nextToken();
 			if (tmpfile.charAt(0) == '\"') {
 				do {
@@ -78,6 +79,7 @@ public class CtcpDccSendEvent {
 	  			size = 0;
 	  		}
 		} catch (Exception exc) {
+			exc.printStackTrace();
 			file = null;
 			addr = null;
 			port = -1;

@@ -1,5 +1,9 @@
 package org.schwering.irc.manager.event;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.StringTokenizer;
+
 import org.schwering.irc.manager.Channel;
 import org.schwering.irc.manager.Connection;
 import org.schwering.irc.manager.User;
@@ -18,6 +22,8 @@ public class CtcpDccChatEvent {
 	private Channel destChannel;
 	private String command;
 	private String rest;
+	private InetAddress addr;
+	private int port;
 
 	public CtcpDccChatEvent(Connection connection, User sender, User destUser,
 			String command, String rest) {
@@ -26,6 +32,7 @@ public class CtcpDccChatEvent {
 		this.destUser = destUser;
 		this.command = command;
 		this.rest = rest;
+		init(rest);
 	}
 
 	public CtcpDccChatEvent(Connection connection, User sender,
@@ -35,6 +42,38 @@ public class CtcpDccChatEvent {
 		this.destChannel = destChannel;
 		this.command = command;
 		this.rest = rest;
+		init(rest);
+	}
+
+	private void init(String rest) {
+		try {
+			StringTokenizer st = new StringTokenizer(rest);
+			st.nextToken(); // skip "SEND"
+			st.nextToken(); // skip "chat"
+			String tmphost = st.nextToken();
+			if (tmphost.charAt(0) == '\"') {
+				tmphost = tmphost.substring(1);
+			}
+			if (tmphost.charAt(tmphost.length() - 1) == '\"') {
+				tmphost = tmphost.substring(0, tmphost.length() - 1);
+			}
+	  		addr = getInetAddress(Long.parseLong(tmphost));
+	  		port = Integer.parseInt(st.nextToken());
+		} catch (Exception exc) {
+			exc.printStackTrace();
+			addr = null;
+			port = -1;
+		}
+	}
+
+	private static InetAddress getInetAddress(long address) 
+	throws UnknownHostException {
+		byte[] addr = new byte[4];
+		addr[0] = (byte)((address >>> 24) & 0xFF);
+		addr[1] = (byte)((address >>> 16) & 0xFF);
+		addr[2] = (byte)((address >>> 8) & 0xFF);
+		addr[3] = (byte)(address & 0xFF);
+		return InetAddress.getByAddress(addr);
 	}
 
 	public Connection getConnection() {
@@ -59,5 +98,21 @@ public class CtcpDccChatEvent {
 	
 	public String getArguments() {
 		return rest;
+	}
+	
+	/**
+	 * Returns the host. If the DCC line is invalid, <code>null</code>
+	 * is returned.
+	 */
+	public InetAddress getAddress() {
+		return addr;
+	}
+
+	/**
+	 * Returns the port. If the DCC line was invalid, <code>-1</code> is
+	 * returned.
+	 */
+	public int getPort() {
+		return port;
 	}
 }
