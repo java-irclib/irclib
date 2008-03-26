@@ -10,7 +10,7 @@ import java.util.Map;
  * @since 2.00
  * @version 1.00
  */
-public abstract class NumericEventChain {
+abstract class NumericEventChain {
 	private int[] starterNums;
 	private int[] bodyNums;
 	private int finalNum;
