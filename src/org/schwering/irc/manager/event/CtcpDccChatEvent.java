@@ -1,11 +1,11 @@
 package org.schwering.irc.manager.event;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.StringTokenizer;
 
 import org.schwering.irc.manager.Channel;
 import org.schwering.irc.manager.Connection;
+import org.schwering.irc.manager.CtcpUtil;
 import org.schwering.irc.manager.User;
 
 /**
@@ -57,23 +57,13 @@ public class CtcpDccChatEvent {
 			if (tmphost.charAt(tmphost.length() - 1) == '\"') {
 				tmphost = tmphost.substring(0, tmphost.length() - 1);
 			}
-	  		addr = getInetAddress(Long.parseLong(tmphost));
+	  		addr = CtcpUtil.convertLongToInetAddress(Long.parseLong(tmphost));
 	  		port = Integer.parseInt(st.nextToken());
 		} catch (Exception exc) {
 			exc.printStackTrace();
 			addr = null;
 			port = -1;
 		}
-	}
-
-	private static InetAddress getInetAddress(long address) 
-	throws UnknownHostException {
-		byte[] addr = new byte[4];
-		addr[0] = (byte)((address >>> 24) & 0xFF);
-		addr[1] = (byte)((address >>> 16) & 0xFF);
-		addr[2] = (byte)((address >>> 8) & 0xFF);
-		addr[3] = (byte)(address & 0xFF);
-		return InetAddress.getByAddress(addr);
 	}
 
 	public Connection getConnection() {

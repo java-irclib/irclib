@@ -2,6 +2,7 @@ package org.schwering.irc.manager;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Collection;
 import java.util.Collections;
@@ -322,7 +323,7 @@ public class Connection {
 				+ CtcpUtil.lowQuote(CtcpUtil.ctcpQuote(command))
 				+ IRCConstants.CTCP_DELIMITER);
 	}
-
+	
 	/**
 	 * Sends a CTCP request. A CTCP reply is always sent as PRIVMSG.
 	 * <p>
@@ -343,6 +344,18 @@ public class Connection {
 				IRCConstants.CTCP_DELIMITER 
 				+ CtcpUtil.lowQuote(CtcpUtil.ctcpQuote(command + tmp))
 				+ IRCConstants.CTCP_DELIMITER);
+	}
+
+	/**
+	 * Sends a CTCP command. A CTCP reply is always sent as PRIVMSG.
+	 * <p>
+	 * This is equivalent to <code>sendCtcpRequest(dest, command, args);</code>.
+	 * @param dest Either a channel name or a nickname.
+	 * @param command The CTCP command (e.g. ACTION).
+	 * @param args The CTCP command's arguments.
+	 */
+	public void sendCtcpCommand(String dest, String command, String args) {
+		sendCtcpRequest(dest, command, args);
 	}
 
 	/**
@@ -384,6 +397,31 @@ public class Connection {
 				IRCConstants.CTCP_DELIMITER 
 				+ CtcpUtil.lowQuote(CtcpUtil.ctcpQuote(command + tmp))
 				+ IRCConstants.CTCP_DELIMITER);
+	}
+	
+	/**
+	 * Sends a DCC chat invitation.
+	 * @param dest The receiver, i.e. a nickname or channel.
+	 * @param fileName The file's name.
+	 * @param addr The host of the DCC chat (typically the own address).
+	 * @param port The port the DCC chat host is listening to.
+	 * @param size The file size.
+	 */
+	public void sendDccSend(String dest, String fileName, InetAddress addr, 
+			int port, long size) {
+		long address = CtcpUtil.convertInetAddressToLong(addr);
+		sendCtcpCommand(dest, "DCC", "SEND "+ fileName +" "+ address +" "+ port +" "+ size);
+	}
+
+	/**
+	 * Sends a DCC chat invitation.
+	 * @param dest The receiver, i.e. a nickname or channel.
+	 * @param addr The host of the DCC chat (typically the own address).
+	 * @param port The port the DCC chat host is listening to.
+	 */
+	public void sendDccChat(String dest, InetAddress addr, int port) {
+		long address = CtcpUtil.convertInetAddressToLong(addr);
+		sendCtcpCommand(dest, "DCC", "CHAT chat "+ address +" "+ port);
 	}
 
 	/**

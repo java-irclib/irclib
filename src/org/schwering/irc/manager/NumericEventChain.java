@@ -136,6 +136,7 @@ abstract class NumericEventChain {
 			this.obj = obj;
 			setPriority(Thread.MIN_PRIORITY);
 			setName("NumericEventChainContainer"+starterNums[0]);
+			setDaemon(true);
 			start();
 		}
 		

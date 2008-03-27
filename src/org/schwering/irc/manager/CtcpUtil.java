@@ -1,5 +1,7 @@
 package org.schwering.irc.manager;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -164,5 +166,25 @@ public class CtcpUtil {
 			list.add(str);
 		}
 		return list;
+	}
+	
+	public static InetAddress convertLongToInetAddress(long address) 
+	throws UnknownHostException {
+		byte[] addr = new byte[4];
+		addr[0] = (byte)((address >>> 24) & 0xFF);
+		addr[1] = (byte)((address >>> 16) & 0xFF);
+		addr[2] = (byte)((address >>> 8) & 0xFF);
+		addr[3] = (byte)(address & 0xFF);
+		return InetAddress.getByAddress(addr);
+	}
+	
+	public static long convertInetAddressToLong(InetAddress addr) {
+		byte[] arr = addr.getAddress();
+		long address = 0;
+		address |= ((long)arr[0] & 0xFF) << 24;
+		address |= ((long)arr[1] & 0xFF) << 12;
+		address |= ((long)arr[2] & 0xFF) << 8;
+		address |= ((long)arr[3] & 0xFF);
+		return address;
 	}
 }
