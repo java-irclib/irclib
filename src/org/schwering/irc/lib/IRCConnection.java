@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
@@ -106,7 +107,7 @@ public class IRCConnection extends Thread {
 	/** 
 	 * The <code>BufferedReader</code> receives Strings from the IRC server. 
 	 */
-	private volatile BufferedReader in;
+	private BufferedReader in;
 	
 	/** 
 	 * The <code>PrintWriter</code> sends Strings to the IRC server. 
@@ -175,7 +176,7 @@ public class IRCConnection extends Thread {
 	/**
 	 * The writer used for debugging output.
 	 */
-	private PrintWriter debugWriter;
+	private PrintStream debugStream = System.out;
 	
 // ------------------------------
 	
@@ -339,7 +340,7 @@ public class IRCConnection extends Thread {
 		socket = s;
 		level = 1;
 		s.setSoTimeout(timeout);
-		in  = new BufferedReader(new InputStreamReader(s.getInputStream(), 
+		in = new BufferedReader(new InputStreamReader(s.getInputStream(), 
 				encoding));
 		out = new PrintWriter(new OutputStreamWriter(s.getOutputStream(), 
 				encoding));
@@ -377,20 +378,34 @@ public class IRCConnection extends Thread {
 	public void run() {
 		try {
 			String line;
-			while (!isInterrupted()) {
-				line = in.readLine();
+			while ((line = in.readLine()) != null) {
 				if (debug) {
-					if (debugWriter != null)
-						debugWriter.println("IN:  "+ line);
-					else
-						System.out.println("IN:  "+ line);
+					synchronized (debugStream) {
+						debugStream.println("IN:  "+ line);
+					}
 				}
-				if (line != null)
-					get(line);
-				else
-					close();
+				get(line);
 			}
+//			while (!isInterrupted()) {
+//				line = in.readLine();
+//				if (debug) {
+//					synchronized (debugWriter) {
+//						debugWriter.println("IN:  "+ line);
+//					}
+//				}
+//				if (line != null)
+//					get(line);
+//				else
+//					close();
+//			}
 		} catch (IOException exc) {
+			if (debug) {
+				synchronized (debugStream) {
+					exc.printStackTrace(debugStream);
+				}
+			}
+			close();
+		} finally {
 			close();
 		}
 	}
@@ -408,10 +423,9 @@ public class IRCConnection extends Thread {
 	public void send(String line) {
 		try {
 			if (debug) {
-				if (debugWriter != null)
-					debugWriter.println("OUT: "+ line);
-				else
-					System.out.println("OUT: "+ line);
+				synchronized (debugStream) {
+					debugStream.println("OUT: "+ line);
+				}
 			}
 			out.write(line +"\r\n");
 			out.flush();
@@ -793,14 +807,14 @@ public class IRCConnection extends Thread {
 // ------------------------------
 	
 	/**
-	 * Sets the debug writer. If <code>debugWriter</code> is <code>null</code>,
+	 * Sets the debug writer. If <code>debugStream</code> is <code>null</code>,
 	 * the debugging lines are printed to <code>System.out</code>.
-	 * @param debugWriter The writer used to print the incoming and outgoing
+	 * @param debugStream The stream used to print the incoming and outgoing
 	 *                    lines if debugging is enabled.
 	 * @see #setDebug(boolean)
 	 */
-	public void setDebugWriter(PrintWriter debugWriter) {
-		this.debugWriter = debugWriter;
+	public void setDebugStream(PrintStream debugStream) {
+		this.debugStream = debugStream != null ? debugStream : System.out;
 	}
 	
 // ------------------------------

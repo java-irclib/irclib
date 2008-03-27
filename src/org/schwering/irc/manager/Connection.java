@@ -1,7 +1,7 @@
 package org.schwering.irc.manager;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Collection;
@@ -211,12 +211,12 @@ public class Connection {
 	}
 	
 	/**
-	 * Sets the debug writer. <code>null</code> (default) means 
+	 * Sets the debug stream. <code>null</code> (default) means 
 	 * <code>System.out</code>.
-	 * @see IRCConnection#setDebugWriter(PrintWriter)
+	 * @see IRCConnection#setDebugStream(PrintStream)
 	 */
-	public void setDebugWriter(PrintWriter debugWriter) {
-		conn.setDebugWriter(debugWriter);
+	public void setDebugWriter(PrintStream debugStream) {
+		conn.setDebugStream(debugStream);
 	}
 	
 	/**
