@@ -19,6 +19,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
@@ -75,6 +78,11 @@ import java.net.SocketException;
  * @see SSLIRCConnection
  */
 public class IRCConnection extends Thread {
+	/**
+	 * The <code>javax.net.SocketFactory</code> object. If <code>null</code>,
+	 * simply a <code>Socket</code> constructor is used.
+	 */
+	private Object socketFactory;
 	
 	/** 
 	 * This <code>Socket</code> is a connection to the IRC server. 
@@ -288,6 +296,10 @@ public class IRCConnection extends Thread {
 	 * It tries all set ports until one is open. If all ports fail it throws an 
 	 * <code>IOException</code>.<br />
 	 * You can invoke <code>connect</code> only one time.
+	 * <p>
+	 * If no socket factory was set with {@link #setSocketFactory(Object)},
+	 * the <code>Socket</code> constructor is simply called, otherwise, the
+	 * class's <code>Socket createSocket(String, int)</code> method is called.
 	 * @throws IOException If an I/O error occurs. 
 	 * @throws SocketException If the <code>connect</code> method was already
 	 *                         invoked.
@@ -303,7 +315,7 @@ public class IRCConnection extends Thread {
 		Socket s = null;
 		for (int i = 0; i < ports.length && s == null; i++) {
 			try {
-				s = new Socket(host, ports[i]);
+				s = createSocket(host, ports[i]);
 				exception = null; 
 			} catch (IOException exc) {
 				if (s != null)
@@ -316,6 +328,44 @@ public class IRCConnection extends Thread {
 			throw exception; // connection wasn't successful at any port
 		
 		prepare(s);
+	}
+	
+// ------------------------------
+	
+	/**
+	 * Creates a new socket. If the <code>Object socketFactory</code>
+	 * is not <code>null</code>, the object should be an instance of
+	 * <code>javax.net.SocketFactory</code> (however, the only requirement
+	 * is that it contains a method <code>createSocket(String host, 
+	 * int port)</code> that returns a <code>Socket</code>).
+	 * <p>
+	 * The reason for this procedure is that <code>SocketFactory</code>s
+	 * do not exist prior to Java 1.4. 
+	 */
+	private Socket createSocket(String host, int port) throws IOException {
+		if (socketFactory != null) {
+			try {
+				Class cls = socketFactory.getClass();
+				Method m = cls.getMethod("createSocket",
+						new Class[] { String.class, int.class });
+				Object o = m.invoke(socketFactory, 
+						new Object[] { host, new Integer(port) });
+				return (Socket)o;
+			} catch (NoSuchMethodException exc) {
+				throw new RuntimeException("Couldn't get SocketFactory",
+						exc);
+			} catch (IllegalAccessException exc) {
+				throw new RuntimeException("Couldn't get SocketFactory",
+						exc);
+			} catch (InvocationTargetException exc) {
+				throw new RuntimeException("Couldn't get SocketFactory",
+						exc);
+			} catch (ClassCastException exc) {
+				throw new RuntimeException("Couldn't get SocketFactory",
+						exc);
+			}
+		} else
+			return new Socket(host, port);
 	}
 	
 // ------------------------------
@@ -364,8 +414,8 @@ public class IRCConnection extends Thread {
 		if (pass != null)
 			send("PASS "+ pass); 
 		send("NICK "+ nick); 
-		send("USER "+ username +" "+ socket.getLocalAddress() +" "+ host 
-				+" :"+ realname); 
+		send("USER "+ username +" "+ socket.getLocalAddress().getHostAddress()
+				+" "+ host +" :"+ realname); 
 	}
 	
 // ------------------------------
@@ -776,6 +826,37 @@ public class IRCConnection extends Thread {
 // ------------------------------
 	
 	/**
+	 * Sets the socket factory.<br />
+	 * The object should be an instance of
+	 * <code>javax.net.SocketFactory</code> (however, the only requirement
+	 * is that it contains a method <code>createSocket(String host, 
+	 * int port)</code> that returns a <code>Socket</code>).<br />
+	 * If no socket factory is set, simply the <code>Socket</code> constructor
+	 * is called.
+	 * @param factory The socket factory, should be a instance of 
+	 *                <code>javax.net.SocketFactory</code> (in fact, it must 
+	 *                provide a <code>createSocket(String host, int port)</code>
+	 *                method that returns a <code>Socket</code>. 
+	 */
+	public void setSocketFactory(Object factory) {
+		this.socketFactory = factory;
+	}
+	
+// ------------------------------
+	
+	/**
+	 * Returns the socket factory object or <code>null</code> if none was
+	 * set.
+	 * @return The socket factory object or <code>null</code>.
+	 * @see #setSocketFactory(Object)
+	 */
+	public Object getSocketFactory() {
+		return socketFactory;
+	}
+	
+// ------------------------------
+	
+	/**
 	 * Sets the connection's timeout in milliseconds. <br />
 	 * The default is <code>1000 * 60 15</code> millis which are 15 minutes.
 	 * @param millis The socket's timeout in milliseconds. 
@@ -954,6 +1035,17 @@ public class IRCConnection extends Thread {
 			}
 			else 
 				return timeout;
+	}
+	
+// ------------------------------
+	
+	/**
+	 * Returns the local address of the connection socket.
+	 * If the connection is not yet connected, <code>null</code> is
+	 * returned.
+	 */
+	public InetAddress getLocalAddress() {
+		return (socket != null) ? socket.getLocalAddress() : null;
 	}
 	
 // ------------------------------
