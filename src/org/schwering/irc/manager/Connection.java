@@ -143,7 +143,7 @@ public class Connection {
 	
 	/**
 	 * Returns the connected user's current nickname.
-	 * This method simply calls <code>IRCConnection.getNick</code>.
+	 * This method simply calls <code>IRCConnection.getNick()</code>.
 	 * <p>
 	 * Note: The IRC server might implicitly change the originally set
 	 * nickname. This done when the set nick contains illegal characters
@@ -159,7 +159,7 @@ public class Connection {
 	
 	/**
 	 * Returns the IRC server's hostname.
-	 * This method simply calls <code>IRCConnection.getHost</code>.
+	 * This method simply calls <code>IRCConnection.getHost()</code>.
 	 * @see IRCConnection#getHost()
 	 */
 	public String getServerHostname() {
@@ -168,7 +168,7 @@ public class Connection {
 	
 	/**
 	 * Returns the encoding of the connection.
-	 * This method simply calls <code>IRCConnection.getEncoding</code>.
+	 * This method simply calls <code>IRCConnection.getEncoding()</code>.
 	 * @see IRCConnection#getEncoding()
 	 */
 	public String getEncoding() {
@@ -177,7 +177,7 @@ public class Connection {
 	
 	/**
 	 * Sets the encoding of the connection.
-	 * This method simply calls <code>IRCConnection.setEncoding</code>.
+	 * This method simply calls <code>IRCConnection.setEncoding()</code>.
 	 * @see IRCConnection#setEncoding(String)
 	 */
 	public void setEncoding(String encoding) {
@@ -186,7 +186,7 @@ public class Connection {
 
 	/**
 	 * Returns the timeout of the connection.
-	 * This method simply calls <code>IRCConnection.getTimeout</code>.
+	 * This method simply calls <code>IRCConnection.getTimeout()</code>.
 	 * @see IRCConnection#getTimeout()
 	 */
 	public int getTimeout() {
@@ -195,7 +195,7 @@ public class Connection {
 	
 	/**
 	 * Sets the timeout of the connection.
-	 * This method simply calls <code>IRCConnection.setTimeout</code>.
+	 * This method simply calls <code>IRCConnection.setTimeout()</code>.
 	 * @see IRCConnection#setTimeout(int)
 	 */
 	public void setTimeout(int millis) {
@@ -203,7 +203,17 @@ public class Connection {
 	}
 	
 	/**
+	 * Returns the local host of the connected socket.
+	 * This method simply calls <code>IRCConnection.getTimeout()</code>.
+	 * @see IRCConnection#getLocalAddress()
+	 */
+	public InetAddress getLocalAddress() {
+		return conn.getLocalAddress();
+	}
+	
+	/**
 	 * Enables or disables debugging.
+	 * This method simply calls <code>IRCConnection.setDebug()</code>.
 	 * @see IRCConnection#setDebug(boolean)
 	 */
 	public void setDebug(boolean debug) {
@@ -213,9 +223,10 @@ public class Connection {
 	/**
 	 * Sets the debug stream. <code>null</code> (default) means 
 	 * <code>System.out</code>.
+	 * This method simply calls <code>IRCConnection.setDebugStream()</code>.
 	 * @see IRCConnection#setDebugStream(PrintStream)
 	 */
-	public void setDebugWriter(PrintStream debugStream) {
+	public void setDebugStream(PrintStream debugStream) {
 		conn.setDebugStream(debugStream);
 	}
 	
@@ -400,6 +411,18 @@ public class Connection {
 	}
 	
 	/**
+	 * Sends a DCC chat invitation. As address, the value returned by
+	 * <code>IRCConnection.getLocalAddress()</code> is taken.
+	 * @param dest The receiver, i.e. a nickname or channel.
+	 * @param fileName The file's name.
+	 * @param port The port the DCC chat host is listening to.
+	 * @param size The file size.
+	 */
+	public void sendDccSend(String dest, String fileName, int port, long size) {
+		sendDccSend(dest, fileName, conn.getLocalAddress(), port, size);
+	}
+
+	/**
 	 * Sends a DCC chat invitation.
 	 * @param dest The receiver, i.e. a nickname or channel.
 	 * @param fileName The file's name.
@@ -411,6 +434,16 @@ public class Connection {
 			int port, long size) {
 		long address = CtcpUtil.convertInetAddressToLong(addr);
 		sendCtcpCommand(dest, "DCC", "SEND "+ fileName +" "+ address +" "+ port +" "+ size);
+	}
+
+	/**
+	 * Sends a DCC chat invitation. As address, the value returned by
+	 * <code>IRCConnection.getLocalAddress()</code> is taken.
+	 * @param dest The receiver, i.e. a nickname or channel.
+	 * @param port The port the DCC chat host is listening to.
+	 */
+	public void sendDccChat(String dest, int port) {
+		sendDccChat(dest, conn.getLocalAddress(), port);
 	}
 
 	/**

@@ -284,7 +284,7 @@ public class SSLIRCConnection extends IRCConnection {
 	 */
 	public SSLTrustManager[] getTrustManagers() {
 		SSLTrustManager[] tm = new SSLTrustManager[trustManagers.size()];
-		trustManagers.copyInto(tm);
+		trustManagers.toArray(tm);
 		return tm;
 	}
 }

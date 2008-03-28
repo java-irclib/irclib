@@ -217,7 +217,7 @@ public class SSLIRCConnection extends IRCConnection {
 		for (int i = 0; i < ports.length && s == null; i++) {
 			try {
 				if (sf == null)
-					sf = getSocketFactory();
+					sf = createSocketFactory();
 				s = (SSLSocket)sf.createSocket(host, ports[i]);
 				s.startHandshake();
 				exception = null; 
@@ -251,7 +251,7 @@ public class SSLIRCConnection extends IRCConnection {
 	 * @return A new <code>SSLSocketFactory on which base a new 
 	 *         <code>SSLSocket</code> can be created.
 	 */
-	private SSLSocketFactory getSocketFactory() throws SSLException {
+	private SSLSocketFactory createSocketFactory() throws SSLException {
 		if (trustManagers.size() == 0)
 			addTrustManager(new SSLDefaultTrustManager());
 		try {
@@ -319,7 +319,7 @@ public class SSLIRCConnection extends IRCConnection {
 	 */
 	public TrustManager[] getTrustManagers() {
 		TrustManager[] tm = new TrustManager[trustManagers.size()];
-		trustManagers.copyInto(tm);
+		trustManagers.toArray(tm);
 		return tm;
 	}
 }
