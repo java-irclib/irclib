@@ -192,12 +192,31 @@ public class CtcpUtil {
 	}
 	
 	public static long convertInetAddressToLong(InetAddress addr) {
-		byte[] arr = addr.getAddress();
-		long address = 0;
-		address |= ((long)arr[0] & 0xFF) << 24;
-		address |= ((long)arr[1] & 0xFF) << 12;
-		address |= ((long)arr[2] & 0xFF) << 8;
-		address |= ((long)arr[3] & 0xFF);
-		return address;
+		// FIXME The documentation doesn't say that hashCode() has to return
+		// the address in network byte order, so other Java implementations
+		// probably don't do so, and I think this results in a sent negative
+		// number sent to the recipient which might not be understood by all
+		// clients, because the CTCP specification says this has to be an 
+		// unsigned integer.
+		return addr.hashCode();
+		
+		// I don't know why, but the following doesn't work due to (at least to
+		// me: wired) conversions between int and long (Java adds leading zeros,
+		// some times
+//		byte[] arr = addr.getAddress();
+//		long address = 0;
+//		address |= ((long)(arr[0] & 0xFF)) << 24;
+//		System.out.println("1 address = "+ Long.toBinaryString(address) +" (arr[0] = "+ Integer.toBinaryString(arr[0]&0xFF) +")");
+//		address |= ((long)(arr[1] & 0xFF)) << 12;
+//		System.out.println("2 address = "+ Long.toBinaryString(address) +" (arr[1] = "+ Integer.toBinaryString(arr[1]&0xFF) +")");
+//		address |= ((long)(arr[2] & 0xFF)) << 8;
+//		System.out.println("3 address = "+ Long.toBinaryString(address) +" (arr[2] = "+ Integer.toBinaryString(arr[2]&0xFF) +")");
+//		address |= ((long)(arr[3] & 0xFF));
+//		System.out.println("4 address = "+ Long.toBinaryString(address) +" (arr[3] = "+ Integer.toBinaryString(arr[3]&0xFF) +")");
+//		System.out.println(Long.toBinaryString(addr.hashCode()));
+//		System.out.println(Integer.toBinaryString(addr.hashCode()));
+//		System.out.println(Integer.toBinaryString(arr[0]&0xFF) +" "+ Integer.toBinaryString(arr[1]&0xFF) +" "+ Integer.toBinaryString(arr[2]&0xFF) +" "+ Integer.toBinaryString(arr[3]&0xFF));
+//		System.out.println("address = "+ address);
+//		return address & 0xFFFFFFFF;
 	}
 }
