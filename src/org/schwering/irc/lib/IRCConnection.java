@@ -389,18 +389,6 @@ public class IRCConnection extends Thread {
 				}
 				get(line);
 			}
-//			while (!isInterrupted()) {
-//				line = in.readLine();
-//				if (debug) {
-//					synchronized (debugWriter) {
-//						debugWriter.println("IN:  "+ line);
-//					}
-//				}
-//				if (line != null)
-//					get(line);
-//				else
-//					close();
-//			}
 		} catch (IOException exc) {
 			if (debug) {
 				synchronized (debugStream) {

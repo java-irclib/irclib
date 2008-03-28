@@ -6,7 +6,9 @@ IRClib 1.11 (xx.xx.2008):
             However, the old parseColors() are not deprecated, because they
             still do something useful.
  * Added:   IRCConnection.setDebug() and IRCConnectin.setDebugWriter()
-            add a rudimentary debug output (again, was removed in 0.91). 
+            add a rudimentary debug output (again, was removed in 0.91).
+ * Added:   IRCConnection.getLocalAddress() that returns the socket's local
+            address. 
  * Fixed:   IRCUtil.parseColors() decremented i by (j-i) instead of 1 which
             could result in a IndexOutOfBoundsException in the buf.charAt(i)
             line.
