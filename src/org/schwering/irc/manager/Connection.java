@@ -381,6 +381,10 @@ public class Connection {
 	public void sendCtcpCommand(String dest, String command, String args) {
 		sendCtcpRequest(dest, command, args);
 	}
+	
+	public void sendCtcpAction(String dest, String msg) {
+		sendCtcpCommand(dest, "ACTION", msg);
+	}
 
 	/**
 	 * Sends a CTCP reply. A CTCP reply is always sent as NOTICE, because
