@@ -179,6 +179,26 @@ public class IRCConnection extends Thread {
 	 */
 	private PrintStream debugStream = System.out;
 	
+	/**
+	 * Indicates how to handle unexpected exceptions.
+	 */
+	private int exceptionHandling = RETHROW_RUNTIME_EXCEPTION;
+	
+	/**
+	 * A number of unexpected exceptions are simply ignored. Not recommended.
+	 */
+	public static final int IGNORE_EXCEPTION = 0;
+	
+	/**
+	 * Some unexpected exceptions are rethrown as RuntimeExceptions.
+	 */
+	public static final int RETHROW_RUNTIME_EXCEPTION = 1;
+	
+	/**
+	 * The stack trace of unexpected exceptions is printed to the debug stream.  
+	 */
+	public static final int PRINT_TO_DEBUG_STREAM = 2;
+	
 // ------------------------------
 	
 	/**
@@ -374,7 +394,10 @@ public class IRCConnection extends Thread {
 	/** 
 	 * The <code>Thread</code> is started by the <code>connect</code> method.
 	 * It's task is to receive strings from the IRC server and hand them over 
-	 * to the <code>get</code> method.
+	 * to the <code>get</code> method.<br />
+	 * <br />
+	 * Possibly occuring <code>IOException</code>s are handled according to the
+	 * set exception handling.
 	 */
 	public void run() {
 		try {
@@ -389,9 +412,7 @@ public class IRCConnection extends Thread {
 			}
 		} catch (IOException exc) {
 			if (debug) {
-				synchronized (debugStream) {
-					exc.printStackTrace(debugStream);
-				}
+				handleException(exc);
 			}
 			close();
 		} finally {
@@ -424,7 +445,12 @@ public class IRCConnection extends Thread {
 					nick = p.getParameter(1).trim();
 			}
 		} catch (Exception exc) {
-			exc.printStackTrace();
+			if (debug) {
+				synchronized (debugStream) {
+					debugStream.println("OUT: "+ line);
+				}
+			}
+			throw new RuntimeException(exc);
 		}
 	}
 	
@@ -538,7 +564,7 @@ public class IRCConnection extends Thread {
 					level = 3;
 			}
 			
-			if (level == 1) { // not registered
+			if (level == 1 && nick.equals(potNick)) { // not registered
 				level = 2; // if first PING wasn't received, we're
 				for (int i = listeners.length - 1; i >= 0; i--)
 					listeners[i].onRegistered(); // connected now for sure
@@ -606,6 +632,9 @@ public class IRCConnection extends Thread {
 	 * instead of this method. <br />
 	 * You should use this method to close down the connection only when the IRC
 	 * server doesn't react to the <code>QUIT</code> command.
+	 * <br />
+	 * Possibly occuring <code>IOException</code>s are handled according to the
+	 * set exception handling.
 	 * @see #connect()
 	 * @see #doQuit
 	 * @see #doQuit(String)
@@ -615,25 +644,25 @@ public class IRCConnection extends Thread {
 			if (!isInterrupted())
 				interrupt();
 		} catch (Exception exc) {
-			exc.printStackTrace();
+			handleException(exc);
 		}
 		try {
 			if (socket != null)
 				socket.close();
 		} catch (Exception exc) {
-			exc.printStackTrace();
+			handleException(exc);
 		}
 		try {
 			if (out != null)
 				out.close();
 		} catch (Exception exc) {
-			exc.printStackTrace();
+			handleException(exc);
 		}
 		try {
 			if (in != null)
 				in.close();
 		} catch (Exception exc) {
-			exc.printStackTrace();
+			handleException(exc);
 		}
 		if (this.level != -1) {
 			this.level = -1;
@@ -644,6 +673,58 @@ public class IRCConnection extends Thread {
 		in = null;
 		out = null;
 		listeners = new IRCEventListener[0];
+	}
+
+
+// ------------------------------
+
+	/**
+	 * Sets the current exception handling mode.
+	 * This should be either <code>RETHROW_RUNTIME_EXCEPTION</code> or
+	 * <code>PRINT_TO_DEBUG_STREAM</code> or <code>IGNORE_EXCEPTION<code>.<br />
+	 * <br />
+	 * The default value is <code>RETHROW_RUNTIME_EXCEPTION</code>.
+	 * @see #IGNORE_EXCEPTION
+	 * @see #RETHROW_RUNTIME_EXCEPTION
+	 * @see #PRINT_TO_DEBUG_STREAM
+	 */
+	public void setExceptionHandling(int exceptionHandling) {
+		this.exceptionHandling = exceptionHandling;
+	}
+
+// ------------------------------
+
+	/**
+	 * Returns the current exception handling mode.
+	 * This should be either <code>RETHROW_RUNTIME_EXCEPTION</code> or
+	 * <code>PRINT_TO_DEBUG_STREAM</code> or <code>IGNORE_EXCEPTION<code>, but
+	 * all other integer values might also occur when you set the respective
+	 * value.<br />
+	 * <br />
+	 * The default value is <code>RETHROW_RUNTIME_EXCEPTION</code>.
+	 * @see #setExceptionHandling(int)
+	 */
+	public int getExceptionHandling() {
+		return exceptionHandling;
+	}
+
+// ------------------------------
+
+	/**
+	 * Handles the exception according to the current exception handling mode.
+	 */
+	private void handleException(Exception exc) {
+		switch (exceptionHandling) {
+		case PRINT_TO_DEBUG_STREAM:
+			synchronized (debugStream) {
+				exc.printStackTrace(debugStream);
+			}
+			break;
+		case RETHROW_RUNTIME_EXCEPTION:
+			throw new RuntimeException(exc);
+		case IGNORE_EXCEPTION:
+			break;
+		}
 	}
 	
 // ------------------------------
@@ -767,6 +848,9 @@ public class IRCConnection extends Thread {
 	/**
 	 * Sets the connection's timeout in milliseconds. <br />
 	 * The default is <code>1000 * 60 15</code> millis which are 15 minutes.
+	 * <br />
+	 * The possibly occuring <code>IOException</code> are handled according to
+	 * the set exception handling.
 	 * @param millis The socket's timeout in milliseconds. 
 	 */
 	public void setTimeout(int millis) {
@@ -774,7 +858,7 @@ public class IRCConnection extends Thread {
 			try {
 				socket.setSoTimeout(millis);
 			} catch (IOException exc) {
-				exc.printStackTrace();
+				handleException(exc);
 			}
 		}
 		timeout = millis;
@@ -931,6 +1015,9 @@ public class IRCConnection extends Thread {
 	/**
 	 * Returns the timeout of the socket. <br />
 	 * If an error occurs, which is never the case, <code>-1</code> is returned.
+	 * <br />
+	 * The possibly occuring <code>IOException</code> are handled according to
+	 * the set exception handling.
 	 * @return The timeout.
 	 */
 	public int getTimeout() {
@@ -938,7 +1025,7 @@ public class IRCConnection extends Thread {
 			try {
 				return socket.getSoTimeout();
 			} catch (IOException exc) {
-				exc.printStackTrace();
+				handleException(exc);
 				return -1;
 			}
 			else 
