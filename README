@@ -8,20 +8,5 @@ JSSE (Java Secure Socket Extensions) until J2RE 1.3; J2RE 1.4 already
 includes JSSE and hence doesn't require JSSE. You can download JSSE
 from http://java.sun.com/products/jsse/index-103.html.
 
-Content:
-    * irclib.jar      IRClib java byte code
-    * src/            IRClib java source code
-        - org.schwering.irc.lib     is the the core package that contains a
-                                    a very close-to-the-protocol implementation
-        - org.schwering.irc.manager	is a wrapper of the core library classes 
-                                    that is more abstract, but also more 
-                                    bloated than the core library
-    * javadoc/        IRClib javadoc documentation
+Project website: http://moepii.sourceforge.net (outdated)
 
-
-Check the project's homepage: http://moepii.sourceforge.net
-
-My name is Christoph Schwering. You can mail to schwering@gmail.com or
-visit http://www.schwering.org.
-Please see the file COPYING_* for copyright affairs and the file CHANGELOG
-for the changelog.
