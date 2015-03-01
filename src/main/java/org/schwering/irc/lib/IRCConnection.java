@@ -840,7 +840,7 @@ public class IRCConnection extends Thread {
      * @param encoding The new encoding string, e.g. <code>"UTF-8"</code>.
      */
     public void setEncoding(String encoding) {
-        this.encoding	= encoding;
+        this.encoding = encoding;
     }
 
 // ------------------------------

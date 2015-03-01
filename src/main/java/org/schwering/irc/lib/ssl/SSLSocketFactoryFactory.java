@@ -143,7 +143,8 @@ class SSLSocketFactoryFactory {
         Class secureRandomClass = java.security.SecureRandom.class;
 
         Method getInstanceMethod = contextClass.getMethod("getInstance", new Class[] { stringClass });
-        Method initMethod = contextClass.getMethod("init", new Class[] { keyManagerArrayClass, trustManagerArrayClass, secureRandomClass });
+        Method initMethod = contextClass.getMethod("init", new Class[] { keyManagerArrayClass, trustManagerArrayClass,
+                secureRandomClass });
         Method getSocketFactoryMethod = contextClass.getMethod("getSocketFactory", null);
 
         Class.forName("javax.net.ssl.X509TrustManager"); // check for availability
@@ -205,7 +206,8 @@ class SSLSocketFactoryFactory {
         Class secureRandomClass = java.security.SecureRandom.class;
 
         Method getInstanceMethod = contextClass.getMethod("getInstance", new Class[] { stringClass });
-        Method initMethod = contextClass.getMethod("init", new Class[] { keyManagerArrayClass, trustManagerArrayClass, secureRandomClass });
+        Method initMethod = contextClass.getMethod("init", new Class[] { keyManagerArrayClass, trustManagerArrayClass,
+                secureRandomClass });
         Method getSocketFactoryMethod = contextClass.getMethod("getSocketFactory", null);
 
         Class.forName("com.sun.net.ssl.X509TrustManager"); // check for availability

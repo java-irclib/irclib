@@ -33,7 +33,7 @@ public interface SSLTrustManager {
      * @return <code>true</code> if the server is trusted, <code>false</code>
      * if the server is not trusted.
      */
-    public boolean isTrusted(X509Certificate[] chain);
+    boolean isTrusted(X509Certificate[] chain);
 
 // ------------------------------
 
@@ -43,5 +43,5 @@ public interface SSLTrustManager {
      * @return A non-null (possibly empty) array of acceptable CA issuer
      * certificates.
      */
-    public X509Certificate[] getAcceptedIssuers();
+    X509Certificate[] getAcceptedIssuers();
 }

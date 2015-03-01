@@ -64,7 +64,7 @@ public class SSLDefaultTrustManager implements X509TrustManager {
      * @param chain The peer certificate chain.
      * @return Always <code>false</code>.
      */
-    public final boolean isClientTrusted(X509Certificate chain[]) {
+    public final boolean isClientTrusted(X509Certificate[] chain) {
         return false;
     }
 
@@ -77,7 +77,7 @@ public class SSLDefaultTrustManager implements X509TrustManager {
      * @param chain The peer certificate chain.
      * @return Always <code>true</code>.
      */
-    public boolean isServerTrusted(X509Certificate chain[]) {
+    public boolean isServerTrusted(X509Certificate[] chain) {
         accepted = chain;
         return true;
     }

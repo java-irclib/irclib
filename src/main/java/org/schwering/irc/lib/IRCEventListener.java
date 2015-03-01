@@ -61,14 +61,14 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * some <code>NOTICE</code>s. And if your nickname is invalid or in use or
      * anything else is wrong with your nickname, it asks you for a new one.
      */
-    public void onRegistered();
+    void onRegistered();
 
 // ------------------------------
 
     /**
      * Fired when the own connection is broken.
      */
-    public void onDisconnected();
+    void onDisconnected();
 
 // ------------------------------
 
@@ -76,7 +76,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * Fired when an <code>ERROR</code> command is received.
      * @param msg The message of the error.
      */
-    public void onError(String msg);
+    void onError(String msg);
 
 // ------------------------------
 
@@ -88,7 +88,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * @param num The identifier (usually a 3-digit number).
      * @param msg The message of the error.
      */
-    public void onError(int num, String msg);
+    void onError(int num, String msg);
 
 // ------------------------------
 
@@ -99,7 +99,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * @param passiveNick The nickname of the user who is invited by another user
      *                    (passive).
      */
-    public void onInvite(String chan, IRCUser user, String passiveNick);
+    void onInvite(String chan, IRCUser user, String passiveNick);
 
 // ------------------------------
 
@@ -108,7 +108,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * @param chan The channel the person joins.
      * @param user The user who joins. Contains nick, username and host.
      */
-    public void onJoin(String chan, IRCUser user);
+    void onJoin(String chan, IRCUser user);
 
 // ------------------------------
 
@@ -122,7 +122,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * @param msg The message the active user has set. This is <code>""</code> if
      *            no message was set.
      */
-    public void onKick(String chan, IRCUser user, String passiveNick, String msg);
+    void onKick(String chan, IRCUser user, String passiveNick, String msg);
 
 // ------------------------------
 
@@ -137,7 +137,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * @param modeParser The <code>IRCModeParser</code> object which contains the
      *                   parsed information about the modes which are changed.
      */
-    public void onMode(String chan, IRCUser user, IRCModeParser modeParser);
+    void onMode(String chan, IRCUser user, IRCModeParser modeParser);
 
 // ------------------------------
 
@@ -151,7 +151,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      *                    another user or himself.
      * @param mode The changed modes which are set.
      */
-    public void onMode(IRCUser user, String passiveNick, String mode);
+    void onMode(IRCUser user, String passiveNick, String mode);
 
 // ------------------------------
 
@@ -161,7 +161,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      *             Contains nick, username and host.
      * @param newNick The new nickname of the user who changes his nickname.
      */
-    public void onNick(IRCUser user, String newNick);
+    void onNick(IRCUser user, String newNick);
 
 // ------------------------------
 
@@ -173,7 +173,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      *             Contains nick, username and host.
      * @param msg The message.
      */
-    public void onNotice(String target, IRCUser user, String msg);
+    void onNotice(String target, IRCUser user, String msg);
 
 // ------------------------------
 
@@ -185,7 +185,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * @param msg The part-message which is optionally.
      *            If it's empty, msg is <code>""</code>.
      */
-    public void onPart(String chan, IRCUser user, String msg);
+    void onPart(String chan, IRCUser user, String msg);
 
 // ------------------------------
 
@@ -195,7 +195,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * sending PING &lt;ping&gt;. The client must response PONG &lt;ping&gt;.
      * @param ping The ping which is received from the server.
      */
-    public void onPing(String ping);
+    void onPing(String ping);
 
 // ------------------------------
 
@@ -208,7 +208,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      *             Contains nick, username and host.
      * @param msg The message the user transmits.
      */
-    public void onPrivmsg(String target, IRCUser user, String msg);
+    void onPrivmsg(String target, IRCUser user, String msg);
 
 // ------------------------------
 
@@ -218,7 +218,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * @param msg The optional message. <code>""</code> if no message is set by
      *            the user.
      */
-    public void onQuit(IRCUser user, String msg);
+    void onQuit(IRCUser user, String msg);
 
 // ------------------------------
 
@@ -233,7 +233,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * @param value The first part of the message.
      * @param msg The main part of the message.
      */
-    public void onReply(int num, String value, String msg);
+    void onReply(int num, String value, String msg);
 
 // ------------------------------
 
@@ -246,7 +246,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      *             Contains nick, username and host.
      * @param topic The new topic.
      */
-    public void onTopic(String chan, IRCUser user, String topic);
+    void onTopic(String chan, IRCUser user, String topic);
 
 // ------------------------------
 
@@ -258,7 +258,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * @param middle The part until the colon (<code>:</code>).
      * @param trailing The part behind the colon (<code>:</code>).
      */
-    public void unknown(String prefix, String command, String middle,
+    void unknown(String prefix, String command, String middle,
             String trailing);
 
 }
