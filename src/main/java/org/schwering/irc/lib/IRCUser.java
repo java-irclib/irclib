@@ -1,7 +1,7 @@
 /*
  * IRClib -- A Java Internet Relay Chat library -- class IRCUser
  * Copyright (C) 2002 - 2006 Christoph Schwering <schwering@gmail.com>
- * 
+ *
  * This library and the accompanying materials are made available under the
  * terms of the
  * 	- GNU Lesser General Public License,
@@ -23,24 +23,24 @@ package org.schwering.irc.lib;
  * @see IRCParser
  */
 public class IRCUser {
-	
-	/** 
+
+	/**
 	 * The user's nickname.
 	 */
 	private String nick;
-	
+
 	/**
 	 * The user's username.
 	 */
 	private String username;
-	
+
 	/**
 	 * The user's host.
 	 */
 	private String host;
-	
+
 // ------------------------------
-	
+
 	/**
 	 * Creates a new <code>IRCUser</code> object.
 	 * @param nick The user's nickname.
@@ -52,11 +52,11 @@ public class IRCUser {
 		this.username = username;
 		this.host = host;
 	}
-	
+
 // ------------------------------
-	
-	/** 
-	 * Returns the nickname of the person who sent the line 
+
+	/**
+	 * Returns the nickname of the person who sent the line
 	 * or the servername of the server which sent the line. <br />
 	 * If no nickname is given, <code>null</code> is returned.
 	 * <br /><br />
@@ -70,10 +70,10 @@ public class IRCUser {
 	public String getNick() {
 		return nick;
 	}
-	
+
 // ------------------------------
-	
-	/** 
+
+	/**
 	 * Returns the servername of the server which sent the line or the nickname of
 	 * the person who sent the line. <br />
 	 * If no nickname is given, <code>null</code> is returned.
@@ -86,10 +86,10 @@ public class IRCUser {
 	public String getServername() {
 		return getNick();
 	}
-	
+
 // ------------------------------
-	
-	/** 
+
+	/**
 	 * Returns the username of the person who sent the line. <br />
 	 * If the username is not specified, this method returns <code>null</code>.
 	 * @return The username of the line; <code>null</code> if it's not given.
@@ -99,10 +99,10 @@ public class IRCUser {
 	public String getUsername() {
 		return username;
 	}
-	
+
 // ------------------------------
-	
-	/** 
+
+	/**
 	 * Returns the host of the person who sent the line. <br />
 	 * If the host is not specified, this method returns <code>null</code>.
 	 * @return The host of the line; <code>null</code> if it's not given.
@@ -112,9 +112,9 @@ public class IRCUser {
 	public String getHost() {
 		return host;
 	}
-	
+
 // ------------------------------
-	
+
 	/**
 	 * Returns the nickname.
 	 * @return The nickname.
