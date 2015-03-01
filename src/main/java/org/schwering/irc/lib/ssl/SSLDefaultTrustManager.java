@@ -4,9 +4,9 @@
  *
  * This library and the accompanying materials are made available under the
  * terms of the
- * 	- GNU Lesser General Public License,
- * 	- Apache License, Version 2.0 and
- * 	- Eclipse Public License v1.0.
+ * *     - GNU Lesser General Public License,
+ * *     - Apache License, Version 2.0 and
+ * *     - Eclipse Public License v1.0.
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY.
  */
@@ -33,32 +33,32 @@ import java.security.cert.X509Certificate;
  */
 public class SSLDefaultTrustManager implements SSLTrustManager {
 
-	/**
-	 * The <code>X509Certificate</code>s which are accepted.
-	 */
-	protected X509Certificate[] accepted = new X509Certificate[0];
+    /**
+     * The <code>X509Certificate</code>s which are accepted.
+     */
+    protected X509Certificate[] accepted = new X509Certificate[0];
 
 // ------------------------------
 
-	/**
-	 * Trusts the complete certificate chain and returns <code>true</code>.
-	 * @param chain The peer certificate chain.
-	 * @return <code>true</code>.
-	 */
-	public boolean isTrusted(X509Certificate[] chain) {
-		accepted = chain;
-		return true;
-	}
+    /**
+     * Trusts the complete certificate chain and returns <code>true</code>.
+     * @param chain The peer certificate chain.
+     * @return <code>true</code>.
+     */
+    public boolean isTrusted(X509Certificate[] chain) {
+        accepted = chain;
+        return true;
+    }
 
 // ------------------------------
 
-	/**
-	 * Returns the accepted certificates. They are set in the
-	 * <code>checkServerTrusted</code> method.
-	 * @return A non-null (possibly empty) array of acceptable CA issuer
-	 *         certificates.
-	 */
-	public X509Certificate[] getAcceptedIssuers() {
-		return accepted;
-	}
+    /**
+     * Returns the accepted certificates. They are set in the
+     * <code>checkServerTrusted</code> method.
+     * @return A non-null (possibly empty) array of acceptable CA issuer
+     *         certificates.
+     */
+    public X509Certificate[] getAcceptedIssuers() {
+        return accepted;
+    }
 }

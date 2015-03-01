@@ -4,9 +4,9 @@
  *
  * This library and the accompanying materials are made available under the
  * terms of the
- * 	- GNU Lesser General Public License,
- * 	- Apache License, Version 2.0 and
- * 	- Eclipse Public License v1.0.
+ * *     - GNU Lesser General Public License,
+ * *     - Apache License, Version 2.0 and
+ * *     - Eclipse Public License v1.0.
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY.
  */
@@ -41,56 +41,56 @@ import java.security.cert.X509Certificate;
  */
 public class SSLDefaultTrustManager implements X509TrustManager {
 
-	/**
-	 * The <code>X509Certificate</code>s which are accepted.
-	 */
-	protected X509Certificate[] accepted = new X509Certificate[0];
+    /**
+     * The <code>X509Certificate</code>s which are accepted.
+     */
+    protected X509Certificate[] accepted = new X509Certificate[0];
 
 // ------------------------------
 
-	/**
-	 * Creates a new instance of the <code>SSLDefaultTrustManager</code> class.
-	 */
-	public SSLDefaultTrustManager() {
-		// nothing
-	}
+    /**
+     * Creates a new instance of the <code>SSLDefaultTrustManager</code> class.
+     */
+    public SSLDefaultTrustManager() {
+        // nothing
+    }
 
 // ------------------------------
 
-	/**
-	 * Does nothing. This method would check whether we (the server) trust the
-	 * client. But we are the client and not the server. <br />
-	 * It's final so that nobody can override it; it would make no sense.
-	 * @param chain The peer certificate chain.
-	 * @return Always <code>false</code>.
-	 */
-	public final boolean isClientTrusted(X509Certificate chain[]) {
-		return false;
-	}
+    /**
+     * Does nothing. This method would check whether we (the server) trust the
+     * client. But we are the client and not the server. <br />
+     * It's final so that nobody can override it; it would make no sense.
+     * @param chain The peer certificate chain.
+     * @return Always <code>false</code>.
+     */
+    public final boolean isClientTrusted(X509Certificate chain[]) {
+        return false;
+    }
 
 // ------------------------------
 
-	/**
-	 * Invoked when the client should check whether he trusts the server or not.
-	 * This method trusts the server. But this method can be overriden and then
-	 * ask the user whether he truts the client or not.
-	 * @param chain The peer certificate chain.
-	 * @return Always <code>true</code>.
-	 */
-	public boolean isServerTrusted(X509Certificate chain[]) {
-		accepted = chain;
-		return true;
-	}
+    /**
+     * Invoked when the client should check whether he trusts the server or not.
+     * This method trusts the server. But this method can be overriden and then
+     * ask the user whether he truts the client or not.
+     * @param chain The peer certificate chain.
+     * @return Always <code>true</code>.
+     */
+    public boolean isServerTrusted(X509Certificate chain[]) {
+        accepted = chain;
+        return true;
+    }
 
 // ------------------------------
 
-	/**
-	 * Returns the accepted certificates. They are set in the
-	 * <code>checkServerTrusted</code> method.
-	 * @return A non-null (possibly empty) array of acceptable CA issuer
-	 *         certificates.
-	 */
-	public X509Certificate[] getAcceptedIssuers() {
-		return accepted;
-	}
+    /**
+     * Returns the accepted certificates. They are set in the
+     * <code>checkServerTrusted</code> method.
+     * @return A non-null (possibly empty) array of acceptable CA issuer
+     *         certificates.
+     */
+    public X509Certificate[] getAcceptedIssuers() {
+        return accepted;
+    }
 }
