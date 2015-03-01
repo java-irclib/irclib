@@ -16,11 +16,13 @@ package org.schwering.irc.lib.ssl;
 import java.io.IOException;
 import java.net.SocketException;
 import java.util.Vector;
+
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.schwering.irc.lib.IRCConnection;
+import org.schwering.irc.lib.IRCTrafficLogger;
 
 /**
  * The SSL extension of the <code>IRCConnection</code> class.
@@ -140,8 +142,8 @@ public class SSLIRCConnection extends IRCConnection {
      * @see #connect()
      */
     public SSLIRCConnection(String host, int[] ports, String pass, String nick,
-            String username, String realname) {
-        super(host, ports, pass, nick, username, realname);
+            String username, String realname, IRCTrafficLogger trafficLogger) {
+        super(host, ports, pass, nick, username, realname, trafficLogger);
     }
 
 // ------------------------------
@@ -178,8 +180,8 @@ public class SSLIRCConnection extends IRCConnection {
      * @see #connect()
      */
     public SSLIRCConnection(String host, int portMin, int portMax, String pass,
-            String nick, String username, String realname) {
-        super(host, portMin, portMax, pass, nick, username, realname);
+            String nick, String username, String realname, IRCTrafficLogger trafficLogger) {
+        super(host, portMin, portMax, pass, nick, username, realname, trafficLogger);
     }
 
 // ------------------------------
