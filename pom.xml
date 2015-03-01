@@ -74,11 +74,4 @@
         </pluginManagement>
     </build>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>5.14.2</version>
-        </dependency>
-    </dependencies>
 </project>
