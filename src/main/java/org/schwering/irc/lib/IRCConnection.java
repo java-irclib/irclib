@@ -21,6 +21,9 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.Proxy.Type;
 import java.net.Socket;
 import java.net.SocketException;
 
@@ -48,7 +51,7 @@ import org.schwering.irc.lib.ssl.SSLIRCConnection;
  *  * enable automatic PING? PONG! replies.
  *  &#42;/
  * IRCConnection conn = new IRCConnection(&quot;irc.somenetwork.com&quot;, 6667, 6669, null, &quot;Foo&quot;,
- * &quot;Mr. Foobar&quot;, &quot;foo@bar.com&quot;);
+ *      &quot;Mr. Foobar&quot;, &quot;foo@bar.com&quot;);
  *
  * conn.addIRCEventListener(new MyListener());
  * conn.setDaemon(true);
@@ -212,6 +215,9 @@ public class IRCConnection extends Thread {
      */
     private String username;
 
+    private String socksProxyHost;
+    private Integer socksProxyPort;
+
     private IRCTrafficLogger trafficLogger;
 
     // ------------------------------
@@ -252,7 +258,7 @@ public class IRCConnection extends Thread {
      * @see #connect()
      */
     public IRCConnection(String host, int[] ports, String pass, String nick, String username, String realname,
-            IRCTrafficLogger trafficLogger) {
+            String socksProxyHost, Integer socksProxyPort, IRCTrafficLogger trafficLogger) {
         if (host == null || ports == null || ports.length == 0)
             throw new IllegalArgumentException("Host and ports may not be null.");
         this.host = host;
@@ -261,6 +267,8 @@ public class IRCConnection extends Thread {
         this.nick = nick;
         this.username = username;
         this.realname = realname;
+        this.socksProxyHost = socksProxyHost;
+        this.socksProxyPort = socksProxyPort;
         this.trafficLogger = trafficLogger;
     }
 
@@ -302,8 +310,9 @@ public class IRCConnection extends Thread {
      * @see #connect()
      */
     public IRCConnection(String host, int portMin, int portMax, String pass, String nick, String username,
-            String realname, IRCTrafficLogger trafficLogger) {
-        this(host, portRangeToArray(portMin, portMax), pass, nick, username, realname, trafficLogger);
+            String realname, String socksProxyHost, Integer socksProxyPort, IRCTrafficLogger trafficLogger) {
+        this(host, portRangeToArray(portMin, portMax), pass, nick, username, realname, socksProxyHost, socksProxyPort,
+                trafficLogger);
     }
 
     // ------------------------------
@@ -357,9 +366,14 @@ public class IRCConnection extends Thread {
             throw new SocketException("Socket closed or already open (" + level + ")");
         IOException exception = null;
         Socket s = null;
+        Proxy proxy = null;
+        if (socksProxyHost != null && socksProxyPort != null) {
+            proxy = new Proxy(Type.SOCKS, new InetSocketAddress(socksProxyHost, socksProxyPort.intValue()));
+        }
         for (int i = 0; i < ports.length && s == null; i++) {
             try {
-                s = new Socket(host, ports[i]);
+                s = proxy != null ? new Socket(proxy) : new Socket();
+                s.connect(new InetSocketAddress(host, ports[i]));
                 exception = null;
             } catch (IOException exc) {
                 if (s != null)
