@@ -15,7 +15,8 @@ package org.schwering.irc.lib.ssl;
 
 import java.io.IOException;
 import java.net.SocketException;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSocket;
@@ -107,7 +108,7 @@ public class SSLIRCConnection extends IRCConnection {
     /**
      * The list of <code>SSLTrustManager</code>s.
      */
-    private Vector trustManagers = new Vector(1);
+    private List<SSLTrustManager> trustManagers = new ArrayList<SSLTrustManager>(1);
 
 // ------------------------------
 

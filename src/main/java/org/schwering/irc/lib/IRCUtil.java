@@ -13,7 +13,8 @@
 
 package org.schwering.irc.lib;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains some utilities like numeric error and reply numbers.
@@ -282,7 +283,7 @@ public class IRCUtil implements IRCConstants {
      * @see #split(String, int)
      */
     public static String[] split(String str, int delim, String trailing) {
-        Vector items = new Vector(15);
+        List<String> items = new ArrayList<String>(15);
         int last = 0;
         int index = 0;
         int len = str.length();
@@ -297,8 +298,7 @@ public class IRCUtil implements IRCConstants {
             items.add(str.substring(last));
         if (trailing != null && trailing.length() != 0)
             items.add(trailing);
-        String[] result = new String[items.size()];
-        items.copyInto(result);
+        String[] result = items.toArray(new String[0]);
         return result;
     }
 

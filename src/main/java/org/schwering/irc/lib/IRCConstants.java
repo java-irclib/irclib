@@ -8,7 +8,6 @@ package org.schwering.irc.lib;
  * @see IRCEventListener#onError(int, String)
  * @see IRCEventListener#onReply(int, String, String)
  */
-@SuppressWarnings({"UnusedDeclaration"})
 public interface IRCConstants {
 
     /**
