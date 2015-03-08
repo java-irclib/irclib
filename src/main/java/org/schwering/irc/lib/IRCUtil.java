@@ -29,50 +29,6 @@ import java.util.List;
  * @see IRCEventListener#onReply(int, String, String)
  */
 public class IRCUtil implements IRCConstants {
-    /**
-     * This is part of the mIRC code and shows that a color-code starts / ends.
-     * Here it is as the ASCII decimal int 3.
-     * @deprecated Moved to <code>IRCConstants</code>.
-     */
-    public static char colorIndicator = 3; // ASCII code
-
-    /**
-     * This is part of the mIRC code and shows that bold starts / ends.
-     * Here it is as the ASCII decimal int 31.
-     * @deprecated Moved to <code>IRCConstants</code>.
-     */
-    public static char boldIndicator = 31; // ASCII code
-
-    /**
-     * This is part of the mIRC code and shows that bold starts / ends.
-     * Here it is as the ASCII decimal int 2.
-     * @deprecated Moved to <code>IRCConstants</code>.
-     */
-    public static char underlinedIndicator = 2; // ASCII code
-
-    /**
-     * This is part of the mIRC code and shows that bold, underline and colors
-     * end.
-     * Here it is as the ASCII decimal int 15.
-     * @deprecated Moved to <code>IRCConstants</code>.
-     */
-    public static char colorEndIndicator = 15; // ASCII code
-
-    /**
-     * This is part of the mIRC code and indicates that the client's colors are
-     * reversed (background -&gt; foreground and foreground -&gt; background).
-     * Here it is as the ASCII decimal int 22.
-     * @deprecated Moved to <code>IRCConstants</code>.
-     */
-    public static char colorReverseIndicator = 22; // ASCII code
-
-    /**
-     * This is part of the mIRC code and shows that a PRIVMSG is an ACTION
-     * (<code>/me</code>).
-     * Here it is as the ASCII decimal int 1.
-     * @deprecated Moved to <code>IRCConstants</code>.
-     */
-    public static char actionIndicator = 1; // ASCII code
 
 // ------------------------------
 
