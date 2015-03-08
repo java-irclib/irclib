@@ -42,10 +42,4 @@ public interface IRCConstants {
      */
     char COLOR_REVERSE_INDICATOR = 22; // ASCII code
 
-    /**
-     * The delimiter of CTCP messages. CTCP messages start and end with this
-     * character.
-     * The value is the ASCII decimal int 1.
-     */
-    char CTCP_DELIMITER = 1; // ASCII code
 }

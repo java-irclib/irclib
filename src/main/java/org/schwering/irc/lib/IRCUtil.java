@@ -221,8 +221,8 @@ public class IRCUtil implements IRCConstants {
     static StringBuffer parseColors(StringBuffer buf,
             boolean removeCTCP) {
         int len = buf.length();
-
-        for (int i = 0, j = 0, c; i < len; i++, j = i) {
+        char c;
+        for (int i = 0, j = 0; i < len; i++, j = i) {
             c = buf.charAt(i);
             try {
                 // COLORS Beginning
@@ -243,7 +243,7 @@ public class IRCUtil implements IRCConstants {
                     }
                     // CTCP / BOLD / UNDERLINE / COLOR END
                     // (format: <ctcpDelimiter> / <boldIndicator> etc.)
-                } else if ((removeCTCP && c == CTCP_DELIMITER)
+                } else if ((removeCTCP && c == CTCPCommand.QUOTE_CHAR)
                         || c == BOLD_INDICATOR
                         || c == UNDERLINE_INDICATOR
                         || c == COLOR_END_INDICATOR
