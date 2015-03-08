@@ -78,18 +78,24 @@ import org.schwering.irc.lib.ssl.SSLIRCConnection;
  * @see SSLIRCConnection
  */
 public class IRCConnection extends Thread {
+    /**
+     * A {@link BufferedReader} that sends all read character to its {@link #trafficLogger}.
+     */
     private static class LoggingReader extends BufferedReader {
         private final IRCTrafficLogger trafficLogger;
 
         /**
-         * @param in
-         * @param sniffer
+         * @param in the reader to read from.
+         * @param trafficLogger a logger to notify about read characters
          */
         public LoggingReader(Reader in, IRCTrafficLogger trafficLogger) {
             super(in);
             this.trafficLogger = trafficLogger;
         }
 
+        /**
+         * @see java.io.BufferedReader#readLine()
+         */
         @Override
         public String readLine() throws IOException {
             String line = super.readLine();
@@ -98,18 +104,24 @@ public class IRCConnection extends Thread {
         }
     }
 
+    /**
+     * A {@link PrintWriter} that sends all written character also to its {@link #trafficLogger}.
+     */
     private static class LoggingWriter extends PrintWriter {
         private final IRCTrafficLogger trafficLogger;
 
         /**
-         * @param out
-         * @param sniffer
+         * @param out the {@link Writer} to write to
+         * @param trafficLogger the logger to notify about the written characters
          */
         public LoggingWriter(Writer out, IRCTrafficLogger trafficLogger) {
             super(out);
             this.trafficLogger = trafficLogger;
         }
 
+        /**
+         * @see java.io.PrintWriter#write(java.lang.String)
+         */
         @Override
         public void write(String s) {
             String trimmedLine = s;
@@ -215,7 +227,10 @@ public class IRCConnection extends Thread {
      */
     private String username;
 
+    /** SOCKS proxy host name or IP address */
     private String socksProxyHost;
+
+    /** SOCKS proxy port */
     private Integer socksProxyPort;
 
     private IRCTrafficLogger trafficLogger;
@@ -251,6 +266,9 @@ public class IRCConnection extends Thread {
      *            The username. Is used to register the connection.
      * @param realname
      *            The realname. Is used to register the connection.
+     * @param socksProxyHost the socks proxy host name or IP address; can be {@code null}
+     * @param socksProxyPort the socks proxy port; can be {@code null}
+     * @param trafficLogger
      * @throws IllegalArgumentException
      *             If the <code>host</code> or <code>ports</code> is
      *             <code>null</code> or <code>ports</code>' length is

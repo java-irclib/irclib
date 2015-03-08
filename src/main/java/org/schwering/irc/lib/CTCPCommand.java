@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * An enum of Client-to-client protocol (CTCP) commands.
+ * See <a href="http://www.irchelp.org/irchelp/rfc/ctcpspec.html">http://www.irchelp.org/irchelp/rfc/ctcpspec.html</a>
+ *
  * @author <a href="mailto:ppalaga@redhat.com">Peter Palaga</a>
  */
 public enum CTCPCommand {

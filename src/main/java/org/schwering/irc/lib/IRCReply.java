@@ -13,6 +13,8 @@
 package org.schwering.irc.lib;
 
 /**
+ * An enum of IRC reply codes.
+ *
  * @author <a href="mailto:ppalaga@redhat.com">Peter Palaga</a>
  */
 public enum IRCReply {

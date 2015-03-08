@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Adapted from <a
+ * An enum of IRC commands. Adapted from <a
  * href="http://en.wikipedia.org/wiki/List_of_Internet_Relay_Chat_commands"
  * >http://en.wikipedia.org/wiki/List_of_Internet_Relay_Chat_commands</a>
  * Hopefully, the list is correct and complete.
