@@ -29,6 +29,16 @@
         <irclib.osgi.failok>false</irclib.osgi.failok>
         <irclib.osgi.import.default.version>[$(version;==;$(@)),$(version;+;$(@)))</irclib.osgi.import.default.version>
         <irclib.osgi.exclude.dependencies>false</irclib.osgi.exclude.dependencies>
+
+        <!-- Checkstyle and maven-checkstyle-plugin -->
+        <version.com.puppycrawl.tools.checkstyle>6.1.1</version.com.puppycrawl.tools.checkstyle>
+        <!-- the default value pointing at checkstyle.xml in hawkular-build-tools -->
+        <checkstyle.configLocation>checkstyle.xml</checkstyle.configLocation>
+        <checkstyle.consoleOutput>true</checkstyle.consoleOutput>
+        <checkstyle.failOnError>true</checkstyle.failOnError>
+
+        <!-- Maven plugin versions -->
+        <version.maven-checkstyle-plugin>2.13</version.maven-checkstyle-plugin>
     </properties>
 
     <build>
@@ -62,6 +72,35 @@
                     </instructions>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${version.maven-checkstyle-plugin}</version>
+                    <configuration>
+                        <configLocation>${checkstyle.configLocation}</configLocation>
+                        <consoleOutput>${checkstyle.consoleOutput}</consoleOutput>
+                        <failsOnError>${checkstyle.failOnError}</failsOnError>
+                        <useFile />
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>${version.com.puppycrawl.tools.checkstyle}</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <id>check-style</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>checkstyle</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+            </plugin>
+
         </plugins>
         <pluginManagement>
             <plugins>
@@ -74,11 +113,4 @@
         </pluginManagement>
     </build>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>5.14.2</version>
-        </dependency>
-    </dependencies>
 </project>
