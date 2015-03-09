@@ -84,6 +84,43 @@
             </plugins>
         </pluginManagement>
         <plugins>
+
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <header>${basedir}/license-header-template.txt</header>
+                    <excludes>
+                        <exclude>COPYING_*</exclude>
+                        <exclude>RFC*</exclude>
+                        <exclude>**/README</exclude>
+                        <exclude>**/README.*</exclude>
+                        <exclude>**/license-header-template.txt</exclude>
+                        <exclude>**/*.html</exclude>
+                        <exclude>**/*.htm</exclude>
+                    </excludes>
+                    <mapping>
+                        <yaml>SCRIPT_STYLE</yaml>
+                        <yml>SCRIPT_STYLE</yml>
+                    </mapping>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.hawkular</groupId>
+                        <artifactId>hawkular-build-tools</artifactId>
+                        <version>7</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
@@ -91,6 +128,7 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
