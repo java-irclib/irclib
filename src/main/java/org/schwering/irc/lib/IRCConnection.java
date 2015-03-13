@@ -439,8 +439,6 @@ public class IRCConnection extends Thread {
             in = new BufferedReader(new InputStreamReader(s.getInputStream(), encoding));
             out = new PrintWriter(new OutputStreamWriter(s.getOutputStream(), encoding));
         }
-        in = new BufferedReader(new InputStreamReader(s.getInputStream(), encoding));
-        out = new PrintWriter(new OutputStreamWriter(s.getOutputStream(), encoding));
         start();
         register();
     }
