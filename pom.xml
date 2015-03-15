@@ -27,7 +27,6 @@
     <description>A Java Internet Relay Chat library</description>
     <url>http://moepii.sourceforge.net/</url>
     <inceptionYear>2006</inceptionYear>
-
     <licenses>
         <license>
             <name>The GNU Lesser General Public License, Version 2.1</name>
@@ -45,6 +44,13 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <developers>
+        <developer>
+            <name>Christoph Schwering</name>
+            <email>schwering@gmail.com</email>
+        </developer>
+    </developers>
 
     <scm>
         <connection>scm:git:https://github.com/schwering/irclib.git</connection>
