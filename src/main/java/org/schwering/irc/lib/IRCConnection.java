@@ -33,23 +33,16 @@ import org.schwering.irc.lib.ssl.SSLIRCConnection;
  * Creates a new connection to an IRC server. It's the main class of the IRClib,
  * the point everything starts.
  * <p>
- * The following sample code tries to establish an IRC connection to an IRC
- * server:
- * <p>
- * <hr />
- *
+ * The following code of a class which imports org.schwering.irc.lib.* prepares
+ * an IRC connection and then tries to establish the connection. The server is
+ * &quot;irc.somenetwork.com&quot;, the default portrange (6667 and 6669) is set, no
+ * password is used (null). The nickname is &quot;Foo&quot; and the realname is
+ * &quot;Mr. Foobar&quot;. The username &quot;foobar&quot;. Because of setDaemon(true), the JVM
+ * exits even if this thread is running. An instance of the class MyListener
+ * which must implement IRCActionListener is added as only event-listener for
+ * the connection. The connection is told to parse out mIRC color codes and to
+ * enable automatic PING? PONG! replies.
  * <pre>
- * /*
- *  * The following code of a class which imports org.schwering.irc.lib.* prepares
- *  * an IRC connection and then tries to establish the connection. The server is
- *  * &quot;irc.somenetwork.com&quot;, the default portrange (6667 and 6669) is set, no
- *  * password is used (null). The nickname is &quot;Foo&quot; and the realname is
- *  * &quot;Mr. Foobar&quot;. The username &quot;foobar&quot;. Because of setDaemon(true), the JVM
- *  * exits even if this thread is running. An instance of the class MyListener
- *  * which must implement IRCActionListener is added as only event-listener for
- *  * the connection. The connection is told to parse out mIRC color codes and to
- *  * enable automatic PING? PONG! replies.
- *  &#42;/
  * IRCConnection conn = new IRCConnection(&quot;irc.somenetwork.com&quot;, 6667, 6669, null, &quot;Foo&quot;,
  *      &quot;Mr. Foobar&quot;, &quot;foo@bar.com&quot;);
  *
@@ -64,8 +57,6 @@ import org.schwering.irc.lib.ssl.SSLIRCConnection;
  *     ioexc.printStackTrace();
  * }
  * </pre>
- *
- * <hr />
  * <p>
  * The serverpassword isn't needed in most cases. You can give <code>null</code>
  * or <code>""</code> instead as done in this example.
@@ -193,14 +184,14 @@ public class IRCConnection extends Thread {
 
     /**
      * This <code>boolean</code> stands for enabled (<code>true</code>) or
-     * disabled (<code>false</code>) ColorCodes.<br />
+     * disabled (<code>false</code>) ColorCodes.
      * Default is enabled (<code>false</code>).
      */
     private boolean colorsEnabled = false;
 
     /**
      * This <code>boolean</code> stands for enabled or disabled automatic PING?
-     * PONG! support. <br />
+     * PONG! support.
      * It means, that if the server asks with PING for the ping, the PONG is
      * automatically sent. Default is automatic PONG enabled (<code>true</code>
      * ).
@@ -238,14 +229,14 @@ public class IRCConnection extends Thread {
     // ------------------------------
 
     /**
-     * Creates a new IRC connection. <br />
+     * Creates a new IRC connection.
      * The difference to the other constructor is, that it transmits the ports
      * in an <code>int[]</code>. Thus, also ports like 1024, 2048, 6667 and 6669
-     * can be selected.<br />
-     * <br />
+     * can be selected.
+     *
      * The constructor prepares a new IRC connection which can be really started
      * by invoking the <code>connect</code> method. Before invoking it, you
-     * should set the <code>IRCEventListener</code> and other settings.<br />
+     * should set the <code>IRCEventListener</code> and other settings.
      * Note that you do not need to set a password to connect to the large
      * public IRC networks like QuakeNet, EFNet etc. To use no password in your
      * IRC connection, use <code>""</code> or <code>null</code> for the password
@@ -268,7 +259,7 @@ public class IRCConnection extends Thread {
      *            The realname. Is used to register the connection.
      * @param socksProxyHost the socks proxy host name or IP address; can be {@code null}
      * @param socksProxyPort the socks proxy port; can be {@code null}
-     * @param trafficLogger
+     * @param trafficLogger an {@link IRCTrafficLogger} or {@code null}
      * @throws IllegalArgumentException
      *             If the <code>host</code> or <code>ports</code> is
      *             <code>null</code> or <code>ports</code>' length is
@@ -293,14 +284,14 @@ public class IRCConnection extends Thread {
     // ------------------------------
 
     /**
-     * Creates a new IRC connection. <br />
+     * Creates a new IRC connection.
      * The difference to the other constructor is, that it transmits the ports
      * as two <code>int</code>s. Thus, only a portrange from port <code>x</code>
-     * to port <code>y</code> like from port 6667 to 6669 can be selected.<br />
-     * <br />
+     * to port <code>y</code> like from port 6667 to 6669 can be selected.
+     *
      * The constructor prepares a new IRC connection which can be really started
      * by invoking the <code>connect</code> method. Before invoking it, you
-     * should set the <code>IRCEventListener</code> and other settings.<br />
+     * should set the <code>IRCEventListener</code> and other settings.
      * Note that you do not need to set a password to connect to the large
      * public IRC networks like QuakeNet, EFNet etc. To use no password in your
      * IRC connection, use <code>""</code> or <code>null</code> for the password
@@ -323,6 +314,9 @@ public class IRCConnection extends Thread {
      *            The username. Is used to register the connection.
      * @param realname
      *            The realname. Is used to register the connection.
+     * @param socksProxyHost the socks proxy host name or IP address; can be {@code null}
+     * @param socksProxyPort the socks proxy port; can be {@code null}
+     * @param trafficLogger an {@link IRCTrafficLogger} or {@code null}
      * @throws IllegalArgumentException
      *             If the <code>host</code> is <code>null</code>.
      * @see #connect()
@@ -339,7 +333,7 @@ public class IRCConnection extends Thread {
      * Converts a portrange which starts with a given <code>int</code> and ends
      * with a given <code>int</code> into an array which contains all
      * <code>int</code>s from the beginning to the ending (including beginning
-     * and ending).<br />
+     * and ending).
      * If <code>portMin > portMax</code>, the portrange is turned arount
      * automatically.
      *
@@ -363,11 +357,11 @@ public class IRCConnection extends Thread {
     // ------------------------------
 
     /**
-     * Establish a connection to the server. <br />
+     * Establish a connection to the server.
      * This method must be invoked to start a connection; the constructor
-     * doesn't do that!<br />
+     * doesn't do that!
      * It tries all set ports until one is open. If all ports fail it throws an
-     * <code>IOException</code>.<br />
+     * <code>IOException</code>.
      * You can invoke <code>connect</code> only one time.
      *
      * @throws IOException
@@ -410,12 +404,12 @@ public class IRCConnection extends Thread {
 
     /**
      * Invoked by the <code>connect</code> method, this method prepares the
-     * connection. <br />
+     * connection.
      * It initializes the class-vars for the inputstream and the outputstream of
      * the socket, starts the registration of at the IRC server by calling
      * <code>register()</code> and starts the receiving of lines from the server
-     * by starting the thread with the <code>start</code> method.<br />
-     * <br />
+     * by starting the thread with the <code>start</code> method.
+     *
      * This method must be protected, because it is used by extending classes,
      * which override the <code>connect</code> method.
      *
@@ -446,12 +440,12 @@ public class IRCConnection extends Thread {
     // ------------------------------
 
     /**
-     * Registers the connection with the IRC server. <br />
+     * Registers the connection with the IRC server.
      * In fact, it sends a password (if set, else nothing), the nickname and the
-     * user, the realname and the host which we're connecting to.<br />
+     * user, the realname and the host which we're connecting to.
      * The action synchronizes <code>code> so that no important messages
-     * (like the first PING) come in before this registration is finished.<br />
-     * The <code>USER</code> command's format is:<br />
+     * (like the first PING) come in before this registration is finished.
+     * The <code>USER</code> command's format is:
      * <code>
      * &lt;username&gt; &lt;localhost&gt; &lt;irchost&gt; &lt;realname&gt;
      * </code>
@@ -468,8 +462,8 @@ public class IRCConnection extends Thread {
     /**
      * The <code>Thread</code> is started by the <code>connect</code> method.
      * It's task is to receive strings from the IRC server and hand them over to
-     * the <code>get</code> method.<br />
-     * <br />
+     * the <code>get</code> method.
+     *
      * Possibly occuring <code>IOException</code>s are handled according to the
      * set exception handling.
      */
@@ -523,7 +517,7 @@ public class IRCConnection extends Thread {
     /**
      * Just parses a String given as the only argument with the help of the
      * <code>IRCParser</code> class. Then it controls the command and fires
-     * events through the <code>IRCEventListener</code>.<br />
+     * events through the <code>IRCEventListener</code>.
      *
      * @param line
      *            The line which is sent from the server.
@@ -692,12 +686,12 @@ public class IRCConnection extends Thread {
     // ------------------------------
 
     /**
-     * Close down the connection brutally. <br />
+     * Close down the connection brutally.
      * It does *NOT* send the proper IRC command <code>QUIT</code>. You should
      * always use the <code>doQuit</code> methods or <code>send("QUIT")</code>
-     * instead of this method. <br />
+     * instead of this method.
      * You should use this method to close down the connection only when the IRC
-     * server doesn't react to the <code>QUIT</code> command. <br />
+     * server doesn't react to the <code>QUIT</code> command.
      * Possibly occuring <code>IOException</code>s are handled according to the
      * set exception handling.
      *
@@ -880,8 +874,8 @@ public class IRCConnection extends Thread {
     // ------------------------------
 
     /**
-     * Sets the connection's timeout in milliseconds. <br />
-     * The default is <code>1000 * 60 15</code> millis which are 15 minutes. <br />
+     * Sets the connection's timeout in milliseconds.
+     * The default is <code>1000 * 60 15</code> millis which are 15 minutes.
      * The possibly occuring <code>IOException</code> are handled according to
      * the set exception handling.
      *
@@ -902,7 +896,7 @@ public class IRCConnection extends Thread {
     // ------------------------------
 
     /**
-     * Tells whether there's a connection to the IRC network or not. <br />
+     * Tells whether there's a connection to the IRC network or not.
      * If <code>connect</code> wasn't called yet, it returns <code>false</code>.
      *
      * @return The status of the connection; <code>true</code> if it's
@@ -1034,8 +1028,8 @@ public class IRCConnection extends Thread {
     // ------------------------------
 
     /**
-     * Returns the timeout of the socket. <br />
-     * If an error occurs, which is never the case, <code>-1</code> is returned. <br />
+     * Returns the timeout of the socket.
+     * If an error occurs, which is never the case, <code>-1</code> is returned.
      * The possibly occuring <code>IOException</code> are handled according to
      * the set exception handling.
      *
@@ -1058,6 +1052,8 @@ public class IRCConnection extends Thread {
     /**
      * Returns the local address of the connection socket. If the connection is
      * not yet connected, <code>null</code> is returned.
+     *
+     * @return the local address
      */
     public InetAddress getLocalAddress() {
         return (socket != null) ? socket.getLocalAddress() : null;
@@ -1252,7 +1248,7 @@ public class IRCConnection extends Thread {
     // ------------------------------
 
     /**
-     * Sends a mode to the server. <br />
+     * Sends a mode to the server.
      * The first argument is a nickname (user-mode) or a channel (channel-mode).
      * <code>String mode</code> must contain the operators (+/-), the modes
      * (o/v/i/k/l/p/s/w) and the possibly values (nicks/banmask/limit/key).

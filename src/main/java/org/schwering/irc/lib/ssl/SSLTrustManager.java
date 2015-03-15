@@ -25,7 +25,7 @@ import java.security.cert.X509Certificate;
  */
 public interface SSLTrustManager {
     /**
-     * Checks whether the server is trusted or not. <br />
+     * Checks whether the server is trusted or not.
      * Given the partial or complete certificate chain provided by the peer,
      * build a certificate path to a trusted root and return true if it can
      * be validated and is trusted for server SSL authentication.

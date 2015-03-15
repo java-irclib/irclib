@@ -57,9 +57,9 @@ public class IRCUser {
 
     /**
      * Returns the nickname of the person who sent the line
-     * or the servername of the server which sent the line. <br />
+     * or the servername of the server which sent the line.
      * If no nickname is given, <code>null</code> is returned.
-     * <br /><br />
+     *
      * <b>Note:</b> This method is totally equal to <code>getServername</code>!
      * @return The nickname or the servername of the line. If no nick is given,
      *         <code>null</code> is returned.
@@ -75,9 +75,9 @@ public class IRCUser {
 
     /**
      * Returns the servername of the server which sent the line or the nickname of
-     * the person who sent the line. <br />
+     * the person who sent the line.
      * If no nickname is given, <code>null</code> is returned.
-     * <br /><br />
+     *
      * <b>Note:</b> This method is totally equal to <code>getNick</code>!
      * @return The servername or the nickname of the line. If no server is given,
      *         <code>null</code> is returned.
@@ -90,7 +90,7 @@ public class IRCUser {
 // ------------------------------
 
     /**
-     * Returns the username of the person who sent the line. <br />
+     * Returns the username of the person who sent the line.
      * If the username is not specified, this method returns <code>null</code>.
      * @return The username of the line; <code>null</code> if it's not given.
      * @see #getNick()
@@ -103,7 +103,7 @@ public class IRCUser {
 // ------------------------------
 
     /**
-     * Returns the host of the person who sent the line. <br />
+     * Returns the host of the person who sent the line.
      * If the host is not specified, this method returns <code>null</code>.
      * @return The host of the line; <code>null</code> if it's not given.
      * @see #getNick()

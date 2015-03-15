@@ -20,7 +20,7 @@ package org.schwering.irc.lib;
  * <code>IRCConnection</code> to parse incoming lines. Nevertheless I declared
  * it as <code>public</code> because you might want to use it to parse IRC
  * command-shortcuts like <code>MSG</code> instead of <code>PRIVMSG</code> in
- * your client.<br />
+ * your client.
  * The following text goes on with the description of the class and what it
  * does.
  * <p>
@@ -53,30 +53,30 @@ package org.schwering.irc.lib;
  * line feed) which trails the incoming line.
  * <p>
  * The following extract of the RFC1459 shows the message format in BNF:
- * <blockquote cite="RFC1459"><code>
+ * <code>
  * &lt;message&gt;&nbsp;&nbsp;::=
  * [':' &lt;prefix&gt; &lt;SPACE&gt; ] &lt;command&gt; &lt;params&gt;
- * &lt;crlf&gt; <br />
+ * &lt;crlf&gt;
  * &lt;prefix&gt;&nbsp;&nbsp;&nbsp;::=
  * &lt;servername&gt; | &lt;nick&gt;
  * [ '!' &lt;username&gt; ] [ '@' &lt;host&gt; ]
- * <br />
+ *
  * &lt;command&gt;&nbsp;&nbsp;::=
  * &lt;letter&gt; { &lt;letter&gt; } | &lt;number&gt; &lt;number&gt;
- * &lt;number&gt; <br />
+ * &lt;number&gt;
  * &lt;SPACE&gt;&nbsp;&nbsp;&nbsp;&nbsp;::=
- * ' ' { ' ' }<br />
+ * ' ' { ' ' }
  * &lt;params&gt;&nbsp;&nbsp;&nbsp;::=
- * &lt;SPACE&gt; [ ':' &lt;trailing&gt; | &lt;middle&gt; &lt;params&gt; ] <br />
+ * &lt;SPACE&gt; [ ':' &lt;trailing&gt; | &lt;middle&gt; &lt;params&gt; ]
  * &lt;middle&gt;&nbsp;&nbsp;&nbsp;::=
  * &lt;Any *non-empty* sequence of octets not including SPACE or NUL or CR or
- * LF, the first of which may not be ':'&gt; <br />
+ * LF, the first of which may not be ':'&gt;
  * &lt;trailing&gt;&nbsp;::=
  * &lt;Any, possibly *empty*, sequence of octets not including NUL or CR or
- * LF&gt; <br />
+ * LF&gt;
  * &lt;crlf&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::=
- * CR LF<br />
- * </code></blockquote>
+ * CR LF
+ * </code>
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @version 3.22
  * @see IRCConnection
@@ -223,8 +223,8 @@ public class IRCParser {
 // ------------------------------
 
     /**
-     * Searches for a given char in the <code>StringBuffer buf</code>. <br />
-     * It starts at the end. <br />
+     * Searches for a given char in the <code>StringBuffer buf</code>.
+     * It starts at the end.
      * Note: The method expects a character which is not <code>c</code> before
      * it can return an index. Thus in a string like "<code>nick moor&nbsp;&nbsp;
      * &nbsp;&nbsp;</code>" with four trailing spaces
@@ -253,7 +253,7 @@ public class IRCParser {
      * Initializes the <code>parameters[]</code>.
      * This method is called by <code>getParam</code>, <code>getParamFrom</code>
      * and <code>getParamTo</code>, if the <code>parameters[]</code> aren't
-     * initialized yet.<br />
+     * initialized yet.
      * The method splits the <code>middle</code> into all words using and appends
      * the trailing as last parameter. It uses the <code>IRCUtil.split</code>
      * method.
@@ -333,16 +333,16 @@ public class IRCParser {
 
     /**
      * Returns the nickname of the person who sent the line
-     * or the servername of the server which sent the line. <br />
-     * It is found in the prefix which always looks like that:<br />
+     * or the servername of the server which sent the line.
+     * It is found in the prefix which always looks like that:
      * <code>
      * &lt;servername&gt; | &lt;nick&gt;
      * [ '!' &lt;username&gt; ] [ '@' &lt;host&gt; ]
-     * </code><br /><br />
+     * </code>
      * If no prefix is given in the whole line, <code>null</code> is returned.
-     * <br /><br />
+     *
      * <b>Note:</b> This method is totally equal to <code>getServername</code>!
-     * <br />
+     *
      * <b>Note:</b> There is also the method <code>getUser</code> which returns
      * an <code>IRCUser</code> object which holds the nickname, username and host.
      * By the way, the <code>getUser</code> uses the <code>getNick</code>,
@@ -366,16 +366,16 @@ public class IRCParser {
 
     /**
      * Returns the servername of the server which sent the line
-     * or the nickname of the person who sent the line. <br />
-     * It is found in the prefix which always looks like that:<br />
+     * or the nickname of the person who sent the line.
+     * It is found in the prefix which always looks like that:
      * <code>
      * &lt;servername&gt; | &lt;nick&gt;
      * [ '!' &lt;username&gt; ] [ '@' &lt;host&gt; ]
-     * </code><br /><br />
+     * </code>
      * If no prefix is given in the whole line, <code>null</code> is returned.
-     * <br /><br />
+     *
      * <b>Note:</b> This method is totally equal to <code>getNick</code>!
-     * <br />
+     *
      * <b>Note:</b> There is also the method <code>getUser</code> which returns
      * an <code>IRCUser</code> object which holds the nickname, username and host.
      * By the way, the <code>getUser</code> uses the <code>getNick</code>,
@@ -393,14 +393,14 @@ public class IRCParser {
 // ------------------------------
 
     /**
-     * Returns the username of the person who sent the line.<br />
-     * It is found in the prefix which always looks like that:<br />
+     * Returns the username of the person who sent the line.
+     * It is found in the prefix which always looks like that:
      * <code>
      * &lt;servername&gt; | &lt;nick&gt;
      * [ '!' &lt;username&gt; ] [ '@' &lt;host&gt; ]
-     * </code><br /><br />
+     * </code>
      * If the username is not specified, this method returns <code>null</code>.
-     * <br />
+     *
      * <b>Note:</b> There is also the method <code>getUser</code> which returns
      * an <code>IRCUser</code> object which holds the nickname, username and host.
      * By the way, the <code>getUser</code> uses the <code>getNick</code>,
@@ -423,14 +423,14 @@ public class IRCParser {
 // ------------------------------
 
     /**
-     * Returns the host of the person who sent the line.<br />
-     * It is found in the prefix which always looks like that:<br />
+     * Returns the host of the person who sent the line.
+     * It is found in the prefix which always looks like that:
      * <code>
      * &lt;servername&gt; | &lt;nick&gt;
      * [ '!' &lt;username&gt; ] [ '@' &lt;host&gt; ]
-     * </code><br /><br />
+     * </code>
      * If the host is not specified, this method returns <code>null</code>.
-     * <br />
+     *
      * <b>Note:</b> There is also the method <code>getUser</code> which returns
      * an <code>IRCUser</code> object which holds the nickname, username and host.
      * By the way, the <code>getUser</code> uses the <code>getNick</code>,
@@ -547,7 +547,7 @@ public class IRCParser {
 
     /**
      * Generates a <code>String</code> with some information about the instance of
-     * <code>IRCParser</code>.<br />
+     * <code>IRCParser</code>.
      * Its format is: <code>classname[prefix,command,middle,trailing]</code>.
      * @return A <code>String</code> with information about the instance.
      */

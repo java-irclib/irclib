@@ -44,12 +44,12 @@ public enum IRCReply {
      */
     RPL_NONE(300),
     /**
-     * Format: "[&lt;reply&gt;{&lt;space&gt;&lt;reply&gt;}]". <br />
+     * Format: "[&lt;reply&gt;{&lt;space&gt;&lt;reply&gt;}]".
      * Reply format used by USERHOST to list replies to
      * the query list.  The reply string is composed as
-     * follows:<br />
+     * follows:
      * &lt;reply&gt; ::= &lt;nick&gt;['*'] '=' &lt;'+'|'-'&gt;&lt;hostname&gt;
-     * <br />
+     *
      * The '*' indicates whether the client has registered
      * as an Operator.  The '-' or '+' characters represent
      * whether the client has set an AWAY message or not
@@ -57,7 +57,7 @@ public enum IRCReply {
      */
     RPL_USERHOST(302),
     /**
-     * Format: "[&lt;nick&gt; {&lt;space&gt;&lt;nick&gt;}]". <br />
+     * Format: "[&lt;nick&gt; {&lt;space&gt;&lt;nick&gt;}]".
      * Reply format used by ISON to list replies to the
      * query list.
      */
@@ -71,7 +71,7 @@ public enum IRCReply {
      */
     RPL_UNAWAY(305),
     /**
-     * Format: "You have been marked as being away". <br />
+     * Format: "You have been marked as being away".
      * These replies are used with the AWAY command (if
      * allowed).  RPL_AWAY is sent to any client sending a
      * PRIVMSG to a client which is away.  RPL_AWAY is only
@@ -82,7 +82,7 @@ public enum IRCReply {
     RPL_NOWAWAY(306),
     /**
      * Format: "&lt;nick&gt; &lt;user&gt; &lt;host&gt; * :&lt;real name&gt;".
-     * <br />
+     *
      * Replies 311 - 313, 317 - 319 are all replies
      * generated in response to a WHOIS message.  Given that
      * there are enough parameters present, the answering
@@ -100,7 +100,7 @@ public enum IRCReply {
      */
     RPL_WHOISUSER(311),
     /**
-     * Format: "&lt;nick&gt; &lt;server&gt; &lt;server info&gt;". <br />
+     * Format: "&lt;nick&gt; &lt;server&gt; &lt;server info&gt;".
      * Replies 311 - 313, 317 - 319 are all replies
      * generated in response to a WHOIS message.  Given that
      * there are enough parameters present, the answering
@@ -118,7 +118,7 @@ public enum IRCReply {
      */
     RPL_WHOISSERVER(312),
     /**
-     * Format: "&lt;nick&gt; is an IRC operator". <br />
+     * Format: "&lt;nick&gt; is an IRC operator".
      * Replies 311 - 313, 317 - 319 are all replies
      * generated in response to a WHOIS message.  Given that
      * there are enough parameters present, the answering
@@ -136,7 +136,7 @@ public enum IRCReply {
      */
     RPL_WHOISOPERATOR(313),
     /**
-     * Format: "&lt;nick&gt; &lt;integer&gt; seconds idle". <br />
+     * Format: "&lt;nick&gt; &lt;integer&gt; seconds idle".
      * Replies 311 - 313, 317 - 319 are all replies
      * generated in response to a WHOIS message.  Given that
      * there are enough parameters present, the answering
@@ -154,7 +154,7 @@ public enum IRCReply {
      */
     RPL_WHOISIDLE(317),
     /**
-     * Format: "&lt;nick&gt; End of /WHOIS list". <br />
+     * Format: "&lt;nick&gt; End of /WHOIS list".
      * Replies 311 - 313, 317 - 319 are all replies
      * generated in response to a WHOIS message.  Given that
      * there are enough parameters present, the answering
@@ -172,7 +172,7 @@ public enum IRCReply {
      */
     RPL_ENDOFWHOIS(318),
     /**
-     * Format: "&lt;nick&gt; {[@|+]&lt;channel&gt;&lt;space&gt;}". <br />
+     * Format: "&lt;nick&gt; {[@|+]&lt;channel&gt;&lt;space&gt;}".
      * Replies 311 - 313, 317 - 319 are all replies
      * generated in response to a WHOIS message.  Given that
      * there are enough parameters present, the answering
@@ -190,7 +190,7 @@ public enum IRCReply {
      */
     RPL_WHOISCHANNELS(319),
     /**
-     * Format: "&lt;nick&gt; &lt;authname&gt; is authed as"<br />
+     * Format: "&lt;nick&gt; &lt;authname&gt; is authed as"
      * This is part of /WHOIS on many servers which provide bots to authenticate.
      * This is not part of the RFC.
      */
@@ -200,7 +200,7 @@ public enum IRCReply {
      */
     RPL_WHOWASUSER(314),
     /**
-     * Format: "&lt;nick&gt; End of WHOWAS". <br />
+     * Format: "&lt;nick&gt; End of WHOWAS".
      * When replying to a WHOWAS message, a server must use
      * the replies RPL_WHOWASUSER, RPL_WHOISSERVER or
      * ERR_WASNOSUCHNICK for each nickname in the presented
@@ -210,7 +210,7 @@ public enum IRCReply {
      */
     RPL_ENDOFWHOWAS(369),
     /**
-     * Format: "Channel Users  Name". <br />
+     * Format: "Channel Users  Name".
      * Replies RPL_LISTSTART, RPL_LIST, RPL_LISTEND mark
      * the start, actual replies with data and end of the
      * server's response to a LIST command.  If there are
@@ -219,7 +219,7 @@ public enum IRCReply {
      */
     RPL_LISTSTART(321),
     /**
-     * Format: "&lt;channel&gt; &lt;# visible&gt; &lt;topic&gt;". <br />
+     * Format: "&lt;channel&gt; &lt;# visible&gt; &lt;topic&gt;".
      * Replies RPL_LISTSTART, RPL_LIST, RPL_LISTEND mark
      * the start, actual replies with data and end of the
      * server's response to a LIST command.  If there are
@@ -228,7 +228,7 @@ public enum IRCReply {
      */
     RPL_LIST(322),
     /**
-     * Format: "End of /LIST". <br />
+     * Format: "End of /LIST".
      * Replies RPL_LISTSTART, RPL_LIST, RPL_LISTEND mark
      * the start, actual replies with data and end of the
      * server's response to a LIST command.  If there are
@@ -237,11 +237,11 @@ public enum IRCReply {
      */
     RPL_LISTEND(323),
     /**
-     * Format: "&lt;channel&gt; &lt;mode&gt; &lt;mode params&gt;". <br />
+     * Format: "&lt;channel&gt; &lt;mode&gt; &lt;mode params&gt;".
      */
     RPL_CHANNELMODEIS(324),
     /**
-     * Format: "&lt;nick&gt; &lt;authname&gt; is authed as"<br />
+     * Format: "&lt;nick&gt; &lt;authname&gt; is authed as"
      * This is part of /WHOIS on many servers which provide bots to authenticate.
      * This is not part of the RFC.
      * @deprecated (1) The value should be 330 instead of 333; (2) moved to
@@ -249,7 +249,7 @@ public enum IRCReply {
      */
     RPL_AUTHNAME(333),
     /**
-     * Format: "&lt;channel&gt; No topic is set". <br />
+     * Format: "&lt;channel&gt; No topic is set".
      * When sending a TOPIC message to determine the
      * channel topic, one of two replies is sent.  If
      * the topic is set, RPL_TOPIC is sent back else
@@ -257,7 +257,7 @@ public enum IRCReply {
      */
     RPL_NOTOPIC(331),
     /**
-     * Format: "&lt;channel&gt; &lt;topic&gt;". <br />
+     * Format: "&lt;channel&gt; &lt;topic&gt;".
      * When sending a TOPIC message to determine the
      * channel topic, one of two replies is sent.  If
      * the topic is set, RPL_TOPIC is sent back else
@@ -271,33 +271,33 @@ public enum IRCReply {
      */
     RPL_TOPICINFO(333),
     /**
-     * Format: "&lt;channel&gt; &lt;nick&gt;". <br />
+     * Format: "&lt;channel&gt; &lt;nick&gt;".
      * Returned by the server to indicate that the
      * attempted INVITE message was successful and is
      * being passed onto the end client.
      */
     RPL_INVITING(341),
     /**
-     * Format: "&lt;user&gt; Summoning user to IRC". <br />
+     * Format: "&lt;user&gt; Summoning user to IRC".
      * Returned by a server answering a SUMMON message to
      * indicate that it is summoning that user.
      */
     RPL_SUMMONING(342),
     /**
      * Format: "&lt;version&gt;.&lt;debuglevel&gt; &lt;server&gt;
-     * &lt;comments&gt;". <br />
+     * &lt;comments&gt;".
      * Reply by the server showing its version details.
      * The &lt;version&gt; is the version of the software being
      * used (including any patchlevel revisions) and the
      * &lt;debuglevel&gt; is used to indicate if the server is
-     * running in "debug mode". <br />
+     * running in "debug mode".
      * The "comments" field may contain any comments about
      * the version or further version details.
      */
     RPL_VERSION(351),
     /**
      * Format: "&lt;channel&gt; &lt;user&gt; &lt;host&gt; &lt;server&gt;
-     * &lt;nick&gt; &lt;H|G&gt;[*][@|+] &lt;hopcount&gt; &lt;real name&gt;". <br />
+     * &lt;nick&gt; &lt;H|G&gt;[*][@|+] &lt;hopcount&gt; &lt;real name&gt;".
      * The RPL_WHOREPLY and RPL_ENDOFWHO pair are used
      * to answer a WHO message.  The RPL_WHOREPLY is only
      * sent if there is an appropriate match to the WHO
@@ -308,7 +308,7 @@ public enum IRCReply {
      */
     RPL_WHOREPLY(352),
     /**
-     * Format: "&lt;name&gt; End of /WHO list". <br />
+     * Format: "&lt;name&gt; End of /WHO list".
      * The RPL_WHOREPLY and RPL_ENDOFWHO pair are used
      * to answer a WHO message.  The RPL_WHOREPLY is only
      * sent if there is an appropriate match to the WHO
@@ -322,7 +322,7 @@ public enum IRCReply {
      * Format: "&lt;channel&gt; [[@|+]&lt;nick&gt; [[@|+]&lt;nick&gt;
      * [...]]]" (RFC 1459) or
      * "( "=" / "*" / "@" ) &lt;channel&gt; :[ "@" / "+" ] &lt;nick&gt;
-     * *( " " [ "@" / "+" ] &lt;nick&gt; )" (RFC2812). <br />
+     * *( " " [ "@" / "+" ] &lt;nick&gt; )" (RFC2812).
      * To reply to a NAMES message, a reply pair consisting
      * of RPL_NAMREPLY and RPL_ENDOFNAMES is sent by the
      * server back to the client.  If there is no channel
@@ -335,7 +335,7 @@ public enum IRCReply {
      */
     RPL_NAMREPLY(353),
     /**
-     * Format: "&lt;channel&gt; End of /NAMES list". <br />
+     * Format: "&lt;channel&gt; End of /NAMES list".
      * To reply to a NAMES message, a reply pair consisting
      * of RPL_NAMREPLY and RPL_ENDOFNAMES is sent by the
      * server back to the client.  If there is no channel
@@ -349,14 +349,14 @@ public enum IRCReply {
     RPL_ENDOFNAMES(366),
     /**
      * Format: "&lt;mask&gt; &lt;server&gt; &lt;hopcount&gt; &lt;server info&gt;".
-     * <br />
+     *
      * In replying to the LINKS message, a server must send
      * replies back using the RPL_LINKS numeric and mark the
      * end of the list using an RPL_ENDOFLINKS reply.
      */
     RPL_LINKS(364),
     /**
-     * Format: "&lt;mask&gt; End of /LINKS list". <br />
+     * Format: "&lt;mask&gt; End of /LINKS list".
      * In replying to the LINKS message, a server must send
      * replies back using the RPL_LINKS numeric and mark the
      * end of the list using an RPL_ENDOFLINKS reply.
@@ -366,7 +366,7 @@ public enum IRCReply {
      * Format: "&lt;channel&gt; &lt;banid&gt;" (RFC 1459), or
      * "&lt;channel&gt; &lt;banid&gt; &lt;user or *&gt; &lt;seconds&gt;"
      * where the seconds are the date when the ban was set (this format is
-     * not part of any RFC but seems to be used in several networks).<br />
+     * not part of any RFC but seems to be used in several networks).
      * When listing the active 'bans' for a given channel,
      * a server is required to send the list back using the
      * RPL_BANLIST and RPL_ENDOFBANLIST messages.  A separate
@@ -376,7 +376,7 @@ public enum IRCReply {
      */
     RPL_BANLIST(367),
     /**
-     * Format: "&lt;channel&gt; End of channel ban list". <br />
+     * Format: "&lt;channel&gt; End of channel ban list".
      * When listing the active 'bans' for a given channel,
      * a server is required to send the list back using the
      * RPL_BANLIST and RPL_ENDOFBANLIST messages.  A separate
@@ -386,7 +386,7 @@ public enum IRCReply {
      */
     RPL_ENDOFBANLIST(368),
     /**
-     * Format: "&lt;string&gt;". <br />
+     * Format: "&lt;string&gt;".
      * A server responding to an INFO message is required to
      * send all its 'info' in a series of RPL_INFO messages
      * with a RPL_ENDOFINFO reply to indicate the end of the
@@ -394,7 +394,7 @@ public enum IRCReply {
      */
     RPL_INFO(371),
     /**
-     * Format: "End of /INFO list". <br />
+     * Format: "End of /INFO list".
      * A server responding to an INFO message is required to
      * send all its 'info' in a series of RPL_INFO messages
      * with a RPL_ENDOFINFO reply to indicate the end of the
@@ -402,7 +402,7 @@ public enum IRCReply {
      */
     RPL_ENDOFINFO(374),
     /**
-     * Format: "- &lt;server&gt; Message of the day - ". <br />
+     * Format: "- &lt;server&gt; Message of the day - ".
      * When responding to the MOTD message and the MOTD file
      * is found, the file is displayed line by line, with
      * each line no longer than 80 characters, using
@@ -412,7 +412,7 @@ public enum IRCReply {
      */
     RPL_MOTDSTART(375),
     /**
-     * Format: "- &lt;text&gt;". <br />
+     * Format: "- &lt;text&gt;".
      * When responding to the MOTD message and the MOTD file
      * is found, the file is displayed line by line, with
      * each line no longer than 80 characters, using
@@ -422,7 +422,7 @@ public enum IRCReply {
      */
     RPL_MOTD(372),
     /**
-     * Format: "End of /MOTD command". <br />
+     * Format: "End of /MOTD command".
      * When responding to the MOTD message and the MOTD file
      * is found, the file is displayed line by line, with
      * each line no longer than 80 characters, using
@@ -432,21 +432,21 @@ public enum IRCReply {
      */
     RPL_ENDOFMOTD(376),
     /**
-     * Format: "You are now an IRC operator". <br />
+     * Format: "You are now an IRC operator".
      * RPL_YOUREOPER is sent back to a client which has
      * just successfully issued an OPER message and gained
      * operator status.
      */
     RPL_YOUREOPER(381),
     /**
-     * Format: "&lt;config file&gt; Rehashing". <br />
+     * Format: "&lt;config file&gt; Rehashing".
      * If the REHASH option is used and an operator sends
      * a REHASH message, an RPL_REHASHING is sent back to
      * the operator.
      */
     RPL_REHASHING(382),
     /**
-     * Format: "&lt;server&gt; &lt;string showing server's local time&gt;". <br />
+     * Format: "&lt;server&gt; &lt;string showing server's local time&gt;".
      * When replying to the TIME message, a server must send
      * the reply using the RPL_TIME format above.  The string
      * showing the time need only contain the correct day and
@@ -455,7 +455,7 @@ public enum IRCReply {
      */
     RPL_TIME(391),
     /**
-     * Format: "UserID   Terminal  Host". <br />
+     * Format: "UserID   Terminal  Host".
      * If the USERS message is handled by a server, the
      * replies RPL_USERSTART, RPL_USERS, RPL_ENDOFUSERS and
      * RPL_NOUSERS are used.  RPL_USERSSTART must be sent
@@ -465,7 +465,7 @@ public enum IRCReply {
      */
     RPL_USERSSTART(392),
     /**
-     * Format: "%-8s %-9s %-8s". <br />
+     * Format: "%-8s %-9s %-8s".
      * If the USERS message is handled by a server, the
      * replies RPL_USERSTART, RPL_USERS, RPL_ENDOFUSERS and
      * RPL_NOUSERS are used.  RPL_USERSSTART must be sent
@@ -475,7 +475,7 @@ public enum IRCReply {
      */
     RPL_USERS(393),
     /**
-     * Format: "End of users". <br />
+     * Format: "End of users".
      * If the USERS message is handled by a server, the
      * replies RPL_USERSTART, RPL_USERS, RPL_ENDOFUSERS and
      * RPL_NOUSERS are used.  RPL_USERSSTART must be sent
@@ -485,7 +485,7 @@ public enum IRCReply {
      */
     RPL_ENDOFUSERS(394),
     /**
-     * Format: "Nobody logged in". <br />
+     * Format: "Nobody logged in".
      * If the USERS message is handled by a server, the
      * replies RPL_USERSTART, RPL_USERS, RPL_ENDOFUSERS and
      * RPL_NOUSERS are used.  RPL_USERSSTART must be sent
@@ -495,8 +495,8 @@ public enum IRCReply {
      */
     RPL_NOUSERS(395),
     /**
-     * Format: "Link &lt;version & debug level&gt; &lt;destination&gt;
-     * &lt;next server&gt;". <br />
+     * Format: "Link &lt;version &amp; debug level&gt; &lt;destination&gt;
+     * &lt;next server&gt;".
      * The RPL_TRACE* are all returned by the server in
      * response to the TRACE message.  How many are
      * returned is dependent on the the TRACE message and
@@ -519,7 +519,7 @@ public enum IRCReply {
      */
     RPL_TRACELINK(200),
     /**
-     * Format: "Try. &lt;class&gt; &lt;server&gt;". <br />
+     * Format: "Try. &lt;class&gt; &lt;server&gt;".
      * The RPL_TRACE* are all returned by the server in
      * response to the TRACE message.  How many are
      * returned is dependent on the the TRACE message and
@@ -542,7 +542,7 @@ public enum IRCReply {
      */
     RPL_TRACECONNECTING(201),
     /**
-     * Format: "H.S. &lt;class&gt; &lt;server&gt;". <br />
+     * Format: "H.S. &lt;class&gt; &lt;server&gt;".
      * The RPL_TRACE* are all returned by the server in
      * response to the TRACE message.  How many are
      * returned is dependent on the the TRACE message and
@@ -565,7 +565,7 @@ public enum IRCReply {
      */
     RPL_TRACEHANDSHAKE(202),
     /**
-     * Format: "???? &lt;class&gt; [&lt;client IP address in dot form&gt;]". <br />
+     * Format: "???? &lt;class&gt; [&lt;client IP address in dot form&gt;]".
      * The RPL_TRACE* are all returned by the server in
      * response to the TRACE message.  How many are
      * returned is dependent on the the TRACE message and
@@ -588,7 +588,7 @@ public enum IRCReply {
      */
     RPL_TRACEUNKNOWN(203),
     /**
-     * Format: "Oper &lt;class&gt; &lt;nick&gt;". <br />
+     * Format: "Oper &lt;class&gt; &lt;nick&gt;".
      * The RPL_TRACE* are all returned by the server in
      * response to the TRACE message.  How many are
      * returned is dependent on the the TRACE message and
@@ -611,7 +611,7 @@ public enum IRCReply {
      */
     RPL_TRACEOPERATOR(204),
     /**
-     * Format: "User &lt;class&gt; &lt;nick&gt;". <br />
+     * Format: "User &lt;class&gt; &lt;nick&gt;".
      * The RPL_TRACE* are all returned by the server in
      * response to the TRACE message.  How many are
      * returned is dependent on the the TRACE message and
@@ -635,7 +635,7 @@ public enum IRCReply {
     RPL_TRACEUSER(205),
     /**
      * Format: "Serv &lt;class&gt; &lt;int&gt;S &lt;int&gt;C &lt;server&gt;
-     * &lt;nick!user|*!*&gt;@&lt;host|server&gt;". <br />
+     * &lt;nick!user|*!*&gt;@&lt;host|server&gt;".
      * The RPL_TRACE* are all returned by the server in
      * response to the TRACE message.  How many are
      * returned is dependent on the the TRACE message and
@@ -658,7 +658,7 @@ public enum IRCReply {
      */
     RPL_TRACESERVER(206),
     /**
-     * Format: "&lt;newtype&gt; 0 &lt;client name&gt;". <br />
+     * Format: "&lt;newtype&gt; 0 &lt;client name&gt;".
      * The RPL_TRACE* are all returned by the server in
      * response to the TRACE message.  How many are
      * returned is dependent on the the TRACE message and
@@ -681,7 +681,7 @@ public enum IRCReply {
      */
     RPL_TRACENEWTYPE(208),
     /**
-     * Format: "File &lt;logfile&gt; &lt;debug level&gt;". <br />
+     * Format: "File &lt;logfile&gt; &lt;debug level&gt;".
      * The RPL_TRACE* are all returned by the server in
      * response to the TRACE message.  How many are
      * returned is dependent on the the TRACE message and
@@ -755,14 +755,14 @@ public enum IRCReply {
      */
     RPL_STATSHLINE(244),
     /**
-     * Format: "&lt;user mode string&gt;". <br />
+     * Format: "&lt;user mode string&gt;".
      * To answer a query about a client's own mode,
      * RPL_UMODEIS is sent back.
      */
     RPL_UMODEIS(221),
     /**
      * Format:   "There are &lt;integer&gt; users and &lt;integer&gt;
-     * invisible on &lt;integer&gt; servers". <br />
+     * invisible on &lt;integer&gt; servers".
      * In processing an LUSERS message, the server
      * sends a set of replies from RPL_LUSERCLIENT,
      * RPL_LUSEROP, RPL_USERUNKNOWN,
@@ -774,7 +774,7 @@ public enum IRCReply {
      */
     RPL_LUSERCLIENT(251),
     /**
-     * Format: "&lt;integer&gt; operator(s) online". <br />
+     * Format: "&lt;integer&gt; operator(s) online".
      * In processing an LUSERS message, the server
      * sends a set of replies from RPL_LUSERCLIENT,
      * RPL_LUSEROP, RPL_USERUNKNOWN,
@@ -786,7 +786,7 @@ public enum IRCReply {
      */
     RPL_LUSEROP(252),
     /**
-     * Format: "&lt;integer&gt; unknown connection(s)". <br />
+     * Format: "&lt;integer&gt; unknown connection(s)".
      * In processing an LUSERS message, the server
      * sends a set of replies from RPL_LUSERCLIENT,
      * RPL_LUSEROP, RPL_USERUNKNOWN,
@@ -798,7 +798,7 @@ public enum IRCReply {
      */
     RPL_LUSERUNKNOWN(253),
     /**
-     * Format: "&lt;integer&gt; channels formed". <br />
+     * Format: "&lt;integer&gt; channels formed".
      * In processing an LUSERS message, the server
      * sends a set of replies from RPL_LUSERCLIENT,
      * RPL_LUSEROP, RPL_USERUNKNOWN,
@@ -811,7 +811,7 @@ public enum IRCReply {
     RPL_LUSERCHANNELS(254),
     /**
      * Format: "I have &lt;integer&gt; clients and &lt;integer&gt;
-     * servers". <br />
+     * servers".
      * In processing an LUSERS message, the server
      * sends a set of replies from RPL_LUSERCLIENT,
      * RPL_LUSEROP, RPL_USERUNKNOWN,
@@ -823,7 +823,7 @@ public enum IRCReply {
      */
     RPL_LUSERME(255),
     /**
-     * Format: "&lt;server&gt; Administrative info". <br />
+     * Format: "&lt;server&gt; Administrative info".
      * When replying to an ADMIN message, a server
      * is expected to use replies RLP_ADMINME
      * through to RPL_ADMINEMAIL and provide a text
@@ -837,7 +837,7 @@ public enum IRCReply {
      */
     RPL_ADMINME(256),
     /**
-     * Format: "&lt;admin info&gt;". <br />
+     * Format: "&lt;admin info&gt;".
      * When replying to an ADMIN message, a server
      * is expected to use replies RLP_ADMINME
      * through to RPL_ADMINEMAIL and provide a text
@@ -851,7 +851,7 @@ public enum IRCReply {
      */
     RPL_ADMINLOC1(257),
     /**
-     * Format: "&lt;admin info&gt;". <br />
+     * Format: "&lt;admin info&gt;".
      * When replying to an ADMIN message, a server
      * is expected to use replies RLP_ADMINME
      * through to RPL_ADMINEMAIL and provide a text
@@ -865,7 +865,7 @@ public enum IRCReply {
      */
     RPL_ADMINLOC2(258),
     /**
-     * Format: "&lt;admin info&gt;". <br />
+     * Format: "&lt;admin info&gt;".
      * When replying to an ADMIN message, a server
      * is expected to use replies RLP_ADMINME
      * through to RPL_ADMINEMAIL and provide a text
@@ -949,18 +949,18 @@ public enum IRCReply {
      */
     ERR_NOSUCHNICK(401),
     /**
-     * Format: "&lt;server name&gt; No such server". <br />
+     * Format: "&lt;server name&gt; No such server".
      * Used to indicate the server name given currently
      * doesn't exist.
      */
     ERR_NOSUCHSERVER(402),
     /**
-     * Format: "&lt;channel name&gt; No such channel". <br />
+     * Format: "&lt;channel name&gt; No such channel".
      * Used to indicate the given channel name is invalid.
      */
     ERR_NOSUCHCHANNEL(403),
     /**
-     * Format: "&lt;channel name&gt; Cannot send to channel". <br />
+     * Format: "&lt;channel name&gt; Cannot send to channel".
      * Sent to a user who is either (a) not on a channel
      * which is mode +n or (b) not a chanop (or mode +v) on
      * a channel which has mode +m set and is trying to send
@@ -969,27 +969,27 @@ public enum IRCReply {
     ERR_CANNOTSENDTOCHAN(404),
     /**
      * Format: "&lt;channel name&gt; You have joined too many
-     * channels". <br />
+     * channels".
      * Sent to a user when they have joined the maximum
      * number of allowed channels and they try to join
      * another channel.
      */
     ERR_TOOMANYCHANNELS(405),
     /**
-     * Format: "&lt;nickname&gt; There was no such nickname". <br />
+     * Format: "&lt;nickname&gt; There was no such nickname".
      * Returned by WHOWAS to indicate there is no history
      * information for that nickname.
      */
     ERR_WASNOSUCHNICK(406),
     /**
-     * Format: "&lt;target&gt; Duplicate recipients. No message delivered". <br />
+     * Format: "&lt;target&gt; Duplicate recipients. No message delivered".
      * Returned to a client which is attempting to send a PRIVMSG/NOTICE using
      * the user@host destination format and for a user@host which has several
      * occurrences.
      */
     ERR_TOOMANYTARGETS(407),
     /**
-     * Format: "No origin specified". <br />
+     * Format: "No origin specified".
      * PING or PONG message missing the originator parameter
      * which is required since these commands must work
      * without valid prefixes.
@@ -1000,7 +1000,7 @@ public enum IRCReply {
      */
     ERR_NORECIPIENT(411),
     /**
-     * Format: "No text to send". <br />
+     * Format: "No text to send".
      * 412 - 414 are returned by PRIVMSG to indicate that
      * the message wasn't delivered for some reason.
      * ERR_NOTOPLEVEL and ERR_WILDTOPLEVEL are errors that
@@ -1009,7 +1009,7 @@ public enum IRCReply {
      */
     ERR_NOTEXTTOSEND(412),
     /**
-     * Format: "&lt;mask&gt; No toplevel domain specified". <br />
+     * Format: "&lt;mask&gt; No toplevel domain specified".
      * 412 - 414 are returned by PRIVMSG to indicate that
      * the message wasn't delivered for some reason.
      * ERR_NOTOPLEVEL and ERR_WILDTOPLEVEL are errors that
@@ -1018,7 +1018,7 @@ public enum IRCReply {
      */
     ERR_NOTOPLEVEL(413),
     /**
-     * Format: "&lt;mask&gt; Wildcard in toplevel domain". <br />
+     * Format: "&lt;mask&gt; Wildcard in toplevel domain".
      * 412 - 414 are returned by PRIVMSG to indicate that
      * the message wasn't delivered for some reason.
      * ERR_NOTOPLEVEL and ERR_WILDTOPLEVEL are errors that
@@ -1027,117 +1027,117 @@ public enum IRCReply {
      */
     ERR_WILDTOPLEVEL(414),
     /**
-     * Format: "&lt;command&gt; Unknown command". <br />
+     * Format: "&lt;command&gt; Unknown command".
      * Returned to a registered client to indicate that the
      * command sent is unknown by the server.
      */
     ERR_UNKNOWNCOMMAND(421),
     /**
-     * Format: "MOTD File is missing". <br />
+     * Format: "MOTD File is missing".
      * Server's MOTD file could not be opened by the server.
      */
     ERR_NOMOTD(422),
     /**
-     * Format: "&lt;server&gt; No administrative info available". <br />
+     * Format: "&lt;server&gt; No administrative info available".
      * Returned by a server in response to an ADMIN message
      * when there is an error in finding the appropriate
      * information.
      */
     ERR_NOADMININFO(423),
     /**
-     * Format: "File error doing &lt;file op&gt; on &lt;file&gt;". <br />
+     * Format: "File error doing &lt;file op&gt; on &lt;file&gt;".
      * Generic error message used to report a failed file
      * operation during the processing of a message.
      */
     ERR_FILEERROR(424),
     /**
-     * Format: "No nickname given". <br />
+     * Format: "No nickname given".
      * Returned when a nickname parameter expected for a
      * command and isn't found.
      */
     ERR_NONICKNAMEGIVEN(431),
     /**
-     * Format: "&lt;nick&gt; Erroneus nickname". <br />
+     * Format: "&lt;nick&gt; Erroneus nickname".
      * Returned after receiving a NICK message which contains
      * characters which do not fall in the defined set.  See
      * section x.x.x for details on valid nicknames.
      */
     ERR_ERRONEUSNICKNAME(432),
     /**
-     * Format: "&lt;nick&gt; Nickname is already in use". <br />
+     * Format: "&lt;nick&gt; Nickname is already in use".
      * Returned when a NICK message is processed that results
      * in an attempt to change to a currently existing
      * nickname.
      */
     ERR_NICKNAMEINUSE(433),
     /**
-     * Format: "&lt;nick&gt; Nickname collision KILL". <br />
+     * Format: "&lt;nick&gt; Nickname collision KILL".
      * Returned by a server to a client when it detects a
      * nickname collision (registered of a NICK that
      * already exists by another server).
      */
     ERR_NICKCOLLISION(436),
     /**
-     * Format: "&lt;nick&gt; &lt;channel&gt; They aren't on that channel". <br />
+     * Format: "&lt;nick&gt; &lt;channel&gt; They aren't on that channel".
      * Returned by the server to indicate that the target
      * user of the command is not on the given channel.
      */
     ERR_USERNOTINCHANNEL(441),
     /**
-     * Format: "&lt;channel&gt; You're not on that channel". <br />
+     * Format: "&lt;channel&gt; You're not on that channel".
      * Returned by the server whenever a client tries to
      * perform a channel effecting command for which the
      * client isn't a member.
      */
     ERR_NOTONCHANNEL(442),
     /**
-     * Format: "&lt;user&gt; &lt;channel&gt; is already on channel". <br />
+     * Format: "&lt;user&gt; &lt;channel&gt; is already on channel".
      * Returned when a client tries to invite a user to a
      * channel they are already on.
      */
     ERR_USERONCHANNEL(443),
     /**
-     * Format: "&lt;user&gt; User not logged in". <br />
+     * Format: "&lt;user&gt; User not logged in".
      * Returned by the summon after a SUMMON command for a
      * user was unable to be performed since they were not
      * logged in.
      */
     ERR_NOLOGIN(444),
     /**
-     * Format: "SUMMON has been disabled". <br />
+     * Format: "SUMMON has been disabled".
      * Returned as a response to the SUMMON command.  Must be
      * returned by any server which does not implement it.
      */
     ERR_SUMMONDISABLED(445),
     /**
-     * Format: "USERS has been disabled". <br />
+     * Format: "USERS has been disabled".
      * Returned as a response to the USERS command.  Must be
      * returned by any server which does not implement it.
      */
     ERR_USERSDISABLED(446),
     /**
-     * Format: "You have not registered". <br />
+     * Format: "You have not registered".
      * Returned by the server to indicate that the client
      * must be registered before the server will allow it
      * to be parsed in detail.
      */
     ERR_NOTREGISTERED(451),
     /**
-     * Format: "&lt;command&gt; Not enough parameters". <br />
+     * Format: "&lt;command&gt; Not enough parameters".
      * Returned by the server by numerous commands to
      * indicate to the client that it didn't supply enough
      * parameters.
      */
     ERR_NEEDMOREPARAMS(461),
     /**
-     * Format: "You may not reregister". <br />
+     * Format: "You may not reregister".
      * Returned by the server to any link which tries to
      * change part of the registered details (such as
      * password or user details from second USER message).
      */
     ERR_ALREADYREGISTRED(462),
     /**
-     * Format: "Your host isn't among the privileged". <br />
+     * Format: "Your host isn't among the privileged".
      * Returned to a client which attempts to register with
      * a server which does not been setup to allow
      * connections from the host the attempted connection
@@ -1145,14 +1145,14 @@ public enum IRCReply {
      */
     ERR_NOPERMFORHOST(463),
     /**
-     * Format: "Password incorrect". <br />
+     * Format: "Password incorrect".
      * Returned to indicate a failed attempt at registering
      * a connection for which a password was required and
      * was either not given or incorrect.
      */
     ERR_PASSWDMISMATCH(464),
     /**
-     * Format: "You are banned from this server". <br />
+     * Format: "You are banned from this server".
      * Returned after an attempt to connect and register
      * yourself with a server which has been setup to
      * explicitly deny connections to you.
@@ -1200,7 +1200,7 @@ public enum IRCReply {
      */
     ERR_NOPRIVILEGES(481),
     /**
-     * Format: "&lt;channel&gt; You're not channel operator". <br />
+     * Format: "&lt;channel&gt; You're not channel operator".
      * Any command requiring 'chanop' privileges (such as
      * MODE messages) must return this error if the client
      * making the attempt is not a chanop on the specified
@@ -1208,14 +1208,14 @@ public enum IRCReply {
      */
     ERR_CHANOPRIVSNEEDED(482),
     /**
-     * Format: "You cant kill a server!". <br />
+     * Format: "You cant kill a server!".
      * Any attempts to use the KILL command on a server
      * are to be refused and this error returned directly
      * to the client.
      */
     ERR_CANTKILLSERVER(483),
     /**
-     * Format: "No O-lines for your host". <br />
+     * Format: "No O-lines for your host".
      * If a client sends an OPER message and the server has
      * not been configured to allow connections from the
      * client's host as an operator, this error must be
@@ -1228,14 +1228,14 @@ public enum IRCReply {
      */
     ERR_NOSERVICEHOST(492),
     /**
-     * Format: "Unknown MODE flag". <br />
+     * Format: "Unknown MODE flag".
      * Returned by the server to indicate that a MODE
      * message was sent with a nickname parameter and that
      * the a mode flag sent was not recognized.
      */
     ERR_UMODEUNKNOWNFLAG(501),
     /**
-     * Format: "Cant change mode for other users". <br />
+     * Format: "Cant change mode for other users".
      * Error sent to any user trying to view or change the
      * user mode for a user other than themselves.
      */

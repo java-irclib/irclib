@@ -232,7 +232,7 @@ public class IRCUtil implements IRCConstants {
      *                 split the <code>middle</code> part into the parameters.
      *                 But as last parameter always the <code>trailing</code> is
      *                 added. This is done here because it's the fastest way to
-     *                 do it here. <br />
+     *                 do it here.
      *                 If the <code>end</code> is <code>null</code> or
      *                 <code>""</code>, nothing is appended.
      * @return An array with all substrings.

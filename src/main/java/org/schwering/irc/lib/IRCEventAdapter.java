@@ -55,7 +55,7 @@ public class IRCEventAdapter implements IRCEventListener {
 
     /**
      * Fired when the own connection is successfully established.
-     * This is the case when the first PING? is received. <br />
+     * This is the case when the first PING? is received.
      * This happens between the connection is opened with a socket and the
      * connection is registered: The client sends his information to the server
      * (nickname, username). The server says hello to you by sending you

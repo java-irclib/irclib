@@ -38,7 +38,6 @@ public enum IRCCommand {
      * Instructs the server to return information about the administrator of the
      * server specified by &lt;server&gt;, or the current server if target is
      * omitted.[1]
-     * <p>
      */
     ADMIN,
     /**
@@ -53,7 +52,6 @@ public enum IRCCommand {
      * &lt;message&gt; is omitted, the away status is removed.
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     AWAY,
     /**
@@ -78,7 +76,6 @@ public enum IRCCommand {
      * This command is not formally defined in an RFC, but is in use by some IRC
      * networks. Support is indicated in a RPL_ISUPPORT reply (numeric 005) with
      * the CNOTICE keyword
-     * <p>
      */
     CNOTICE,
     /**
@@ -103,7 +100,6 @@ public enum IRCCommand {
      * This command is not formally defined in an RFC, but is in use by some IRC
      * networks. Support is indicated in a RPL_ISUPPORT reply (numeric 005) with
      * the CPRIVMSG keyword
-     * <p>
      */
     CPRIVMSG,
     /**
@@ -124,7 +120,6 @@ public enum IRCCommand {
      * <p>
      * Defined in RFC 1459; the &lt;port&gt; parameter became mandatory in RFC
      * 2812
-     * <p>
      */
     CONNECT,
     /**
@@ -137,7 +132,6 @@ public enum IRCCommand {
      * Instructs the server to shut down.[5]
      * <p>
      * Defined in RFC 2812
-     * <p>
      */
     DIE,
     /**
@@ -150,7 +144,6 @@ public enum IRCCommand {
      * be passed unaltered to the destination, where it will be unencapsulated
      * and parsed. This facilitates implementation of new features without a
      * need to restart all servers before they are usable across the network.[6]
-     * <p>
      */
     ENCAP,
     /**
@@ -164,7 +157,6 @@ public enum IRCCommand {
      * is also used before terminating client connections.[7]
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     ERROR,
     /**
@@ -178,7 +170,6 @@ public enum IRCCommand {
      * <p>
      * This command is not formally defined in an RFC, but is in use by most
      * major IRC daemons.
-     * <p>
      */
     HELP,
     /**
@@ -195,7 +186,6 @@ public enum IRCCommand {
      * relevant.
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     INFO,
     /**
@@ -211,7 +201,6 @@ public enum IRCCommand {
      * set, only channel operators may invite other clients.
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     INVITE,
     /**
@@ -227,7 +216,6 @@ public enum IRCCommand {
      * none of the clients are on the network the server returns an empty list.
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     ISON,
     /**
@@ -243,7 +231,6 @@ public enum IRCCommand {
      * then they will be created.
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     JOIN,
     /**
@@ -257,7 +244,6 @@ public enum IRCCommand {
      * may only be issued by channel operators.
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     KICK,
     /**
@@ -271,7 +257,6 @@ public enum IRCCommand {
      * only be issued by IRC operators.
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     KILL,
     /**
@@ -287,7 +272,6 @@ public enum IRCCommand {
      * This command is not formally defined by an RFC, but is supported by most
      * major IRC daemons. Support is indicated in a RPL_ISUPPORT reply (numeric
      * 005) with the KNOCK keyword.
-     * <p>
      */
     KNOCK,
     /**
@@ -301,7 +285,6 @@ public enum IRCCommand {
      * &lt;remote server&gt;, or the current server if omitted.[14]
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     LINKS,
     /**
@@ -317,7 +300,6 @@ public enum IRCCommand {
      * for evaluation.
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     LIST,
     /**
@@ -334,7 +316,6 @@ public enum IRCCommand {
      * will be forwarded to &lt;server&gt; for evaluation.
      * <p>
      * Defined in RFC 2812
-     * <p>
      */
     LUSERS,
     /**
@@ -352,7 +333,6 @@ public enum IRCCommand {
      * channel modes.[17]
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     MODE,
     /**
@@ -366,7 +346,6 @@ public enum IRCCommand {
      * it is omitted.[18]
      * <p>
      * Defined in RFC 2812
-     * <p>
      */
     MOTD,
     /**
@@ -388,7 +367,6 @@ public enum IRCCommand {
      * <p>
      * Defined in RFC 1459; the optional &lt;server&gt; parameter was added in
      * RFC 2812
-     * <p>
      */
     NAMES,
     /**
@@ -411,7 +389,6 @@ public enum IRCCommand {
      * <p>
      * This command is not formally defined in an RFC, but is recognized by most
      * major IRC daemons.
-     * <p>
      */
     NAMESX,
     /**
@@ -431,7 +408,6 @@ public enum IRCCommand {
      * <p>
      * Defined in RFC 1459; the optional &lt;hopcount&gt; parameter was removed
      * in RFC 2812
-     * <p>
      */
     NICK,
     /**
@@ -445,7 +421,6 @@ public enum IRCCommand {
      * never be sent in reply to NOTICE messages.[23]
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     NOTICE,
     /**
@@ -458,7 +433,6 @@ public enum IRCCommand {
      * Authenticates a user as an IRC operator on that server/network.[24]
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     OPER,
     /**
@@ -472,7 +446,6 @@ public enum IRCCommand {
      * &lt;channels&gt;.[25]
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     PART,
     /**
@@ -486,7 +459,6 @@ public enum IRCCommand {
      * NICK/USER registration combination.
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     PASS,
     /**
@@ -500,7 +472,6 @@ public enum IRCCommand {
      * reply. If &lt;server2&gt; is specified, the message gets passed on to it.
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     PING,
     /**
@@ -514,7 +485,6 @@ public enum IRCCommand {
      * way.[28]
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     PONG,
     /**
@@ -528,7 +498,6 @@ public enum IRCCommand {
      * channel.[29]
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     PRIVMSG,
     /**
@@ -541,7 +510,6 @@ public enum IRCCommand {
      * Disconnects the user from the server.[30]
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     QUIT,
     /**
@@ -555,7 +523,6 @@ public enum IRCCommand {
      * file(s).[31] This command can only be sent by IRC Operators.
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     REHASH,
     /**
@@ -568,7 +535,6 @@ public enum IRCCommand {
      * Restarts a server.[32] It may only be sent by IRC Operators.
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     RESTART,
     /**
@@ -582,7 +548,6 @@ public enum IRCCommand {
      * <p>
      * This command is not formally defined in an RFC, but is used by
      * most[which?] major IRC daemons.
-     * <p>
      */
     RULES,
     /**
@@ -599,7 +564,6 @@ public enum IRCCommand {
      * human-readable information about the server.
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     SERVER,
     /**
@@ -612,7 +576,6 @@ public enum IRCCommand {
      * Registers a new service on the network.[34]
      * <p>
      * Defined in RFC 2812
-     * <p>
      */
     SERVICE,
     /**
@@ -625,7 +588,6 @@ public enum IRCCommand {
      * Lists the services currently on the network.[35]
      * <p>
      * Defined in RFC 2812
-     * <p>
      */
     SERVLIST,
     /**
@@ -638,7 +600,6 @@ public enum IRCCommand {
      * Identical to PRIVMSG except the recipient must be a service.[36]
      * <p>
      * Defined in RFC 2812
-     * <p>
      */
     SQUERY,
     /**
@@ -651,7 +612,6 @@ public enum IRCCommand {
      * Causes &lt;server&gt; to quit the network.[37]
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     SQUIT,
     /**
@@ -667,7 +627,6 @@ public enum IRCCommand {
      * This command is not formally defined by an RFC, but is in use by some IRC
      * daemons. Support is indicated in a RPL_ISUPPORT reply (numeric 005) with
      * the SETNAME keyword
-     * <p>
      */
     SETNAME,
     /**
@@ -704,7 +663,6 @@ public enum IRCCommand {
      * specified.[38]
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     STATS,
     /**
@@ -723,7 +681,6 @@ public enum IRCCommand {
      * <p>
      * Defined in RFC 1459; the optional &lt;channel&gt; parameter was added in
      * RFC 2812
-     * <p>
      */
     SUMMON,
     /**
@@ -737,7 +694,6 @@ public enum IRCCommand {
      * specified.[41]
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     TIME,
     /**
@@ -753,7 +709,6 @@ public enum IRCCommand {
      * set the topic.
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     TOPIC,
     /**
@@ -767,7 +722,6 @@ public enum IRCCommand {
      * similar method to traceroute.[43]
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     TRACE,
     /**
@@ -791,7 +745,6 @@ public enum IRCCommand {
      * <p>
      * This command is not formally defined in an RFC, but is recognized by most
      * major IRC daemons.
-     * <p>
      */
     UHNAMES,
     /**
@@ -811,12 +764,10 @@ public enum IRCCommand {
      * prefixed with a colon.
      * <p>
      * Defined in RFC 1459, modified in RFC 2812
-     * <p>
      */
     USER,
     /**
      * Syntatx:
-     * <p>
      *
      * <pre>
      * USERHOST &lt;nickname&gt; [&lt;nickname&gt; &lt;nickname&gt; ...]
@@ -825,7 +776,6 @@ public enum IRCCommand {
      * Returns a list of information about the nicknames specified.[46]
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     USERHOST,
     /**
@@ -844,7 +794,6 @@ public enum IRCCommand {
      * This command is not formally defined by an RFC, but is in use by some IRC
      * daemons. Support is indicated in a RPL_ISUPPORT reply (numeric 005) with
      * the USERIP keyword.
-     * <p>
      */
     USERIP,
     /**
@@ -858,7 +807,6 @@ public enum IRCCommand {
      * similar to the UNIX commands who, rusers and finger.[47]
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     USERS,
     /**
@@ -872,7 +820,6 @@ public enum IRCCommand {
      * omitted.[48]
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     VERSION,
     /**
@@ -886,7 +833,6 @@ public enum IRCCommand {
      * 1459), or all users with user mode 'w' set (RFC 2812).[49][50]
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     WALLOPS,
     /**
@@ -922,7 +868,6 @@ public enum IRCCommand {
      * given, the server will only return information about IRC Operators.
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     WHO,
     /**
@@ -937,7 +882,6 @@ public enum IRCCommand {
      * forwarded to it for processing.
      * <p>
      * Defined in RFC 1459
-     * <p>
      */
     WHOIS,
     /**

@@ -38,30 +38,28 @@ import org.schwering.irc.lib.IRCTrafficLogger;
  * demonstrates the use of of the {@link org.schwering.irc.lib.IRCConnection}
  * class are printed in bold font:
  * <p>
- * <hr /><pre>
- * /&#42;
- *  &#42; The following code of a class which imports org.schwering.irc.lib.*
- *  &#42; prepares an SSL IRC connection and then tries to establish the
- *  &#42; connection. The server is "irc.somenetwork.com", the ports are
- *  &#42; the default SSL port (443) and the port used on most SSL IRC servers
- *  &#42; (994). No password is used (null). The nickname is "Foo" and
- *  &#42; the realname is "Mr. Foobar". The username "foobar".
- *  &#42; Because of setDaemon(true), the JVM exits even if this thread is
- *  &#42; running.
- *  &#42; By setting an instance of SSLDefaultTrustManager as TrustManager
- *  &#42; (which is also done implicitely by the SSLIRCConnection class if no
- *  &#42; TrustManager is set until the connect method is invoked), the
- *  &#42; X509Certificate is accepted automatically. Of course, you can write
- *  &#42; your own TrustManager. For example, you could write a class which
- *  &#42; extends SSLDefaultTrustManager and overrides its checkServerTrusted
- *  &#42; method. In the new checkServerTrusted method, you could ask the user
- *  &#42; to accept or reject the certificate.
- *  &#42; An instance of the class MyListener which must implement
- *  &#42; IRCActionListener is set as event-listener for the connection.
- *  &#42; The connection is told to parse out mIRC color codes and to enable
- *  &#42; automatic PING? PONG! replies.
- *  &#42;/
- * <b>SSL</b>IRCConnection conn = new <b>SSL</b>IRCConnection(
+ * The following code of a class which imports org.schwering.irc.lib.*
+ * prepares an SSL IRC connection and then tries to establish the
+ * connection. The server is "irc.somenetwork.com", the ports are
+ * the default SSL port (443) and the port used on most SSL IRC servers
+ * (994). No password is used (null). The nickname is "Foo" and
+ * the realname is "Mr. Foobar". The username "foobar".
+ * Because of setDaemon(true), the JVM exits even if this thread is
+ * running.
+ * By setting an instance of SSLDefaultTrustManager as TrustManager
+ * (which is also done implicitely by the SSLIRCConnection class if no
+ * TrustManager is set until the connect method is invoked), the
+ * X509Certificate is accepted automatically. Of course, you can write
+ * your own TrustManager. For example, you could write a class which
+ * extends SSLDefaultTrustManager and overrides its checkServerTrusted
+ * method. In the new checkServerTrusted method, you could ask the user
+ * to accept or reject the certificate.
+ * An instance of the class MyListener which must implement
+ * IRCActionListener is set as event-listener for the connection.
+ * The connection is told to parse out mIRC color codes and to enable
+ * automatic PING? PONG! replies.
+ *  <pre>
+ * SSLIRCConnection conn = new SSLIRCConnection(
  *                               "irc.somenetwork.com",
  *                               new int[] { 443, 994 },
  *                               null,
@@ -71,7 +69,7 @@ import org.schwering.irc.lib.IRCTrafficLogger;
  *                             );
  *
  * conn.addIRCEventListener(new MyListener());
- * <b>conn.addTrustManager(new SSLDefaultTrustManager());</b>
+ * conn.addTrustManager(new SSLDefaultTrustManager());
  * conn.setDaemon(true);
  * conn.setColors(false);
  * conn.setPong(true);
@@ -81,7 +79,7 @@ import org.schwering.irc.lib.IRCTrafficLogger;
  * } catch (IOException ioexc) {
  *   ioexc.printStackTrace();
  * }
- * </pre><hr />
+ * </pre>
  * <p>
  * The serverpassword isn't needed in most cases. You can give
  * <code>null</code> or <code>""</code> instead as done in this example.
@@ -113,16 +111,16 @@ public class SSLIRCConnection extends IRCConnection {
 // ------------------------------
 
     /**
-     * Creates a new IRC connection with secure sockets (SSL). <br />
+     * Creates a new IRC connection with secure sockets (SSL).
      * The difference to the other constructor is, that it transmits the ports in
      * an <code>int[]</code>. Thus, also ports like 994, 6000 and 6697 can be
-     * selected.<br /><br />
+     * selected.
      * The constructor prepares a new IRC connection with secure sockets which
      * can be really started by invoking the <code>connect</code> method. Before
      * invoking it, you should set the <code>IRCEventListener</code>, optionally
      * the <code>SSLTrustManager</code>, if you don't want to use the
      * <code>SSLDefaultTrustManager</code> which accepts the X509 certificate
-     * automatically, and other settings.<br />
+     * automatically, and other settings.
      * Note that you do not need to set a password to connect to the large public
      * IRC networks like QuakeNet, EFNet etc. To use no password in your IRC
      * connection, use <code>""</code> or <code>null</code> for the password
@@ -136,6 +134,9 @@ public class SSLIRCConnection extends IRCConnection {
      *             connection.
      * @param username The username. Is used to register the connection.
      * @param realname The realname. Is used to register the connection.
+     * @param socksProxyHost the socks proxy host name or IP address; can be {@code null}
+     * @param socksProxyPort the socks proxy port; can be {@code null}
+     * @param trafficLogger an {@link IRCTrafficLogger} or {@code null}
      * @throws IllegalArgumentException If the <code>host</code> or
      *                                  <code>ports</code> is <code>null</code> or
      *                                  <code>ports</code>' length is
@@ -151,17 +152,17 @@ public class SSLIRCConnection extends IRCConnection {
 // ------------------------------
 
     /**
-     * Creates a new IRC connection with secure sockets (SSL). <br />
+     * Creates a new IRC connection with secure sockets (SSL).
      * The difference to the other constructor is, that it transmits the ports as
      * two <code>int</code>s. Thus, only a portrange from port <code>x</code> to
-     * port <code>y</code> like from port 6000 to 6010 can be selected.<br />
-     * <br />
+     * port <code>y</code> like from port 6000 to 6010 can be selected.
+     *
      * The constructor prepares a new IRC connection with secure sockets which
      * can be really started by invoking the <code>connect</code> method. Before
      * invoking it, you should set the <code>IRCEventListener</code>, optionally
      * the <code>SSLTrustManager</code>, if you don't want to use the
      * <code>SSLDefaultTrustManager</code> which accepts the X509 certificate
-     * automatically, and other settings.<br />
+     * automatically, and other settings.
      * Note that you do not need to set a password to connect to the large public
      * IRC networks like QuakeNet, EFNet etc. To use no password in your IRC
      * connection, use <code>""</code> or <code>null</code> for the password
@@ -177,6 +178,9 @@ public class SSLIRCConnection extends IRCConnection {
      *             connection.
      * @param username The username. Is used to register the connection.
      * @param realname The realname. Is used to register the connection.
+     * @param socksProxyHost the socks proxy host name or IP address; can be {@code null}
+     * @param socksProxyPort the socks proxy port; can be {@code null}
+     * @param trafficLogger an {@link IRCTrafficLogger} or {@code null}
      * @throws IllegalArgumentException If the <code>host</code> is
      *                                  <code>null</code>.
      * @see #connect()
@@ -190,13 +194,13 @@ public class SSLIRCConnection extends IRCConnection {
 // ------------------------------
 
     /**
-     * Establish a connection to the server. <br />
+     * Establish a connection to the server.
      * This method must be invoked to start a connection; the constructor doesn't
-     * do that!<br />
+     * do that!
      * It tries all set ports until one is open. If all ports fail it throws an
      * <code>IOException</code>. If anything SSL related fails (for example
      * conflicts with the algorithms or during the handshaking), a
-     * <code>SSLException</code> is thrown. <br />
+     * <code>SSLException</code> is thrown.
      * You can invoke <code>connect</code> only one time.
      * @throws NoClassDefFoundError If SSL is not supported. This is the case
      *                              if neither JSSE nor J2SE 1.4 or later is
