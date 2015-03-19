@@ -19,7 +19,7 @@
 
     <groupId>org.schwering</groupId>
     <artifactId>irclib</artifactId>
-    <version>2.0.0.Alpha2-SNAPSHOT</version>
+    <version>2.0.0.Alpha2</version>
     <packaging>bundle</packaging>
 
     <name>IRClib</name>
@@ -55,7 +55,7 @@
         <connection>scm:git:https://github.com/schwering/irclib.git</connection>
         <developerConnection>scm:git:git@github.com:schwering/irclib.git</developerConnection>
         <url>https://github.com/schwering/irclib</url>
-        <tag>head</tag>
+        <tag>2.0.0.Alpha2</tag>
     </scm>
     <issueManagement>
         <url>https://github.com/schwering/irclib/issues</url>
