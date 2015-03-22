@@ -284,7 +284,8 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
             send("PASS " + pass);
 
         send("NICK " + config.getNick());
-        send("USER " + config.getUsername() + " " + socket.getLocalAddress().getHostAddress() + " " + config.getHost() + " :" + config.getRealname());
+        send("USER " + config.getUsername() + " " + socket.getLocalAddress().getHostAddress() + " "
+                + config.getHost() + " :" + config.getRealname());
     }
 
     // ------------------------------

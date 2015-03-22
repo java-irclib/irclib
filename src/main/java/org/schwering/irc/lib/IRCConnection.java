@@ -7,82 +7,82 @@ import java.net.InetAddress;
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public interface IRCConnection {
-    static int INVALID_TIMEOUT = -1;
+    int INVALID_TIMEOUT = -1;
 
-    public abstract void addIRCEventListener(IRCEventListener l);
+    void addIRCEventListener(IRCEventListener l);
 
-    public abstract void close();
+    void close();
 
-    public abstract void connect() throws IOException;
+    void connect() throws IOException;
 
-    public abstract void doAway();
+    void doAway();
 
-    public abstract void doAway(String msg);
+    void doAway(String msg);
 
-    public abstract void doInvite(String nick, String chan);
+    void doInvite(String nick, String chan);
 
-    public abstract void doIson(String nick);
+    void doIson(String nick);
 
-    public abstract void doJoin(String chan);
+    void doJoin(String chan);
 
-    public abstract void doJoin(String chan, String key);
+    void doJoin(String chan, String key);
 
-    public abstract void doKick(String chan, String nick);
+    void doKick(String chan, String nick);
 
-    public abstract void doKick(String chan, String nick, String msg);
+    void doKick(String chan, String nick, String msg);
 
-    public abstract void doList();
+    void doList();
 
-    public abstract void doList(String chan);
+    void doList(String chan);
 
-    public abstract void doMode(String chan);
+    void doMode(String chan);
 
-    public abstract void doMode(String target, String mode);
+    void doMode(String target, String mode);
 
-    public abstract void doNames();
+    void doNames();
 
-    public abstract void doNames(String chan);
+    void doNames(String chan);
 
-    public abstract void doNick(String nick);
+    void doNick(String nick);
 
-    public abstract void doNotice(String target, String msg);
+    void doNotice(String target, String msg);
 
-    public abstract void doPart(String chan);
+    void doPart(String chan);
 
-    public abstract void doPart(String chan, String msg);
+    void doPart(String chan, String msg);
 
-    public abstract void doPong(String ping);
+    void doPong(String ping);
 
-    public abstract void doPrivmsg(String target, String msg);
+    void doPrivmsg(String target, String msg);
 
-    public abstract void doQuit();
+    void doQuit();
 
-    public abstract void doQuit(String msg);
+    void doQuit(String msg);
 
-    public abstract void doTopic(String chan);
+    void doTopic(String chan);
 
-    public abstract void doTopic(String chan, String topic);
+    void doTopic(String chan, String topic);
 
-    public abstract void doUserhost(String nick);
+    void doUserhost(String nick);
 
-    public abstract void doWho(String criteric);
+    void doWho(String criteric);
 
-    public abstract void doWhois(String nick);
+    void doWhois(String nick);
 
-    public abstract void doWhowas(String nick);
+    void doWhowas(String nick);
 
-    public abstract boolean removeIRCEventListener(IRCEventListener l);
+    boolean removeIRCEventListener(IRCEventListener l);
 
-    public abstract void send(String line);
+    void send(String line);
 
-    public abstract boolean isConnected();
+    boolean isConnected();
 
-    public abstract InetAddress getLocalAddress();
+    InetAddress getLocalAddress();
 
-    public abstract int getTimeout();
+    int getTimeout();
 
-    public abstract int getPort();
+    int getPort();
 
-    public abstract String getNick();
+    String getNick();
 
 }

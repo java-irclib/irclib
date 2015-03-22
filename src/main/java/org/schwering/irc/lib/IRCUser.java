@@ -18,12 +18,12 @@ package org.schwering.irc.lib;
  */
 public interface IRCUser {
 
-    public abstract String getHost();
+    String getHost();
 
-    public abstract String getUsername();
+    String getUsername();
 
-    public abstract String getServername();
+    String getServername();
 
-    public abstract String getNick();
+    String getNick();
 
 }
