@@ -11,7 +11,10 @@
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY.
  */
-package org.schwering.irc.lib;
+package org.schwering.irc.lib.util;
+
+import org.schwering.irc.lib.IRCConnection;
+import org.schwering.irc.lib.IRCUser;
 
 /**
  * Parses a line sent from the IRC server.

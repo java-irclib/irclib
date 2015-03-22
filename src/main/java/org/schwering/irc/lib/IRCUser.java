@@ -13,6 +13,8 @@
  */
 package org.schwering.irc.lib;
 
+import org.schwering.irc.lib.util.IRCParser;
+
 /**
  * Holds variables for the nick, username and host of a user.
  * <p>

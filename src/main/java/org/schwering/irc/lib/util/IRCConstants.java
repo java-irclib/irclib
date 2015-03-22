@@ -11,7 +11,9 @@
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY.
  */
-package org.schwering.irc.lib;
+package org.schwering.irc.lib.util;
+
+import org.schwering.irc.lib.IRCEventListener;
 
 /**
  * Contains constants: reply codes, error codes and mIRC color codes.

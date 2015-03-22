@@ -13,6 +13,8 @@
  */
 package org.schwering.irc.lib;
 
+import org.schwering.irc.lib.util.IRCModeParser;
+
 /**
  * Adapts the events of the <code>IRCEventListener</code> interface.
  * <p>
@@ -91,7 +93,7 @@ public class IRCEventAdapter implements IRCEventListener {
      * Fired when a numeric error is received.
      * The server often sends numeric errors (wrong nickname etc.).
      * The <code>msg</code>'s format is different for every reply. All replies'
-     * formats are described in the {@link org.schwering.irc.lib.IRCUtil}.
+     * formats are described in the {@link org.schwering.irc.lib.util.IRCUtil}.
      * @param num The identifier (usually a 3-digit number).
      * @param msg The message of the error.
      */
@@ -259,7 +261,7 @@ public class IRCEventAdapter implements IRCEventListener {
      * For example, <code>WHOIS</code> queries are answered by the server with
      * numeric replies.
      * The <code>msg</code>'s format is different for every reply. All replies'
-     * formats are described in the {@link org.schwering.irc.lib.IRCUtil}.
+     * formats are described in the {@link org.schwering.irc.lib.util.IRCUtil}.
      * The first word in the <code>value</code> is always your own nickname!
      * @param num The numeric reply.
      * @param value The first part of the message.

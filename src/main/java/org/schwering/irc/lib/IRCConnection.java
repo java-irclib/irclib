@@ -28,6 +28,9 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import org.schwering.irc.lib.ssl.SSLIRCConnection;
+import org.schwering.irc.lib.util.IRCModeParser;
+import org.schwering.irc.lib.util.IRCParser;
+import org.schwering.irc.lib.util.IRCUtil;
 
 /**
  * Creates a new connection to an IRC server. It's the main class of the IRClib,
