@@ -21,62 +21,60 @@ import java.util.Arrays;
 import org.schwering.irc.lib.impl.DefaultIRCConfig;
 
 /**
+ * A fluent builder for {@link IRCConfig}s.
+ *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public class IRCConfigBuilder {
+    /** Default {@link #autoPong} is {@value IRCConfigBuilder#DEFAULT_AUTOPONG} */
     public static final boolean DEFAULT_AUTOPONG = true;
-    public static final boolean DEFAULT_COLORS_ENABLED = false;
+    /** Default {@link #encoding} is {@value IRCConfigBuilder#DEFAULT_ENCODING} */
     public static final String DEFAULT_ENCODING = "utf-8";
+    /**
+     * Default {@link #stripColors} is
+     * {@value IRCConfigBuilder#DEFAULT_STRIP_COLORS}
+     */
+    public static final boolean DEFAULT_STRIP_COLORS = false;
+    /**
+     * Default {@link #timeout} is {@value IRCConfigBuilder#DEFAULT_TIMEOUT}
+     * milliseconds which is 15 minutes
+     */
     public static final int DEFAULT_TIMEOUT = 1000 * 60 * 15;
 
-    /**
-     * This <code>boolean</code> stands for enabled or disabled automatic PING?
-     * PONG! support. It means, that if the server asks with PING for the ping,
-     * the PONG is automatically sent. Default is automatic PONG enabled (
-     * <code>true</code> ).
-     */
+    /** @see #autoPong(boolean) */
     private boolean autoPong = DEFAULT_AUTOPONG;
 
-    /**
-     * This <code>boolean</code> stands for enabled (<code>true</code>) or
-     * disabled (<code>false</code>) ColorCodes. Default is enabled (
-     * <code>false</code>).
-     */
-    private boolean colorsEnabled = DEFAULT_COLORS_ENABLED;
-    /**
-     * The <code>String</code> contains the name of the character encoding used
-     * to talk to the server. This can be ISO-8859-1 or UTF-8 for example. The
-     * default is UTF-8.
-     */
+    /** @see #encoding(String) */
     private String encoding = DEFAULT_ENCODING;
-    /**
-     * The host of the IRC server.
-     */
+
+    /** @see #host(String) */
     private String host;
-    /**
-     * The user's nickname, which is indispensably to connect.
-     */
+
+    /** @see #nick(String) */
     private String nick;
-    /**
-     * The password, which is needed to get access to the IRC server.
-     */
+
+    /** @see #password(String) */
     private String pass;
+
     /**
-     * The <code>int[]</code> contains all ports to which we are going to try to
-     * connect. This can be a portrange from port 6667 to 6669, for example.
+     * An array of remote ports to try when connecting.
+     *
+     * @see #portRange(int, int)
      */
     private int[] ports;
+
+    /** @see #socksProxy(String, int) */
     private Proxy proxy;
-    /**
-     * The user's realname, which is indispensably to connect.
-     */
+
+    /** @see #realname(String) */
     private String realname;
-    /**
-     * This <code>int</code> is the connection's timeout in milliseconds. It's
-     * used in the <code>Socket.setSoTimeout</code> method. The default is
-     * <code>1000 * 60 * 15</code> millis which are 15 minutes.
-     */
+
+    /** @see #stripColors(boolean) */
+    private boolean stripColors = DEFAULT_STRIP_COLORS;
+
+    /** @see #timeout(int) */
     private int timeout = DEFAULT_TIMEOUT;
+
     private IRCTrafficLogger trafficLogger;
     /**
      * The user's username, which is indispensable to connect.
@@ -84,65 +82,86 @@ public class IRCConfigBuilder {
     private String username;
 
     /**
-     * Enables or disables the automatic PING? PONG! support.
+     * Enables or disables the automatic PING? PONG! support. If not set through
+     * this method, the default is {@value #DEFAULT_AUTOPONG}.
      *
-     * @param pong
+     * @param autoPong
      *            <code>true</code> to enable automatic <code>PONG</code> reply,
      *            <code>false</code> makes the class fire <code>onPing</code>
      *            events.
+     * @return this builder
      */
-    public IRCConfigBuilder autoPong(boolean pong) {
-        this.autoPong = pong;
+    public IRCConfigBuilder autoPong(boolean autoPong) {
+        this.autoPong = autoPong;
         return this;
     }
-
-    public IRCConfig build() {
-        return new DefaultIRCConfig(host, ports == null ? new int[0] : Arrays.copyOf(ports, ports.length), pass, nick,
-                username, realname, timeout, encoding, autoPong, colorsEnabled, proxy, trafficLogger);
-    }
-
-    // ------------------------------
 
     /**
-     * Enables or disables the mIRC colorcodes.
-     *
-     * @param colors
-     *            <code>true</code> to enable, <code>false</code> to disable
-     *            colors.
+     * @return a new {@link DefaultIRCConfig} instance based on the values
+     *         stored in fields of this {@link IRCConfigBuilder}.
      */
-    public IRCConfigBuilder colorsEnabled(boolean colors) {
-        colorsEnabled = colors;
-        return this;
+    public IRCConfig build() {
+        return new DefaultIRCConfig(host, ports == null ? new int[0] : Arrays.copyOf(ports, ports.length), pass, nick,
+                username, realname, timeout, encoding, autoPong, stripColors, proxy, trafficLogger);
     }
-
-    // ------------------------------
 
     /**
      * Changes the character encoding used to talk to the server. This can be
-     * ISO-8859-1 or UTF-8 for example. This property must be set before a call
-     * to the <code>connect()</code> method.
+     * ISO-8859-1 or UTF-8 for example. If not set through this method, the
+     * default is {@value #DEFAULT_ENCODING}.
      *
      * @param encoding
-     *            The new encoding string, e.g. <code>"UTF-8"</code>.
+     *            The new encoding string, e.g. <code>"UTF-8"</code>
+     * @return this builder
      */
     public IRCConfigBuilder encoding(String encoding) {
         this.encoding = encoding;
         return this;
     }
 
-    // ------------------------------
+    /**
+     * Sets the hostname or IP address of the IRC server to connect to.
+     *
+     * @param host
+     * @return this builder
+     */
+    public IRCConfigBuilder host(String host) {
+        this.host = host;
+        return this;
+    }
 
     /**
-     * Converts a portrange which starts with a given <code>int</code> and ends
-     * with a given <code>int</code> into an array which contains all
-     * <code>int</code>s from the beginning to the ending (including beginning
-     * and ending). If <code>portMin > portMax</code>, the portrange is turned
-     * arount automatically.
+     * Sets the nick name prefered by the user who is connecting.
+     *
+     * @param nick
+     *            the nick name
+     * @return this builder
+     */
+    public IRCConfigBuilder nick(String nick) {
+        this.nick = nick;
+        return this;
+    }
+
+    /**
+     * Sets the password of the user who is connecting.
+     *
+     * @param password
+     * @return this builder
+     */
+    public IRCConfigBuilder password(String password) {
+        this.pass = password;
+        return this;
+    }
+
+    /**
+     * Populates the internal ports array with port numbers starting with the
+     * given {@code portMin} and ending with (inlc.) the given {@code portMax}.
      *
      * @param portMin
-     *            The beginning port of the portrange.
+     *            The beginning port of the port range.
      * @param portMax
-     *            The ending port of the portrange.
+     *            The ending port of the port range.
+     * @return this builder
      */
     public IRCConfigBuilder portRange(int portMin, int portMax) {
         if (portMin > portMax) {
@@ -158,6 +177,29 @@ public class IRCConfigBuilder {
         return this;
     }
 
+    /**
+     * Sets the real name (e.g. {@code"John Doe"}) of the user who is
+     * connecting.
+     *
+     * @param realname
+     *            the real name
+     * @return this builder
+     */
+    public IRCConfigBuilder realname(String realname) {
+        this.realname = realname;
+        return this;
+    }
+
+    /**
+     * Instructs the connection to use a SOCKS proxy with given {@code host} and
+     * {@code port}.
+     *
+     * @param socksProxyHost
+     *            the hostname or IP address of the SOCKS proxy
+     * @param socksProxyPort
+     *            the port of the SOCKS proxy
+     * @return this builder
+     */
     public IRCConfigBuilder socksProxy(String socksProxyHost, int socksProxyPort) {
         if (socksProxyHost == null) {
             throw new IllegalArgumentException("socksProxyHost must be non-null, non-empty");
@@ -167,16 +209,42 @@ public class IRCConfigBuilder {
     }
 
     /**
-     * Sets the connection's timeout in milliseconds. The default is
-     * <code>1000 * 60 15</code> millis which are 15 minutes. The possibly
-     * occuring <code>IOException</code> are handled according to the set
-     * exception handling.
+     * Enables or disables the stripping of mIRC color codes. If not set through
+     * this method, the default is {@value #DEFAULT_STRIP_COLORS}.
+     *
+     * @param stripColors
+     *            <code>true</code> to enable, <code>false</code> to disable
+     *            colors
+     * @return this builder
+     */
+    public IRCConfigBuilder stripColors(boolean stripColors) {
+        this.stripColors = stripColors;
+        return this;
+    }
+
+    /**
+     * Sets the preferred connection's timeout in milliseconds. If not set
+     * through this method, the default is {@value #DEFAULT_TIMEOUT}.
      *
      * @param millis
      *            The socket's timeout in milliseconds.
+     * @return this builder
      */
     public IRCConfigBuilder timeout(int millis) {
         timeout = millis;
+        return this;
+    }
+
+    /**
+     * Sets the {@link IRCTrafficLogger} that should be notified by
+     * {@link IRCConnection} about incoming and outgoing messages.
+     *
+     * @param trafficLogger
+     *            the {@link IRCTrafficLogger} the connection should notify
+     * @return this builder
+     */
+    public IRCConfigBuilder trafficLogger(IRCTrafficLogger trafficLogger) {
+        this.trafficLogger = trafficLogger;
         return this;
     }
 }

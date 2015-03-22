@@ -143,15 +143,15 @@ public class IRCParser {
      * The main constructor.
      * Parses prefix, command, middle and trailing.
      * @param line The line which will be parsed.
-     * @param colorsEnabled If <code>false</code>, mIRC color codes are parsed out
+     * @param stripColors If <code>false</code>, mIRC color codes are parsed out
      *                      by using <code>IRCUtil.parseColors</code> method.
      */
-    public IRCParser(String line, boolean colorsEnabled) {
+    public IRCParser(String line, boolean stripColors) {
         int index = 0;
         int trail;
 
         buf = new StringBuffer(line);
-        if (!colorsEnabled)
+        if (!stripColors)
             buf = IRCUtil.parseColors(buf);
         len = buf.length();
 
