@@ -22,6 +22,7 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
+import org.schwering.irc.lib.IRCConfig;
 import org.schwering.irc.lib.IRCTrafficLogger;
 import org.schwering.irc.lib.impl.DefaultIRCConnection;
 
@@ -143,55 +144,10 @@ public class SSLIRCConnection extends DefaultIRCConnection {
      *                                  <code>0</code>.
      * @see #connect()
      */
-    public SSLIRCConnection(String host, int[] ports, String pass, String nick,
-            String username, String realname, String socksProxyHost, Integer socksProxyPort,
-            IRCTrafficLogger trafficLogger) {
-        super(host, ports, pass, nick, username, realname, socksProxyHost, socksProxyPort, trafficLogger);
+    public SSLIRCConnection(IRCConfig config) {
+        super(config);
+        // TODO Auto-generated constructor stub
     }
-
-// ------------------------------
-
-    /**
-     * Creates a new IRC connection with secure sockets (SSL).
-     * The difference to the other constructor is, that it transmits the ports as
-     * two <code>int</code>s. Thus, only a portrange from port <code>x</code> to
-     * port <code>y</code> like from port 6000 to 6010 can be selected.
-     *
-     * The constructor prepares a new IRC connection with secure sockets which
-     * can be really started by invoking the <code>connect</code> method. Before
-     * invoking it, you should set the <code>IRCEventListener</code>, optionally
-     * the <code>SSLTrustManager</code>, if you don't want to use the
-     * <code>SSLDefaultTrustManager</code> which accepts the X509 certificate
-     * automatically, and other settings.
-     * Note that you do not need to set a password to connect to the large public
-     * IRC networks like QuakeNet, EFNet etc. To use no password in your IRC
-     * connection, use <code>""</code> or <code>null</code> for the password
-     * argument in the constructor.
-     * @param host The hostname of the server we want to connect to.
-     * @param portMin The beginning of the port range we are going to connect
-     *                to.
-     * @param portMax The ending of the port range we are going to connect to.
-     * @param pass The password of the IRC server. If your server isn't
-     *             secured by a password (that's normal), use
-     *             <code>null</code> or <code>""</code>.
-     * @param nick The nickname for the connection. Is used to register the
-     *             connection.
-     * @param username The username. Is used to register the connection.
-     * @param realname The realname. Is used to register the connection.
-     * @param socksProxyHost the socks proxy host name or IP address; can be {@code null}
-     * @param socksProxyPort the socks proxy port; can be {@code null}
-     * @param trafficLogger an {@link IRCTrafficLogger} or {@code null}
-     * @throws IllegalArgumentException If the <code>host</code> is
-     *                                  <code>null</code>.
-     * @see #connect()
-     */
-    public SSLIRCConnection(String host, int portMin, int portMax, String pass,
-            String nick, String username, String realname, String socksProxyHost, Integer socksProxyPort,
-            IRCTrafficLogger trafficLogger) {
-        super(host, portMin, portMax, pass, nick, username, realname, socksProxyHost, socksProxyPort, trafficLogger);
-    }
-
-// ------------------------------
 
     /**
      * Establish a connection to the server.
@@ -227,11 +183,12 @@ public class SSLIRCConnection extends DefaultIRCConnection {
             addTrustManager(new SSLDefaultTrustManager());
         SSLSocketFactory sf = null;
         SSLSocket s = null;
-        for (int i = 0; i < ports.length && s == null; i++) {
+        final String host = config.getHost();
+        for (int i = 0; i < config.getPortsCount() && s == null; i++) {
             try {
                 if (sf == null)
                     sf = SSLSocketFactoryFactory.createSSLSocketFactory(getTrustManagers());
-                s = (SSLSocket)sf.createSocket(host, ports[i]);
+                s = (SSLSocket)sf.createSocket(host, config.getPortAt(i));
                 s.startHandshake();
                 exception = null;
             } catch (SSLNotSupportedException exc) {

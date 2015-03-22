@@ -13,6 +13,7 @@
  */
 package org.schwering.irc.lib.util;
 
+import org.schwering.irc.lib.IRCUser;
 import org.schwering.irc.lib.impl.DefaultIRCConnection;
 import org.schwering.irc.lib.impl.DefaultIRCUser;
 
@@ -465,7 +466,7 @@ public class IRCParser {
      * @see #getUsername()
      * @see #getHost()
      */
-    public DefaultIRCUser getUser() {
+    public IRCUser getUser() {
         return new DefaultIRCUser(getNick(), getUsername(), getHost());
     }
 

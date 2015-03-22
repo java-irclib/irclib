@@ -14,6 +14,7 @@
 package org.schwering.irc.lib.impl;
 
 import org.schwering.irc.lib.IRCEventListener;
+import org.schwering.irc.lib.IRCUser;
 import org.schwering.irc.lib.util.IRCParser;
 
 /**
@@ -25,22 +26,22 @@ import org.schwering.irc.lib.util.IRCParser;
  * @see IRCEventListener
  * @see IRCParser
  */
-public class DefaultIRCUser {
+public class DefaultIRCUser implements IRCUser {
 
     /**
      * The user's nickname.
      */
-    private String nick;
+    private final String nick;
 
     /**
      * The user's username.
      */
-    private String username;
+    private final String username;
 
     /**
      * The user's host.
      */
-    private String host;
+    private final String host;
 
 // ------------------------------
 
@@ -70,6 +71,7 @@ public class DefaultIRCUser {
      * @see #getUsername()
      * @see #getHost()
      */
+    @Override
     public String getNick() {
         return nick;
     }
@@ -86,6 +88,7 @@ public class DefaultIRCUser {
      *         <code>null</code> is returned.
      * @see #getNick()
      */
+    @Override
     public String getServername() {
         return getNick();
     }
@@ -99,6 +102,7 @@ public class DefaultIRCUser {
      * @see #getNick()
      * @see #getHost()
      */
+    @Override
     public String getUsername() {
         return username;
     }
@@ -112,6 +116,7 @@ public class DefaultIRCUser {
      * @see #getNick()
      * @see #getUsername()
      */
+    @Override
     public String getHost() {
         return host;
     }

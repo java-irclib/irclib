@@ -16,7 +16,6 @@ package org.schwering.irc.lib;
 import java.util.EventListener;
 
 import org.schwering.irc.lib.impl.DefaultIRCConnection;
-import org.schwering.irc.lib.impl.DefaultIRCUser;
 import org.schwering.irc.lib.util.IRCConstants;
 import org.schwering.irc.lib.util.IRCModeParser;
 
@@ -104,7 +103,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * @param passiveNick The nickname of the user who is invited by another user
      *                    (passive).
      */
-    void onInvite(String chan, DefaultIRCUser user, String passiveNick);
+    void onInvite(String chan, IRCUser user, String passiveNick);
 
 // ------------------------------
 
@@ -113,7 +112,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * @param chan The channel the person joins.
      * @param user The user who joins. Contains nick, username and host.
      */
-    void onJoin(String chan, DefaultIRCUser user);
+    void onJoin(String chan, IRCUser user);
 
 // ------------------------------
 
@@ -127,7 +126,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * @param msg The message the active user has set. This is <code>""</code> if
      *            no message was set.
      */
-    void onKick(String chan, DefaultIRCUser user, String passiveNick, String msg);
+    void onKick(String chan, IRCUser user, String passiveNick, String msg);
 
 // ------------------------------
 
@@ -142,7 +141,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * @param modeParser The <code>IRCModeParser</code> object which contains the
      *                   parsed information about the modes which are changed.
      */
-    void onMode(String chan, DefaultIRCUser user, IRCModeParser modeParser);
+    void onMode(String chan, IRCUser user, IRCModeParser modeParser);
 
 // ------------------------------
 
@@ -156,7 +155,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      *                    another user or himself.
      * @param mode The changed modes which are set.
      */
-    void onMode(DefaultIRCUser user, String passiveNick, String mode);
+    void onMode(IRCUser user, String passiveNick, String mode);
 
 // ------------------------------
 
@@ -166,7 +165,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      *             Contains nick, username and host.
      * @param newNick The new nickname of the user who changes his nickname.
      */
-    void onNick(DefaultIRCUser user, String newNick);
+    void onNick(IRCUser user, String newNick);
 
 // ------------------------------
 
@@ -178,7 +177,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      *             Contains nick, username and host.
      * @param msg The message.
      */
-    void onNotice(String target, DefaultIRCUser user, String msg);
+    void onNotice(String target, IRCUser user, String msg);
 
 // ------------------------------
 
@@ -190,7 +189,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * @param msg The part-message which is optionally.
      *            If it's empty, msg is <code>""</code>.
      */
-    void onPart(String chan, DefaultIRCUser user, String msg);
+    void onPart(String chan, IRCUser user, String msg);
 
 // ------------------------------
 
@@ -213,7 +212,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      *             Contains nick, username and host.
      * @param msg The message the user transmits.
      */
-    void onPrivmsg(String target, DefaultIRCUser user, String msg);
+    void onPrivmsg(String target, IRCUser user, String msg);
 
 // ------------------------------
 
@@ -223,7 +222,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      * @param msg The optional message. <code>""</code> if no message is set by
      *            the user.
      */
-    void onQuit(DefaultIRCUser user, String msg);
+    void onQuit(IRCUser user, String msg);
 
 // ------------------------------
 
@@ -251,7 +250,7 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      *             Contains nick, username and host.
      * @param topic The new topic.
      */
-    void onTopic(String chan, DefaultIRCUser user, String topic);
+    void onTopic(String chan, IRCUser user, String topic);
 
 // ------------------------------
 
