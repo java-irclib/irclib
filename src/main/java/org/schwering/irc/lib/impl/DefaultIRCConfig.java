@@ -32,12 +32,6 @@ public class DefaultIRCConfig implements IRCConfig {
      */
     private final boolean autoPong;
     /**
-     * This <code>boolean</code> stands for enabled (<code>true</code>) or
-     * disabled (<code>false</code>) ColorCodes. Default is enabled (
-     * <code>false</code>).
-     */
-    private final boolean colorsEnabled;
-    /**
      * The <code>String</code> contains the name of the character encoding used
      * to talk to the server. This can be ISO-8859-1 or UTF-8 for example. The
      * default is UTF-8.
@@ -65,6 +59,12 @@ public class DefaultIRCConfig implements IRCConfig {
      * The user's realname, which is indispensably to connect.
      */
     private final String realname;
+    /**
+     * This <code>boolean</code> stands for enabled (<code>true</code>) or
+     * disabled (<code>false</code>) ColorCodes. Default is enabled (
+     * <code>false</code>).
+     */
+    private final boolean stripColorsEnabled;
 
     /**
      * This <code>int</code> is the connection's timeout in milliseconds. It's
@@ -79,7 +79,7 @@ public class DefaultIRCConfig implements IRCConfig {
     private final String username;
 
     public DefaultIRCConfig(String host, int[] ports, String pass, String nick, String username, String realname,
-            int timeout, String encoding, boolean autoPong, boolean colorsEnabled, Proxy proxy,
+            int timeout, String encoding, boolean autoPong, boolean stripColorsEnabled, Proxy proxy,
             IRCTrafficLogger trafficLogger) {
         if (host == null || ports == null || ports.length == 0)
             throw new IllegalArgumentException("Host and ports may not be null.");
@@ -92,25 +92,13 @@ public class DefaultIRCConfig implements IRCConfig {
         this.timeout = timeout;
         this.encoding = encoding;
         this.autoPong = autoPong;
-        this.colorsEnabled = colorsEnabled;
+        this.stripColorsEnabled = stripColorsEnabled;
         this.proxy = proxy;
         this.trafficLogger = trafficLogger;
     }
 
     /**
-     * Indicates whether colors are stripped out or not.
-     *
-     * @return <code>true</code> if colors are disabled.
-     */
-    @Override
-    public boolean getColors() {
-        return colorsEnabled;
-    }
-
-    /**
-     * Returns the encoding of the socket.
-     *
-     * @return The socket's encoding.
+     * @see org.schwering.irc.lib.IRCConfig#getEncoding()
      */
     @Override
     public String getEncoding() {
@@ -118,9 +106,7 @@ public class DefaultIRCConfig implements IRCConfig {
     }
 
     /**
-     * Returns the server of this instance.
-     *
-     * @return The server's hostname.
+     * @see org.schwering.irc.lib.IRCConfig#getHost()
      */
     @Override
     public String getHost() {
@@ -128,9 +114,7 @@ public class DefaultIRCConfig implements IRCConfig {
     }
 
     /**
-     * Returns the nickname of this instance.
-     *
-     * @return The nickname.
+     * @see org.schwering.irc.lib.IRCConfig#getNick()
      */
     @Override
     public String getNick() {
@@ -138,25 +122,11 @@ public class DefaultIRCConfig implements IRCConfig {
     }
 
     /**
-     * Returns the password of this instance. If no password is set,
-     * <code>null</code> is returned.
-     *
-     * @return The password. If no password is set, <code>null</code> is
-     *         returned.
+     * @see org.schwering.irc.lib.IRCConfig#getPassword()
      */
     @Override
     public String getPassword() {
         return pass;
-    }
-
-    /**
-     * Indicates whether automatic PING? PONG! is enabled or not.
-     *
-     * @return <code>true</code> if PING? PONG! is done automatically.
-     */
-    @Override
-    public boolean getPong() {
-        return autoPong;
     }
 
     /**
@@ -168,10 +138,7 @@ public class DefaultIRCConfig implements IRCConfig {
     }
 
     /**
-     * Returns all ports to which the <code>IRCConnection</code> is going to try
-     * or has tried to connect to.
-     *
-     * @return The ports in an <code>int[]</code> array.
+     * @see org.schwering.irc.lib.IRCConfig#getPorts()
      */
     @Override
     public int[] getPorts() {
@@ -186,15 +153,16 @@ public class DefaultIRCConfig implements IRCConfig {
         return ports != null ? ports.length : 0;
     }
 
+    /**
+     * @see org.schwering.irc.lib.IRCConfig#getProxy()
+     */
     @Override
     public Proxy getProxy() {
         return proxy;
     }
 
     /**
-     * Returns the realname of this instance.
-     *
-     * @return The realname.
+     * @see org.schwering.irc.lib.IRCConfig#getRealname()
      */
     @Override
     public String getRealname() {
@@ -202,36 +170,43 @@ public class DefaultIRCConfig implements IRCConfig {
     }
 
     /**
-     * Returns the timeout of the socket. If an error occurs, which is never the
-     * case, <code>-1</code> is returned. The possibly occuring
-     * <code>IOException</code> are handled according to the set exception
-     * handling.
-     *
-     * @return The timeout.
+     * @see org.schwering.irc.lib.IRCConfig#getTimeout()
      */
     @Override
     public int getTimeout() {
         return timeout;
     }
 
+    /**
+     * @see org.schwering.irc.lib.IRCConfig#getTrafficLogger()
+     */
     @Override
     public IRCTrafficLogger getTrafficLogger() {
         return trafficLogger;
     }
 
     /**
-     * Returns the username of this instance.
-     *
-     * @return The username.
+     * @see org.schwering.irc.lib.IRCConfig#getUsername()
      */
     @Override
     public String getUsername() {
         return username;
     }
 
+    /**
+     * @see org.schwering.irc.lib.IRCConfig#isAutoPong()
+     */
     @Override
     public boolean isAutoPong() {
         return autoPong;
+    }
+
+    /**
+     * @see org.schwering.irc.lib.IRCConfig#isStripColorsEnabled()
+     */
+    @Override
+    public boolean isStripColorsEnabled() {
+        return stripColorsEnabled;
     }
 
 }

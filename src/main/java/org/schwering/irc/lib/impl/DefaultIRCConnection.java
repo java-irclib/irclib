@@ -356,7 +356,7 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     private synchronized void get(String line) {
         IRCParser p;
         try {
-            p = new IRCParser(line, config.getColors());
+            p = new IRCParser(line, config.isStripColorsEnabled());
         } catch (Exception exc) {
             return;
         }
