@@ -19,7 +19,7 @@ import java.net.Proxy;
  * A configuration to use when creating a new {@link IRCConnection}.
  *
  * @see IRCConnectionFactory#newConnection(IRCConfig)
- * @author <a href="mailto:ppalaga@redhat.com">Peter Palaga</a>
+ * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public interface IRCConfig {
 

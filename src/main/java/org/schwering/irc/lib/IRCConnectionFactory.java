@@ -16,7 +16,7 @@ package org.schwering.irc.lib;
 import org.schwering.irc.lib.impl.DefaultIRCConnection;
 
 /**
- * @author <a href="mailto:ppalaga@redhat.com">Peter Palaga</a>
+ * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public class IRCConnectionFactory {
     public static IRCConnection newConnection(IRCConfig config) {

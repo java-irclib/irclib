@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 
 /**
- * @author <a href="mailto:ppalaga@redhat.com">Peter Palaga</a>
+ * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public interface IRCConnection {
     static int INVALID_TIMEOUT = -1;

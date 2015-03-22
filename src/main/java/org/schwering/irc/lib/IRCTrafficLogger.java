@@ -16,7 +16,7 @@ package org.schwering.irc.lib;
 /**
  * A logger for both ingoing and outgoing IRC messages that the IRC client sends and receives.
  *
- * @author <a href="mailto:ppalaga@redhat.com">Peter Palaga</a>
+ * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public interface IRCTrafficLogger {
     /** A {@link IRCTrafficLogger} implementation using {@code System.out} to output the traffic */

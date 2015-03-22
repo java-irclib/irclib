@@ -21,7 +21,7 @@ import java.util.Arrays;
 import org.schwering.irc.lib.impl.DefaultIRCConfig;
 
 /**
- * @author <a href="mailto:ppalaga@redhat.com">Peter Palaga</a>
+ * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public class IRCConfigBuilder {
     public static final boolean DEFAULT_AUTOPONG = true;

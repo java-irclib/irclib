@@ -20,7 +20,7 @@ import org.schwering.irc.lib.IRCConfig;
 import org.schwering.irc.lib.IRCTrafficLogger;
 
 /**
- * @author <a href="mailto:ppalaga@redhat.com">Peter Palaga</a>
+ * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public class DefaultIRCConfig implements IRCConfig {
 

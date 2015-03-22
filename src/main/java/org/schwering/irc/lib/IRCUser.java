@@ -14,7 +14,7 @@
 package org.schwering.irc.lib;
 
 /**
- * @author <a href="mailto:ppalaga@redhat.com">Peter Palaga</a>
+ * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public interface IRCUser {
 
