@@ -14,7 +14,7 @@
 package org.schwering.irc.lib.util;
 
 import org.schwering.irc.lib.IRCEventListener;
-import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.lib.impl.IRCUser;
 
 /**
  * Parses channel-modes.

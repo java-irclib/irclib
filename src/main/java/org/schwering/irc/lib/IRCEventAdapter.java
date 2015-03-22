@@ -13,6 +13,7 @@
  */
 package org.schwering.irc.lib;
 
+import org.schwering.irc.lib.impl.IRCUser;
 import org.schwering.irc.lib.util.IRCModeParser;
 
 /**

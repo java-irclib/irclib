@@ -11,7 +11,7 @@
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY.
  */
-package org.schwering.irc.lib.ssl;
+package org.schwering.irc.lib.impl.ssl;
 
 import java.io.IOException;
 import java.net.SocketException;
@@ -22,8 +22,8 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
-import org.schwering.irc.lib.IRCConnection;
 import org.schwering.irc.lib.IRCTrafficLogger;
+import org.schwering.irc.lib.impl.IRCConnection;
 
 /**
  * The SSL extension of the <code>IRCConnection</code> class.
@@ -35,7 +35,7 @@ import org.schwering.irc.lib.IRCTrafficLogger;
  * <p>
  * The following sample code tries to establish an IRC connection to an
  * IRC server which must support SSL. Differences to the code which
- * demonstrates the use of of the {@link org.schwering.irc.lib.IRCConnection}
+ * demonstrates the use of of the {@link org.schwering.irc.lib.impl.IRCConnection}
  * class are printed in bold font:
  * <p>
  * The following code of a class which imports org.schwering.irc.lib.*
@@ -87,12 +87,12 @@ import org.schwering.irc.lib.IRCTrafficLogger;
  * <code>SSLTrustManager</code>s can be added and removed until the
  * <code>connect</code> method is invoked. If no <code>SSLTrustManager</code>s
  * are set until then, an
- * {@link org.schwering.irc.lib.ssl.SSLDefaultTrustManager} is set
+ * {@link org.schwering.irc.lib.impl.ssl.SSLDefaultTrustManager} is set
  * automatically. It accepts all X509 certificates.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 1.10
  * @version 2.00
- * @see org.schwering.irc.lib.IRCConnection
+ * @see org.schwering.irc.lib.impl.IRCConnection
  * @see SSLTrustManager
  */
 public class SSLIRCConnection extends IRCConnection {

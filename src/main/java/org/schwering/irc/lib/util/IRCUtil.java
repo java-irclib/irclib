@@ -16,8 +16,8 @@ package org.schwering.irc.lib.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.schwering.irc.lib.IRCConnection;
 import org.schwering.irc.lib.IRCEventListener;
+import org.schwering.irc.lib.impl.IRCConnection;
 
 /**
  * Contains some utilities like numeric error and reply numbers.

@@ -13,8 +13,8 @@
  */
 package org.schwering.irc.lib.util;
 
-import org.schwering.irc.lib.IRCConnection;
-import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.lib.impl.IRCConnection;
+import org.schwering.irc.lib.impl.IRCUser;
 
 /**
  * Parses a line sent from the IRC server.

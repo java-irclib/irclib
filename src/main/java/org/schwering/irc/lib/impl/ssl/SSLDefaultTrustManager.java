@@ -11,7 +11,7 @@
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY.
  */
-package org.schwering.irc.lib.ssl;
+package org.schwering.irc.lib.impl.ssl;
 
 import java.security.cert.X509Certificate;
 

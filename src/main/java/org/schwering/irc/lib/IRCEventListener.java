@@ -15,6 +15,8 @@ package org.schwering.irc.lib;
 
 import java.util.EventListener;
 
+import org.schwering.irc.lib.impl.IRCConnection;
+import org.schwering.irc.lib.impl.IRCUser;
 import org.schwering.irc.lib.util.IRCConstants;
 import org.schwering.irc.lib.util.IRCModeParser;
 

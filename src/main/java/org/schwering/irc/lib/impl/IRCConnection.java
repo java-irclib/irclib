@@ -11,7 +11,7 @@
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY.
  */
-package org.schwering.irc.lib;
+package org.schwering.irc.lib.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +27,9 @@ import java.net.Proxy.Type;
 import java.net.Socket;
 import java.net.SocketException;
 
-import org.schwering.irc.lib.ssl.SSLIRCConnection;
+import org.schwering.irc.lib.IRCEventListener;
+import org.schwering.irc.lib.IRCTrafficLogger;
+import org.schwering.irc.lib.impl.ssl.SSLIRCConnection;
 import org.schwering.irc.lib.util.IRCModeParser;
 import org.schwering.irc.lib.util.IRCParser;
 import org.schwering.irc.lib.util.IRCUtil;
