@@ -25,7 +25,7 @@ import org.schwering.irc.lib.util.IRCParser;
  * @see IRCEventListener
  * @see IRCParser
  */
-public class IRCUser {
+public class DefaultIRCUser {
 
     /**
      * The user's nickname.
@@ -50,7 +50,7 @@ public class IRCUser {
      * @param username The user's username.
      * @param host The user's host.
      */
-    public IRCUser(String nick, String username, String host) {
+    public DefaultIRCUser(String nick, String username, String host) {
         this.nick = nick;
         this.username = username;
         this.host = host;

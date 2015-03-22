@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.schwering.irc.lib.IRCEventListener;
-import org.schwering.irc.lib.impl.IRCConnection;
+import org.schwering.irc.lib.impl.DefaultIRCConnection;
 
 /**
  * Contains some utilities like numeric error and reply numbers.
@@ -27,7 +27,7 @@ import org.schwering.irc.lib.impl.IRCConnection;
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @author Normton &lt;normton@latinmail.com&gt;
  * @version 2.03
- * @see IRCConnection
+ * @see DefaultIRCConnection
  * @see IRCEventListener#onError(int, String)
  * @see IRCEventListener#onReply(int, String, String)
  */

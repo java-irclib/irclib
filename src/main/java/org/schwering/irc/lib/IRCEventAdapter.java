@@ -13,7 +13,7 @@
  */
 package org.schwering.irc.lib;
 
-import org.schwering.irc.lib.impl.IRCUser;
+import org.schwering.irc.lib.impl.DefaultIRCUser;
 import org.schwering.irc.lib.util.IRCModeParser;
 
 /**
@@ -111,7 +111,7 @@ public class IRCEventAdapter implements IRCEventListener {
      * @param passiveNick The nickname of the user who is invited by another user
      *                    (passive).
      */
-    public void onInvite(String chan, IRCUser user, String passiveNick) {
+    public void onInvite(String chan, DefaultIRCUser user, String passiveNick) {
         // nothing
     }
 
@@ -122,7 +122,7 @@ public class IRCEventAdapter implements IRCEventListener {
      * @param chan The channel the person joins.
      * @param user The user who joins. Contains nick, username and host.
      */
-    public void onJoin(String chan, IRCUser user) {
+    public void onJoin(String chan, DefaultIRCUser user) {
         // nothing
     }
 
@@ -138,7 +138,7 @@ public class IRCEventAdapter implements IRCEventListener {
      * @param msg The message the active user has set. This is <code>""</code> if
      *            no message was set.
      */
-    public void onKick(String chan, IRCUser user, String passiveNick,
+    public void onKick(String chan, DefaultIRCUser user, String passiveNick,
             String msg) {
         // nothing
     }
@@ -156,7 +156,7 @@ public class IRCEventAdapter implements IRCEventListener {
      * @param modeParser The <code>IRCModeParser</code> object which contains the
      *                   parsed information about the modes which are changed.
      */
-    public void onMode(String chan, IRCUser user, IRCModeParser modeParser) {
+    public void onMode(String chan, DefaultIRCUser user, IRCModeParser modeParser) {
         // nothing
     }
 
@@ -172,7 +172,7 @@ public class IRCEventAdapter implements IRCEventListener {
      *                    another user or himself.
      * @param mode The changed modes which are set.
      */
-    public void onMode(IRCUser user, String passiveNick, String mode) {
+    public void onMode(DefaultIRCUser user, String passiveNick, String mode) {
         // nothing
     }
 
@@ -184,7 +184,7 @@ public class IRCEventAdapter implements IRCEventListener {
      *             Contains nick, username and host.
      * @param newNick The new nickname of the user who changes his nickname.
      */
-    public void onNick(IRCUser user, String newNick) {
+    public void onNick(DefaultIRCUser user, String newNick) {
         // nothing
     }
 
@@ -198,7 +198,7 @@ public class IRCEventAdapter implements IRCEventListener {
      *             Contains nick, username and host.
      * @param msg The message.
      */
-    public void onNotice(String target, IRCUser user, String msg) {
+    public void onNotice(String target, DefaultIRCUser user, String msg) {
         // nothing
     }
 
@@ -212,7 +212,7 @@ public class IRCEventAdapter implements IRCEventListener {
      * @param msg The part-message which is optionally.
      *            If it's empty, msg is <code>""</code>.
      */
-    public void onPart(String chan, IRCUser user, String msg) {
+    public void onPart(String chan, DefaultIRCUser user, String msg) {
         // nothing
     }
 
@@ -239,7 +239,7 @@ public class IRCEventAdapter implements IRCEventListener {
      *             Contains nick, username and host.
      * @param msg The message the user transmits.
      */
-    public void onPrivmsg(String target, IRCUser user, String msg) {
+    public void onPrivmsg(String target, DefaultIRCUser user, String msg) {
         // nothing
     }
 
@@ -251,7 +251,7 @@ public class IRCEventAdapter implements IRCEventListener {
      * @param msg The optional message. <code>""</code> if no message is set by
      *            the user.
      */
-    public void onQuit(IRCUser user, String msg) {
+    public void onQuit(DefaultIRCUser user, String msg) {
         // nothing
     }
 
@@ -283,7 +283,7 @@ public class IRCEventAdapter implements IRCEventListener {
      *             Contains nick, username and host.
      * @param topic The new topic.
      */
-    public void onTopic(String chan, IRCUser user, String topic) {
+    public void onTopic(String chan, DefaultIRCUser user, String topic) {
         // nothing
     }
 

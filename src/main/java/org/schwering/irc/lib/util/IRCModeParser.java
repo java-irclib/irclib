@@ -14,13 +14,13 @@
 package org.schwering.irc.lib.util;
 
 import org.schwering.irc.lib.IRCEventListener;
-import org.schwering.irc.lib.impl.IRCUser;
+import org.schwering.irc.lib.impl.DefaultIRCUser;
 
 /**
  * Parses channel-modes.
  * <p>
  * An instance of this class is an argument of the <code>{@link
- * org.schwering.irc.lib.IRCEventListener#onMode(String chan, IRCUser user,
+ * org.schwering.irc.lib.IRCEventListener#onMode(String chan, DefaultIRCUser user,
  * IRCModeParser modeParser)}</code>.
  * It's intended to help the programmer to work with the modes.
  * <p>

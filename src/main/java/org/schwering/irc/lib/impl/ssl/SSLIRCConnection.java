@@ -23,7 +23,7 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.schwering.irc.lib.IRCTrafficLogger;
-import org.schwering.irc.lib.impl.IRCConnection;
+import org.schwering.irc.lib.impl.DefaultIRCConnection;
 
 /**
  * The SSL extension of the <code>IRCConnection</code> class.
@@ -35,7 +35,7 @@ import org.schwering.irc.lib.impl.IRCConnection;
  * <p>
  * The following sample code tries to establish an IRC connection to an
  * IRC server which must support SSL. Differences to the code which
- * demonstrates the use of of the {@link org.schwering.irc.lib.impl.IRCConnection}
+ * demonstrates the use of of the {@link org.schwering.irc.lib.impl.DefaultIRCConnection}
  * class are printed in bold font:
  * <p>
  * The following code of a class which imports org.schwering.irc.lib.*
@@ -92,10 +92,10 @@ import org.schwering.irc.lib.impl.IRCConnection;
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @since 1.10
  * @version 2.00
- * @see org.schwering.irc.lib.impl.IRCConnection
+ * @see org.schwering.irc.lib.impl.DefaultIRCConnection
  * @see SSLTrustManager
  */
-public class SSLIRCConnection extends IRCConnection {
+public class SSLIRCConnection extends DefaultIRCConnection {
 
     /**
      * The SSL protocol of choice. Values can be "TLS", "SSLv3" or "SSL".

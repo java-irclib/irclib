@@ -73,7 +73,7 @@ import org.schwering.irc.lib.util.IRCUtil;
  * @see IRCUtil
  * @see SSLIRCConnection
  */
-public class IRCConnection extends Thread {
+public class DefaultIRCConnection extends Thread {
     /**
      * A {@link BufferedReader} that sends all read character to its {@link #trafficLogger}.
      */
@@ -271,7 +271,7 @@ public class IRCConnection extends Thread {
      *             <code>0</code>.
      * @see #connect()
      */
-    public IRCConnection(String host, int[] ports, String pass, String nick, String username, String realname,
+    public DefaultIRCConnection(String host, int[] ports, String pass, String nick, String username, String realname,
             String socksProxyHost, Integer socksProxyPort, IRCTrafficLogger trafficLogger) {
         if (host == null || ports == null || ports.length == 0)
             throw new IllegalArgumentException("Host and ports may not be null.");
@@ -326,7 +326,7 @@ public class IRCConnection extends Thread {
      *             If the <code>host</code> is <code>null</code>.
      * @see #connect()
      */
-    public IRCConnection(String host, int portMin, int portMax, String pass, String nick, String username,
+    public DefaultIRCConnection(String host, int portMin, int portMax, String pass, String nick, String username,
             String realname, String socksProxyHost, Integer socksProxyPort, IRCTrafficLogger trafficLogger) {
         this(host, portRangeToArray(portMin, portMax), pass, nick, username, realname, socksProxyHost, socksProxyPort,
                 trafficLogger);
@@ -539,7 +539,7 @@ public class IRCConnection extends Thread {
 
         if ("PRIVMSG".equalsIgnoreCase(command)) { // MESSAGE
 
-            IRCUser user = p.getUser();
+            DefaultIRCUser user = p.getUser();
             String middle = p.getMiddle();
             String trailing = p.getTrailing();
             for (int i = listeners.length - 1; i >= 0; i--)
@@ -549,13 +549,13 @@ public class IRCConnection extends Thread {
 
             String chan = p.getParameter(1);
             if (IRCUtil.isChan(chan)) {
-                IRCUser user = p.getUser();
+                DefaultIRCUser user = p.getUser();
                 String param2 = p.getParameter(2);
                 String paramsFrom3 = p.getParametersFrom(3);
                 for (int i = listeners.length - 1; i >= 0; i--)
                     listeners[i].onMode(chan, user, new IRCModeParser(param2, paramsFrom3));
             } else {
-                IRCUser user = p.getUser();
+                DefaultIRCUser user = p.getUser();
                 String paramsFrom2 = p.getParametersFrom(2);
                 for (int i = listeners.length - 1; i >= 0; i--)
                     listeners[i].onMode(user, chan, paramsFrom2);
@@ -578,14 +578,14 @@ public class IRCConnection extends Thread {
 
         } else if ("JOIN".equalsIgnoreCase(command)) { // JOIN
 
-            IRCUser user = p.getUser();
+            DefaultIRCUser user = p.getUser();
             String trailing = p.getTrailing();
             for (int i = listeners.length - 1; i >= 0; i--)
                 listeners[i].onJoin(trailing, user);
 
         } else if ("NICK".equalsIgnoreCase(command)) { // NICK
 
-            IRCUser user = p.getUser();
+            DefaultIRCUser user = p.getUser();
             String changingNick = p.getNick();
             String newNick = p.getTrailing();
             if (changingNick.equalsIgnoreCase(nick))
@@ -595,14 +595,14 @@ public class IRCConnection extends Thread {
 
         } else if ("QUIT".equalsIgnoreCase(command)) { // QUIT
 
-            IRCUser user = p.getUser();
+            DefaultIRCUser user = p.getUser();
             String trailing = p.getTrailing();
             for (int i = listeners.length - 1; i >= 0; i--)
                 listeners[i].onQuit(user, trailing);
 
         } else if ("PART".equalsIgnoreCase(command)) { // PART
 
-            IRCUser user = p.getUser();
+            DefaultIRCUser user = p.getUser();
             String chan = p.getParameter(1);
             String msg = p.getParameterCount() > 1 ? p.getTrailing() : "";
             // not logic: "PART :#zentrum" is without msg,
@@ -613,7 +613,7 @@ public class IRCConnection extends Thread {
 
         } else if ("NOTICE".equalsIgnoreCase(command)) { // NOTICE
 
-            IRCUser user = p.getUser();
+            DefaultIRCUser user = p.getUser();
             String middle = p.getMiddle();
             String trailing = p.getTrailing();
             for (int i = listeners.length - 1; i >= 0; i--)
@@ -648,7 +648,7 @@ public class IRCConnection extends Thread {
 
         } else if ("KICK".equalsIgnoreCase(command)) { // KICK
 
-            IRCUser user = p.getUser();
+            DefaultIRCUser user = p.getUser();
             String param1 = p.getParameter(1);
             String param2 = p.getParameter(2);
             String msg = (p.getParameterCount() > 2) ? p.getTrailing() : "";
@@ -657,7 +657,7 @@ public class IRCConnection extends Thread {
 
         } else if ("INVITE".equalsIgnoreCase(command)) { // INVITE
 
-            IRCUser user = p.getUser();
+            DefaultIRCUser user = p.getUser();
             String middle = p.getMiddle();
             String trailing = p.getTrailing();
             for (int i = listeners.length - 1; i >= 0; i--)
@@ -665,7 +665,7 @@ public class IRCConnection extends Thread {
 
         } else if ("TOPIC".equalsIgnoreCase(command)) { // TOPIC
 
-            IRCUser user = p.getUser();
+            DefaultIRCUser user = p.getUser();
             String middle = p.getMiddle();
             String trailing = p.getTrailing();
             for (int i = listeners.length - 1; i >= 0; i--)

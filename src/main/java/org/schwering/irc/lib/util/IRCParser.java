@@ -13,8 +13,8 @@
  */
 package org.schwering.irc.lib.util;
 
-import org.schwering.irc.lib.impl.IRCConnection;
-import org.schwering.irc.lib.impl.IRCUser;
+import org.schwering.irc.lib.impl.DefaultIRCConnection;
+import org.schwering.irc.lib.impl.DefaultIRCUser;
 
 /**
  * Parses a line sent from the IRC server.
@@ -82,7 +82,7 @@ import org.schwering.irc.lib.impl.IRCUser;
  * </code>
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @version 3.22
- * @see IRCConnection
+ * @see DefaultIRCConnection
  */
 public class IRCParser {
 
@@ -465,8 +465,8 @@ public class IRCParser {
      * @see #getUsername()
      * @see #getHost()
      */
-    public IRCUser getUser() {
-        return new IRCUser(getNick(), getUsername(), getHost());
+    public DefaultIRCUser getUser() {
+        return new DefaultIRCUser(getNick(), getUsername(), getHost());
     }
 
 // ------------------------------
