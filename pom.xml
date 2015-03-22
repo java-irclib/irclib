@@ -51,6 +51,15 @@
         </developer>
     </developers>
 
+    <mailingLists>
+        <mailingList>
+            <name>irclib-dev</name>
+            <subscribe>irclib-dev@googlegroups.com</subscribe>
+            <unsubscribe>irclib-dev-unsubscribe@googlegroups.com</unsubscribe>
+            <archive>http://groups.google.com/group/irclib-dev/</archive>
+        </mailingList>
+    </mailingLists>
+
     <scm>
         <connection>scm:git:https://github.com/schwering/irclib.git</connection>
         <developerConnection>scm:git:git@github.com:schwering/irclib.git</developerConnection>
