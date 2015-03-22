@@ -18,8 +18,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.Writer;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -35,6 +33,8 @@ import org.schwering.irc.lib.impl.ssl.SSLIRCConnection;
 import org.schwering.irc.lib.util.IRCModeParser;
 import org.schwering.irc.lib.util.IRCParser;
 import org.schwering.irc.lib.util.IRCUtil;
+import org.schwering.irc.lib.util.LoggingReader;
+import org.schwering.irc.lib.util.LoggingWriter;
 
 /**
  * Creates a new connection to an IRC server. It's the main class of the IRClib,
@@ -76,62 +76,6 @@ import org.schwering.irc.lib.util.IRCUtil;
  * @see SSLIRCConnection
  */
 public class DefaultIRCConnection extends Thread implements IRCConnection {
-    /**
-     * A {@link BufferedReader} that sends all read character to its {@link #trafficLogger}.
-     */
-    private static class LoggingReader extends BufferedReader {
-        private final IRCTrafficLogger trafficLogger;
-
-        /**
-         * @param in the reader to read from.
-         * @param trafficLogger a logger to notify about read characters
-         */
-        public LoggingReader(Reader in, IRCTrafficLogger trafficLogger) {
-            super(in);
-            this.trafficLogger = trafficLogger;
-        }
-
-        /**
-         * @see java.io.BufferedReader#readLine()
-         */
-        @Override
-        public String readLine() throws IOException {
-            String line = super.readLine();
-            trafficLogger.in(line);
-            return line;
-        }
-    }
-
-    /**
-     * A {@link PrintWriter} that sends all written character also to its {@link #trafficLogger}.
-     */
-    private static class LoggingWriter extends PrintWriter {
-        private final IRCTrafficLogger trafficLogger;
-
-        /**
-         * @param out the {@link Writer} to write to
-         * @param trafficLogger the logger to notify about the written characters
-         */
-        public LoggingWriter(Writer out, IRCTrafficLogger trafficLogger) {
-            super(out);
-            this.trafficLogger = trafficLogger;
-        }
-
-        /**
-         * @see java.io.PrintWriter#write(java.lang.String)
-         */
-        @Override
-        public void write(String s) {
-            String trimmedLine = s;
-            if (s != null && s.endsWith("\r\n")) {
-                trimmedLine = s.substring(0, s.length() - 2);
-            }
-            trafficLogger.out(trimmedLine);
-            super.write(s);
-        }
-
-    }
-
     /**
      * This <code>Socket</code> is a connection to the IRC server.
      */
@@ -184,21 +128,7 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     }
 
     /**
-     * Establish a connection to the server.
-     * This method must be invoked to start a connection; the constructor
-     * doesn't do that!
-     * It tries all set ports until one is open. If all ports fail it throws an
-     * <code>IOException</code>.
-     * You can invoke <code>connect</code> only one time.
-     *
-     * @throws IOException
-     *             If an I/O error occurs.
-     * @throws SocketException
-     *             If the <code>connect</code> method was already invoked.
-     * @see #isConnected()
-     * @see #doQuit()
-     * @see #doQuit(String)
-     * @see #close()
+     * @see org.schwering.irc.lib.IRCConnection#connect()
      */
     @Override
     public void connect() throws IOException {
@@ -226,8 +156,6 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
 
         prepare(s);
     }
-
-    // ------------------------------
 
     /**
      * Invoked by the <code>connect</code> method, this method prepares the
@@ -265,8 +193,6 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
         register();
     }
 
-    // ------------------------------
-
     /**
      * Registers the connection with the IRC server.
      * In fact, it sends a password (if set, else nothing), the nickname and the
@@ -287,8 +213,6 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
         send("USER " + config.getUsername() + " " + socket.getLocalAddress().getHostAddress() + " "
                 + config.getHost() + " :" + config.getRealname());
     }
-
-    // ------------------------------
 
     /**
      * The <code>Thread</code> is started by the <code>connect</code> method.
@@ -314,17 +238,8 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
         }
     }
 
-    // ------------------------------
-
     /**
-     * Sends a String to the server. You should use this method only, if you
-     * must do it. For most purposes, there are <code>do*</code> methods (like
-     * <code>doJoin</code>). A carriage return line feed (<code>\r\n</code>) is
-     * appended automatically.
-     *
-     * @param line
-     *            The line which should be send to the server without the
-     *            trailing carriage return line feed (<code>\r\n</code>).
+     * @see org.schwering.irc.lib.IRCConnection#send(java.lang.String)
      */
     @Override
     public void send(String line) {
@@ -343,8 +258,6 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
             throw new RuntimeException(exc);
         }
     }
-
-    // ------------------------------
 
     /**
      * Just parses a String given as the only argument with the help of the
@@ -515,21 +428,8 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
         }
     }
 
-    // ------------------------------
-
     /**
-     * Close down the connection brutally.
-     * It does *NOT* send the proper IRC command <code>QUIT</code>. You should
-     * always use the <code>doQuit</code> methods or <code>send("QUIT")</code>
-     * instead of this method.
-     * You should use this method to close down the connection only when the IRC
-     * server doesn't react to the <code>QUIT</code> command.
-     * Possibly occuring <code>IOException</code>s are handled according to the
-     * set exception handling.
-     *
-     * @see #connect()
-     * @see #doQuit
-     * @see #doQuit(String)
+     * @see org.schwering.irc.lib.IRCConnection#close()
      */
     @Override
     public synchronized void close() {
@@ -579,16 +479,8 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
         }
     }
 
-    // ------------------------------
-
     /**
-     * Adds a new {@link IRCEventListener} which listens for actions coming from
-     * the IRC server.
-     *
-     * @param l
-     *            An instance of the {@link IRCEventListener} interface.
-     * @throws IllegalArgumentException
-     *             If <code>listener</code> is <code>null</code>.
+     * @see org.schwering.irc.lib.IRCConnection#addIRCEventListener(org.schwering.irc.lib.IRCEventListener)
      */
     @Override
     public synchronized void addIRCEventListener(IRCEventListener l) {
@@ -601,22 +493,6 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
         listeners[len] = l;
     }
 
-    // ------------------------------
-
-    /**
-     * Adds a new {@link IRCEventListener} which listens for actions coming from
-     * the IRC server at a given index.
-     *
-     * @param l
-     *            An instance of the {@link IRCEventListener} interface.
-     * @param i
-     *            The designated index of the listener.
-     * @throws IllegalArgumentException
-     *             If <code>listener</code> is <code>null</code>.
-     * @throws IndexOutOfBoundsException
-     *             If <code>i</code> is not greater than 0 and less or equal
-     *             than <code>listeners.length</code>.
-     */
     public synchronized void addIRCEventListener(IRCEventListener l, int i) {
         if (l == null)
             throw new IllegalArgumentException("Listener is null.");
@@ -632,16 +508,8 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
         listeners[i] = l;
     }
 
-    // ------------------------------
-
     /**
-     * Removes the first occurence of the given {@link IRCEventListener} from
-     * the listener-vector.
-     *
-     * @param l
-     *            An instance of the {@link IRCEventListener} interface.
-     * @return <code>true</code> if the listener was successfully removed;
-     *         <code>false</code> if it was not found.
+     * @see org.schwering.irc.lib.IRCConnection#removeIRCEventListener(org.schwering.irc.lib.IRCEventListener)
      */
     @Override
     public synchronized boolean removeIRCEventListener(IRCEventListener l) {
@@ -666,27 +534,15 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     }
 
     /**
-     * Tells whether there's a connection to the IRC network or not.
-     * If <code>connect</code> wasn't called yet, it returns <code>false</code>.
-     *
-     * @return The status of the connection; <code>true</code> if it's
-     *         connected.
-     * @see #connect()
-     * @see #doQuit()
-     * @see #doQuit(String)
-     * @see #close()
+     * @see org.schwering.irc.lib.IRCConnection#isConnected()
      */
     @Override
     public boolean isConnected() {
         return level >= 1;
     }
 
-    // ------------------------------
-
     /**
-     * Returns the nickname of this instance.
-     *
-     * @return The nickname.
+     * @see org.schwering.irc.lib.IRCConnection#getNick()
      */
     @Override
     public String getNick() {
@@ -694,11 +550,7 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     }
 
     /**
-     * Returns the port to which the <code>IRCConnection</code> connected, or
-     * <code>0</code> if the connection failed or wasn't tried yet.
-     *
-     * @return The port to which the <code>IRCConnection</code>, or
-     *         <code>0</code> if the connection failed or wasn't tried yet.
+     * @see org.schwering.irc.lib.IRCConnection#getPort()
      */
     @Override
     public int getPort() {
@@ -706,12 +558,7 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     }
 
     /**
-     * Returns the timeout of the socket.
-     * If an error occurs, which is never the case, <code>-1</code> is returned.
-     * The possibly occuring <code>IOException</code> are handled according to
-     * the set exception handling.
-     *
-     * @return The timeout.
+     * @see org.schwering.irc.lib.IRCConnection#getTimeout()
      */
     @Override
     public int getTimeout() {
@@ -726,13 +573,8 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
             return INVALID_TIMEOUT;
     }
 
-    // ------------------------------
-
     /**
-     * Returns the local address of the connection socket. If the connection is
-     * not yet connected, <code>null</code> is returned.
-     *
-     * @return the local address
+     * @see org.schwering.irc.lib.IRCConnection#getLocalAddress()
      */
     @Override
     public InetAddress getLocalAddress() {
@@ -746,390 +588,223 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     }
 
     /**
-     * Removes away message.
+     * @see org.schwering.irc.lib.IRCConnection#doAway()
      */
     @Override
     public void doAway() {
         send("AWAY");
     }
 
-    // ------------------------------
-
     /**
-     * Sets away message.
-     *
-     * @param msg
-     *            The away message.
+     * @see org.schwering.irc.lib.IRCConnection#doAway(java.lang.String)
      */
     @Override
     public void doAway(String msg) {
         send("AWAY :" + msg);
     }
 
-    // ------------------------------
-
     /**
-     * Invites a user to a channel.
-     *
-     * @param nick
-     *            The nickname of the user who should be invited.
-     * @param chan
-     *            The channel the user should be invited to.
+     * @see org.schwering.irc.lib.IRCConnection#doInvite(java.lang.String, java.lang.String)
      */
     @Override
     public void doInvite(String nick, String chan) {
         send("INVITE " + nick + " " + chan);
     }
 
-    // ------------------------------
-
     /**
-     * Checks if one or more nicks are used on the server.
-     *
-     * @param nick
-     *            The nickname of the user we search for.
+     * @see org.schwering.irc.lib.IRCConnection#doIson(java.lang.String)
      */
     @Override
     public void doIson(String nick) {
         send("ISON " + nick);
     }
 
-    // ------------------------------
-
     /**
-     * Joins a channel without a key.
-     *
-     * @param chan
-     *            The channel which is to join.
+     * @see org.schwering.irc.lib.IRCConnection#doJoin(java.lang.String)
      */
     @Override
     public void doJoin(String chan) {
         send("JOIN " + chan);
     }
 
-    // ------------------------------
-
     /**
-     * Joins a channel with a key.
-     *
-     * @param chan
-     *            The channel which is to join.
-     * @param key
-     *            The key of the channel.
+     * @see org.schwering.irc.lib.IRCConnection#doJoin(java.lang.String, java.lang.String)
      */
     @Override
     public void doJoin(String chan, String key) {
         send("JOIN " + chan + " " + key);
     }
 
-    // ------------------------------
-
     /**
-     * Kicks a user from a channel.
-     *
-     * @param chan
-     *            The channel somebody should be kicked from.
-     * @param nick
-     *            The nickname of the user who should be kicked.
+     * @see org.schwering.irc.lib.IRCConnection#doKick(java.lang.String, java.lang.String)
      */
     @Override
     public void doKick(String chan, String nick) {
         send("KICK " + chan + " " + nick);
     }
 
-    // ------------------------------
-
     /**
-     * Kicks a user from a channel with a comment.
-     *
-     * @param chan
-     *            The channel somebody should be kicked from.
-     * @param nick
-     *            The nickname of the user who should be kicked.
-     * @param msg
-     *            The optional kickmessage.
+     * @see org.schwering.irc.lib.IRCConnection#doKick(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public void doKick(String chan, String nick, String msg) {
         send("KICK " + chan + " " + nick + " :" + msg);
     }
 
-    // ------------------------------
-
     /**
-     * Lists all channels with their topic and status.
+     * @see org.schwering.irc.lib.IRCConnection#doList()
      */
     @Override
     public void doList() {
         send("LIST");
     }
 
-    // ------------------------------
-
     /**
-     * Lists channel(s) with their topic and status.
-     *
-     * @param chan
-     *            The channel the <code>LIST</code> refers to.
+     * @see org.schwering.irc.lib.IRCConnection#doList(java.lang.String)
      */
     @Override
     public void doList(String chan) {
         send("LIST " + chan);
     }
 
-    // ------------------------------
-
     /**
-     * Lists all visible users.
+     * @see org.schwering.irc.lib.IRCConnection#doNames()
      */
     @Override
     public void doNames() {
         send("NAMES");
     }
 
-    // ------------------------------
-
     /**
-     * Lists all visible users of (a) channel(s).
-     *
-     * @param chan
-     *            The channel the <code>NAMES</code> command is refering to.
+     * @see org.schwering.irc.lib.IRCConnection#doNames(java.lang.String)
      */
     @Override
     public void doNames(String chan) {
         send("NAMES " + chan);
     }
 
-    // ------------------------------
-
     /**
-     * Sends a message to a person or a channel.
-     *
-     * @param target
-     *            The nickname or channel the message should be sent to.
-     * @param msg
-     *            The message which should be transmitted.
+     * @see org.schwering.irc.lib.IRCConnection#doPrivmsg(java.lang.String, java.lang.String)
      */
     @Override
     public void doPrivmsg(String target, String msg) {
         send("PRIVMSG " + target + " :" + msg);
     }
 
-    // ------------------------------
-
     /**
-     * Requests a Reply 324 for the modes of a given channel.
-     *
-     * @param chan
-     *            The channel the <code>MODE</code> request is refering to.
+     * @see org.schwering.irc.lib.IRCConnection#doMode(java.lang.String)
      */
     @Override
     public void doMode(String chan) {
         send("MODE " + chan);
     }
 
-    // ------------------------------
-
     /**
-     * Sends a mode to the server.
-     * The first argument is a nickname (user-mode) or a channel (channel-mode).
-     * <code>String mode</code> must contain the operators (+/-), the modes
-     * (o/v/i/k/l/p/s/w) and the possibly values (nicks/banmask/limit/key).
-     *
-     * @param target
-     *            The nickname or channel of the user whose modes will be
-     *            changed.
-     * @param mode
-     *            The new modes.
+     * @see org.schwering.irc.lib.IRCConnection#doMode(java.lang.String, java.lang.String)
      */
     @Override
     public void doMode(String target, String mode) {
         send("MODE " + target + " " + mode);
     }
 
-    // ------------------------------
-
     /**
-     * Changes the nickname.
-     *
-     * @param nick
-     *            The new nickname.
+     * @see org.schwering.irc.lib.IRCConnection#doNick(java.lang.String)
      */
     @Override
     public void doNick(String nick) {
         send("NICK " + nick);
     }
 
-    // ------------------------------
-
     /**
-     * Notices a message to a person or a channel.
-     *
-     * @param target
-     *            The nickname or channel (group) the message should be sent to.
-     * @param msg
-     *            The message which should be transmitted.
+     * @see org.schwering.irc.lib.IRCConnection#doNotice(java.lang.String, java.lang.String)
      */
     @Override
     public void doNotice(String target, String msg) {
         send("NOTICE " + target + " :" + msg);
     }
 
-    // ------------------------------
-
     /**
-     * Parts from a given channel.
-     *
-     * @param chan
-     *            The channel you want to part from.
+     * @see org.schwering.irc.lib.IRCConnection#doPart(java.lang.String)
      */
     @Override
     public void doPart(String chan) {
         send("PART " + chan);
     }
 
-    // ------------------------------
-
     /**
-     * Parts from a given channel with a given parg-msg.
-     *
-     * @param chan
-     *            The channel you want to part from.
-     * @param msg
-     *            The optional partmessage.
+     * @see org.schwering.irc.lib.IRCConnection#doPart(java.lang.String, java.lang.String)
      */
     @Override
     public void doPart(String chan, String msg) {
         send("PART " + chan + " :" + msg);
     }
 
-    // ------------------------------
-
     /**
-     * Quits from the IRC server with a quit-msg.
-     *
-     * @param ping
-     *            The ping which was received in <code>onPing</code>. It's a
-     *            <code>String</code>, because sometimes on some networks the
-     *            server-hostname (for example splatterworld.quakenet.org) is
-     *            given as parameter which would throw an Exception if we gave
-     *            the ping as long.
+     * @see org.schwering.irc.lib.IRCConnection#doPong(java.lang.String)
      */
     @Override
     public void doPong(String ping) {
         send("PONG :" + ping);
     }
 
-    // ------------------------------
-
     /**
-     * Quits from the IRC server. Calls the <code>disconnect</code>-method which
-     * does the work actually.
-     *
-     * @see #isConnected()
-     * @see #connect()
-     * @see #doQuit(String)
-     * @see #close()
+     * @see org.schwering.irc.lib.IRCConnection#doQuit()
      */
     @Override
     public void doQuit() {
         send("QUIT");
     }
 
-    // ------------------------------
-
     /**
-     * Quits from the IRC server with a quit-msg. Calls the
-     * <code>disconnect</code>-method which does the work actually.
-     *
-     * @param msg
-     *            The optional quitmessage.
-     * @see #isConnected()
-     * @see #connect()
-     * @see #doQuit()
-     * @see #close()
+     * @see org.schwering.irc.lib.IRCConnection#doQuit(java.lang.String)
      */
     @Override
     public void doQuit(String msg) {
         send("QUIT :" + msg);
     }
 
-    // ------------------------------
-
     /**
-     * Requests the topic of a chan. The topic is given in a numeric reply.
-     *
-     * @param chan
-     *            The channel which topic should be requested.
+     * @see org.schwering.irc.lib.IRCConnection#doTopic(java.lang.String)
      */
     @Override
     public void doTopic(String chan) {
         send("TOPIC " + chan);
     }
 
-    // ------------------------------
-
     /**
-     * Changes the topic of a chan.
-     *
-     * @param chan
-     *            The channel which topic is changed.
-     * @param topic
-     *            The new topic.
+     * @see org.schwering.irc.lib.IRCConnection#doTopic(java.lang.String, java.lang.String)
      */
     @Override
     public void doTopic(String chan, String topic) {
         send("TOPIC " + chan + " :" + topic);
     }
 
-    // ------------------------------
-
     /**
-     * Requests information about users matching the given criteric, for example
-     * a channel they are on.
-     *
-     * @param criteric
-     *            The criterics of the <code>WHO</code> query.
+     * @see org.schwering.irc.lib.IRCConnection#doWho(java.lang.String)
      */
     @Override
     public void doWho(String criteric) {
         send("WHO " + criteric);
     }
 
-    // ------------------------------
-
     /**
-     * Requires information about an existing user.
-     *
-     * @param nick
-     *            The nickname of the user the query is refering to.
+     * @see org.schwering.irc.lib.IRCConnection#doWhois(java.lang.String)
      */
     @Override
     public void doWhois(String nick) {
         send("WHOIS " + nick);
     }
 
-    // ------------------------------
-
     /**
-     * Requires host-information about a user, who is not connected anymore.
-     *
-     * @param nick
-     *            The nickname of the user the query is refering to.
+     * @see org.schwering.irc.lib.IRCConnection#doWhowas(java.lang.String)
      */
     @Override
     public void doWhowas(String nick) {
         send("WHOWAS " + nick);
     }
 
-    // ------------------------------
-
     /**
-     * Requires host-information about up to 5 users which must be listed and
-     * divided by spaces.
-     *
-     * @param nick
-     *            The nickname of the user the query is refering to.
+     * @see org.schwering.irc.lib.IRCConnection#doUserhost(java.lang.String)
      */
     @Override
     public void doUserhost(String nick) {
