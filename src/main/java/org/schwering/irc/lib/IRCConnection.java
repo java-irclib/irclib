@@ -16,6 +16,8 @@ package org.schwering.irc.lib;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
@@ -65,6 +67,8 @@ public interface IRCConnection {
      *
      * @throws IOException
      *             If an I/O error occurs.
+     * @throws NoSuchAlgorithmException
+     * @throws KeyManagementException
      * @throws SocketException
      *             If the <code>connect</code> method was already invoked.
      * @see #isConnected()
@@ -72,7 +76,7 @@ public interface IRCConnection {
      * @see #doQuit(String)
      * @see #close()
      */
-    void connect() throws IOException;
+    void connect() throws IOException, KeyManagementException, NoSuchAlgorithmException;
 
     /**
      * Removes away message.
@@ -374,6 +378,11 @@ public interface IRCConnection {
      * @see #close()
      */
     boolean isConnected();
+
+    /**
+     * @return {@code true} if the connection is using SSL
+     */
+    boolean isSSL();
 
     /**
      * Removes the first occurence of the given {@link IRCEventListener} from

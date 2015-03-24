@@ -94,4 +94,9 @@ public interface IRCConfig {
      */
     boolean isStripColorsEnabled();
 
+    /**
+     * @return a {@link IRCSSLSupport} if the {@link IRCConnection} should use SSL, otherwise {@code null}
+     */
+    IRCSSLSupport getSSLSupport();
+
 }

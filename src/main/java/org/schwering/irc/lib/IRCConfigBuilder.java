@@ -69,6 +69,9 @@ public class IRCConfigBuilder {
     /** @see #realname(String) */
     private String realname;
 
+    /** @see #sslSupport(IRCSSLSupport) */
+    private IRCSSLSupport sslSupport;
+
     /** @see #stripColors(boolean) */
     private boolean stripColors = DEFAULT_STRIP_COLORS;
 
@@ -76,9 +79,8 @@ public class IRCConfigBuilder {
     private int timeout = DEFAULT_TIMEOUT;
 
     private IRCTrafficLogger trafficLogger;
-    /**
-     * The user's username, which is indispensable to connect.
-     */
+
+    /** @see #username(String) */
     private String username;
 
     /**
@@ -102,7 +104,7 @@ public class IRCConfigBuilder {
      */
     public IRCConfig build() {
         return new DefaultIRCConfig(host, ports == null ? new int[0] : Arrays.copyOf(ports, ports.length), pass, nick,
-                username, realname, timeout, encoding, autoPong, stripColors, proxy, trafficLogger);
+                username, realname, timeout, encoding, autoPong, stripColors, sslSupport, proxy, trafficLogger);
     }
 
     /**
@@ -150,6 +152,19 @@ public class IRCConfigBuilder {
      */
     public IRCConfigBuilder password(String password) {
         this.pass = password;
+        return this;
+    }
+
+    /**
+     * Replaces the internal ports array with a new singleton array containing
+     * the given {@code port}.
+     *
+     * @param port
+     *            the port or the {@link #host(String)} to connect to
+     * @return this builder
+     */
+    public IRCConfigBuilder port(int port) {
+        this.ports = new int[] { port };
         return this;
     }
 
@@ -209,6 +224,19 @@ public class IRCConfigBuilder {
     }
 
     /**
+     * Sets the {@link IRCSSLSupport} containing the information the
+     * {@link IRCConnection} should use to connect using SSL.
+     *
+     * @param sslSupport
+     *            the username of the user connecting to the IRC server
+     * @return this builder
+     */
+    public IRCConfigBuilder sslSupport(IRCSSLSupport sslSupport) {
+        this.sslSupport = sslSupport;
+        return this;
+    }
+
+    /**
      * Enables or disables the stripping of mIRC color codes. If not set through
      * this method, the default is {@value #DEFAULT_STRIP_COLORS}.
      *
@@ -231,7 +259,7 @@ public class IRCConfigBuilder {
      * @return this builder
      */
     public IRCConfigBuilder timeout(int millis) {
-        timeout = millis;
+        this.timeout = millis;
         return this;
     }
 
@@ -245,6 +273,18 @@ public class IRCConfigBuilder {
      */
     public IRCConfigBuilder trafficLogger(IRCTrafficLogger trafficLogger) {
         this.trafficLogger = trafficLogger;
+        return this;
+    }
+
+    /**
+     * Sets the username of the user connecting to the IRC server.
+     *
+     * @param username
+     *            the username of the user connecting to the IRC server
+     * @return this builder
+     */
+    public IRCConfigBuilder username(String username) {
+        this.username = username;
         return this;
     }
 }

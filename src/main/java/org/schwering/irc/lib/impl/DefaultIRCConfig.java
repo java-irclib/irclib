@@ -17,6 +17,7 @@ import java.net.Proxy;
 import java.util.Arrays;
 
 import org.schwering.irc.lib.IRCConfig;
+import org.schwering.irc.lib.IRCSSLSupport;
 import org.schwering.irc.lib.IRCTrafficLogger;
 
 /**
@@ -59,13 +60,15 @@ public class DefaultIRCConfig implements IRCConfig {
      * The user's realname, which is indispensably to connect.
      */
     private final String realname;
+
+    private final IRCSSLSupport sslSupport;
+
     /**
      * This <code>boolean</code> stands for enabled (<code>true</code>) or
      * disabled (<code>false</code>) ColorCodes. Default is enabled (
      * <code>false</code>).
      */
     private final boolean stripColorsEnabled;
-
     /**
      * This <code>int</code> is the connection's timeout in milliseconds. It's
      * used in the <code>Socket.setSoTimeout</code> method. The default is
@@ -78,9 +81,19 @@ public class DefaultIRCConfig implements IRCConfig {
      */
     private final String username;
 
+    /**
+     * @param config
+     */
+    public DefaultIRCConfig(IRCConfig config) {
+        this(config.getHost(), config.getPorts(), config.getPassword(), config.getNick(), config.getUsername(),
+                config.getRealname(), config.getTimeout(), config.getEncoding(), config.isAutoPong(),
+                config.isStripColorsEnabled(), new DefaultIRCSSLSupport(config.getSSLSupport()), config.getProxy(),
+                config.getTrafficLogger());
+    }
+
     public DefaultIRCConfig(String host, int[] ports, String pass, String nick, String username, String realname,
-            int timeout, String encoding, boolean autoPong, boolean stripColorsEnabled, Proxy proxy,
-            IRCTrafficLogger trafficLogger) {
+            int timeout, String encoding, boolean autoPong, boolean stripColorsEnabled, IRCSSLSupport sslSupport,
+            Proxy proxy, IRCTrafficLogger trafficLogger) {
         if (host == null || ports == null || ports.length == 0)
             throw new IllegalArgumentException("Host and ports may not be null.");
         this.host = host;
@@ -93,6 +106,7 @@ public class DefaultIRCConfig implements IRCConfig {
         this.encoding = encoding;
         this.autoPong = autoPong;
         this.stripColorsEnabled = stripColorsEnabled;
+        this.sslSupport = sslSupport;
         this.proxy = proxy;
         this.trafficLogger = trafficLogger;
     }
@@ -167,6 +181,14 @@ public class DefaultIRCConfig implements IRCConfig {
     @Override
     public String getRealname() {
         return realname;
+    }
+
+    /**
+     * @see org.schwering.irc.lib.IRCConfig#getSSLSupport()
+     */
+    @Override
+    public IRCSSLSupport getSSLSupport() {
+        return sslSupport;
     }
 
     /**

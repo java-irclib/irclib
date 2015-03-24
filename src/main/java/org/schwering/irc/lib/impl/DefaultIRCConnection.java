@@ -19,17 +19,16 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.net.Socket;
 import java.net.SocketException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
 import org.schwering.irc.lib.IRCConfig;
 import org.schwering.irc.lib.IRCConnection;
 import org.schwering.irc.lib.IRCEventListener;
 import org.schwering.irc.lib.IRCTrafficLogger;
 import org.schwering.irc.lib.IRCUser;
-import org.schwering.irc.lib.impl.ssl.SSLIRCConnection;
 import org.schwering.irc.lib.util.IRCModeParser;
 import org.schwering.irc.lib.util.IRCParser;
 import org.schwering.irc.lib.util.IRCUtil;
@@ -122,39 +121,45 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
         if (config.getHost() == null || ports == null || ports.length == 0) {
             throw new IllegalArgumentException("Host and ports may not be null.");
         }
-        this.config = config;
+        /* we trust only our own DefaultIRCConfig that it is immutable */
+        this.config = config instanceof DefaultIRCConfig ? config : new DefaultIRCConfig(config);
         this.nick = config.getNick();
         this.trafficLogger = config.getTrafficLogger();
     }
 
     /**
+     * @throws NoSuchAlgorithmException
+     * @throws KeyManagementException
      * @see org.schwering.irc.lib.IRCConnection#connect()
      */
     @Override
-    public void connect() throws IOException {
+    public void connect() throws IOException, KeyManagementException, NoSuchAlgorithmException {
         if (level != 0) // otherwise disconnected or connect
             throw new SocketException("Socket closed or already open (" + level + ")");
+        SocketFactory socketFactory = new SocketFactory(config.getTimeout(), config.getProxy(), config.getSSLSupport());
+
         IOException exception = null;
-        Socket s = null;
-        Proxy proxy = config.getProxy();
+        Socket socket = null;
         final String host = config.getHost();
-        for (int i = 0; i < config.getPortsCount() && s == null; i++) {
+        for (int i = 0; i < config.getPortsCount() && socket == null; i++) {
             try {
-                s = proxy != null ? new Socket(proxy) : new Socket();
                 int port = config.getPortAt(i);
-                s.connect(new InetSocketAddress(host, port));
+                socket = socketFactory.createSocket(host, port);
                 exception = null;
             } catch (IOException exc) {
-                if (s != null)
-                    s.close();
-                s = null;
+                if (socket != null) {
+                    socket.close();
+                }
+                socket = null;
                 exception = exc;
             }
         }
-        if (exception != null)
-            throw exception; // connection wasn't successful at any port
+        if (exception != null) {
+            /* we could not connect on any port */
+            throw exception;
+        }
 
-        prepare(s);
+        prepare(socket);
     }
 
     /**
@@ -180,7 +185,6 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
             throw new SocketException("Socket s is null, not connected");
         socket = s;
         level = 1;
-        s.setSoTimeout(config.getTimeout());
         String encoding = config.getEncoding();
         if (trafficLogger != null) {
             in = new LoggingReader(new InputStreamReader(s.getInputStream(), encoding), trafficLogger);
@@ -809,6 +813,14 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     @Override
     public void doUserhost(String nick) {
         send("USERHOST " + nick);
+    }
+
+    /**
+     * @see org.schwering.irc.lib.IRCConnection#isSSL()
+     */
+    @Override
+    public boolean isSSL() {
+        return config.getSSLSupport() != null;
     }
 
 }
