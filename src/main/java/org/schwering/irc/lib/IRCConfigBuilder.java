@@ -27,9 +27,6 @@ import org.schwering.irc.lib.util.IRCUtil;
  *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
-/**
- * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
- */
 public final class IRCConfigBuilder {
 
     /** Default {@link #autoPong} is {@value IRCConfigBuilder#DEFAULT_AUTOPONG} */
@@ -89,6 +86,8 @@ public final class IRCConfigBuilder {
      * Remote port numbers to try when connecting.
      *
      * @see #portRange(int, int)
+     * @see #port(int)
+     * @see #ports(int...)
      */
     private final List<Integer> ports = new ArrayList<Integer>();
 

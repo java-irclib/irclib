@@ -20,6 +20,26 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
 /**
+ * A connection to an IRC server.
+ * <p>
+ * Typical usage:
+ * <pre>
+ * IRCConfig config = IRCConfigBuilder.newBuilder()
+ *          .host("irc.freenode.net")
+ *          .port(6667)
+ *          .username(System.getProperty("user.name"))
+ *          .password("secret")
+ *          .realname(System.getProperty("user.name"));
+ * IRCConnection connection = IRCConnectionFactory.newConnection(config);
+ * connection.addIRCEventListener(new IRCEventAdapter() {
+ *     &#x2F* implement whatever you need *&#x2F
+ * });
+ * connection.connect();
+ * connection.doJoin("#test");
+ * connection.doPrivmsg("#test", "Hello World!");
+ * connection.close();
+ * </pre>
+ *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public interface IRCConnection {

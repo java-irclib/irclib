@@ -16,6 +16,8 @@ package org.schwering.irc.lib;
 import org.schwering.irc.lib.impl.DefaultIRCConnection;
 
 /**
+ * A factory to create new {@link IRCConnection}s. For the typical usage, see {@link IRCConnection}.
+ *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public class IRCConnectionFactory {
