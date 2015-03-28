@@ -43,7 +43,6 @@ public class DefaultIRCUser implements IRCUser {
      */
     private final String host;
 
-// ------------------------------
 
     /**
      * Creates a new <code>IRCUser</code> object.
@@ -57,7 +56,6 @@ public class DefaultIRCUser implements IRCUser {
         this.host = host;
     }
 
-// ------------------------------
 
     /**
      * Returns the nickname of the person who sent the line
@@ -76,7 +74,6 @@ public class DefaultIRCUser implements IRCUser {
         return nick;
     }
 
-// ------------------------------
 
     /**
      * Returns the servername of the server which sent the line or the nickname of
@@ -93,7 +90,6 @@ public class DefaultIRCUser implements IRCUser {
         return getNick();
     }
 
-// ------------------------------
 
     /**
      * Returns the username of the person who sent the line.
@@ -107,7 +103,6 @@ public class DefaultIRCUser implements IRCUser {
         return username;
     }
 
-// ------------------------------
 
     /**
      * Returns the host of the person who sent the line.
@@ -121,7 +116,6 @@ public class DefaultIRCUser implements IRCUser {
         return host;
     }
 
-// ------------------------------
 
     /**
      * Returns the nickname.

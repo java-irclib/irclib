@@ -34,7 +34,6 @@ import org.schwering.irc.lib.impl.DefaultIRCConnection;
  */
 public class IRCUtil implements IRCConstants {
 
-// ------------------------------
 
     /**
      * This is an empty constructor, it does nothing. Nobody may instantiate this
@@ -44,7 +43,6 @@ public class IRCUtil implements IRCConstants {
         // nothing
     }
 
-// ------------------------------
 
     /**
      * According to RFC2812 the channel's name may and must start with one of the
@@ -65,7 +63,6 @@ public class IRCUtil implements IRCConstants {
         && ((c = str.charAt(0)) == '#' || c == '&' || c == '!' || c == '+');
     }
 
-// ------------------------------
 
     /**
      * Parses a <code>String</code> to an <code>int</code> via
@@ -83,7 +80,6 @@ public class IRCUtil implements IRCConstants {
         }
     }
 
-// ------------------------------
 
     /**
      * Erases the mIRC colorcodes from a String.
@@ -100,7 +96,6 @@ public class IRCUtil implements IRCConstants {
     }
 
 
-// ------------------------------
 
     /**
      * Erases the mIRC colorcodes from a StringBuffer.
@@ -117,7 +112,6 @@ public class IRCUtil implements IRCConstants {
     }
 
 
-// ------------------------------
 
     /**
      * Erases the mIRC colorcodes and CTCP delimiters from a String.
@@ -140,7 +134,6 @@ public class IRCUtil implements IRCConstants {
     }
 
 
-// ------------------------------
 
     /**
      * Erases the mIRC colorcodes and CTCP delimiters from a StringBuffer.
@@ -161,7 +154,6 @@ public class IRCUtil implements IRCConstants {
         return parseColors(buf, true);
     }
 
-// ------------------------------
 
     /**
      * Erases the mIRC colorcodes from a String.
@@ -224,7 +216,6 @@ public class IRCUtil implements IRCConstants {
         return buf;
     }
 
-// ------------------------------
 
     /**
      * Splits a string into substrings.
@@ -262,7 +253,6 @@ public class IRCUtil implements IRCConstants {
         return result;
     }
 
-// ------------------------------
 
     /**
      * Splits a string into substrings. This method is totally equal to

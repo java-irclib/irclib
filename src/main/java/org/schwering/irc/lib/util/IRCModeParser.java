@@ -73,7 +73,6 @@ public class IRCModeParser {
      */
     private String[] argsArr;
 
-// ------------------------------
 
     /**
      * Analyzes the modes and parses them into the parts operators (<code>+</code>
@@ -100,7 +99,6 @@ public class IRCModeParser {
         }
     }
 
-// ------------------------------
 
     /**
      * Analyzes the modes and parses them into the parts operators (<code>+</code>
@@ -115,7 +113,6 @@ public class IRCModeParser {
         parse(modes, args);
     }
 
-// ------------------------------
 
     /**
      * Parses the modes into two <code>char</code>-arrays and one
@@ -157,7 +154,6 @@ public class IRCModeParser {
         }
     }
 
-// ------------------------------
 
     /**
      * Returns the amount of modes in the string. This is done by counting all
@@ -173,7 +169,6 @@ public class IRCModeParser {
         return count;
     }
 
-// ------------------------------
 
     /**
      * Returns count of modes.
@@ -186,7 +181,6 @@ public class IRCModeParser {
         return operatorsArr.length;
     }
 
-// ------------------------------
 
     /**
      * Returns the operator (<code>+</code> or <code>-</code>) of a given index.
@@ -201,7 +195,6 @@ public class IRCModeParser {
         return operatorsArr[i - 1];
     }
 
-// ------------------------------
 
     /**
      * Returns the mode (for example <code>o</code>, <code>v</code>,
@@ -218,7 +211,6 @@ public class IRCModeParser {
         return modesArr[i - 1];
     }
 
-// ------------------------------
 
     /**
      * Returns the nick of a given index.
@@ -235,7 +227,6 @@ public class IRCModeParser {
         return argsArr[i - 1];
     }
 
-// ------------------------------
 
     /**
      * Returns the line as it was sent from the IRC server.
@@ -247,7 +238,6 @@ public class IRCModeParser {
         return line;
     }
 
-// ------------------------------
 
     /**
      * Generates a <code>String</code> with some information about the instance of
