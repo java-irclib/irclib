@@ -27,6 +27,9 @@ import java.security.NoSuchAlgorithmException;
 import org.schwering.irc.lib.IRCConfig;
 import org.schwering.irc.lib.IRCConnection;
 import org.schwering.irc.lib.IRCEventListener;
+import org.schwering.irc.lib.IRCExceptionHandler;
+import org.schwering.irc.lib.IRCRuntimeConfig;
+import org.schwering.irc.lib.IRCServerConfig;
 import org.schwering.irc.lib.IRCTrafficLogger;
 import org.schwering.irc.lib.IRCUser;
 import org.schwering.irc.lib.util.IRCModeParser;
@@ -108,6 +111,7 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     private IRCEventListener[] listeners = new IRCEventListener[0];
 
     private final IRCTrafficLogger trafficLogger;
+    private final IRCExceptionHandler exceptionHandler;
 
     protected final IRCConfig config;
 
@@ -125,6 +129,15 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
         this.config = config instanceof DefaultIRCConfig ? config : new DefaultIRCConfig(config);
         this.nick = config.getNick();
         this.trafficLogger = config.getTrafficLogger();
+        this.exceptionHandler = config.getExceptionHandler();
+    }
+
+    /**
+     * @param serverConfig
+     * @param runtimeConfig
+     */
+    public DefaultIRCConnection(IRCServerConfig serverConfig, IRCRuntimeConfig runtimeConfig) {
+        this(new DefaultIRCConfig(serverConfig, runtimeConfig));
     }
 
     /**
@@ -233,9 +246,7 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
                 get(line);
             }
         } catch (IOException exc) {
-            if (trafficLogger != null) {
-                trafficLogger.exception(exc);
-            }
+            handleException(exc);
             close();
         } finally {
             close();
@@ -256,9 +267,7 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
                     nick = p.getParameter(1).trim();
             }
         } catch (Exception exc) {
-            if (trafficLogger != null) {
-                trafficLogger.exception(exc);
-            }
+            handleException(exc);
             throw new RuntimeException(exc);
         }
     }
@@ -476,10 +485,8 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
      * Handles the exception according to the current exception handling mode.
      */
     private void handleException(Exception exc) {
-        if (trafficLogger != null) {
-            trafficLogger.exception(exc);
-        } else {
-            throw new RuntimeException(exc);
+        if (exceptionHandler != null) {
+            exceptionHandler.exception(exc);
         }
     }
 

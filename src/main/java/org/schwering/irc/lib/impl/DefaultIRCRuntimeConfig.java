@@ -15,18 +15,15 @@ package org.schwering.irc.lib.impl;
 
 import java.net.Proxy;
 
-import org.schwering.irc.lib.IRCConfig;
 import org.schwering.irc.lib.IRCExceptionHandler;
 import org.schwering.irc.lib.IRCRuntimeConfig;
 import org.schwering.irc.lib.IRCSSLSupport;
-import org.schwering.irc.lib.IRCServerConfig;
 import org.schwering.irc.lib.IRCTrafficLogger;
 
 /**
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
-public class DefaultIRCConfig extends DefaultIRCServerConfig implements IRCConfig {
-
+public class DefaultIRCRuntimeConfig implements IRCRuntimeConfig {
     /**
      * This <code>boolean</code> stands for enabled or disabled automatic PING?
      * PONG! support. It means, that if the server asks with PING for the ping,
@@ -34,9 +31,9 @@ public class DefaultIRCConfig extends DefaultIRCServerConfig implements IRCConfi
      * <code>true</code> ).
      */
     private final boolean autoPong;
+    private final IRCExceptionHandler exceptionHandler;
     private final Proxy proxy;
     private final IRCSSLSupport sslSupport;
-
     /**
      * This <code>boolean</code> stands for enabled (<code>true</code>) or
      * disabled (<code>false</code>) ColorCodes. Default is enabled (
@@ -50,28 +47,8 @@ public class DefaultIRCConfig extends DefaultIRCServerConfig implements IRCConfi
      */
     private final int timeout;
     private final IRCTrafficLogger trafficLogger;
-    private final IRCExceptionHandler exceptionHandler;
-    /**
-     * @param config
-     */
-    public DefaultIRCConfig(IRCConfig config) {
-        this(config.getHost(), config.getPorts(), config.getPassword(), config.getNick(), config.getUsername(),
-                config.getRealname(), config.getEncoding(), config.getTimeout(), config.isAutoPong(),
-                config.isStripColorsEnabled(), new DefaultIRCSSLSupport(config.getSSLSupport()), config.getProxy(),
-                config.getTrafficLogger(), config.getExceptionHandler());
-    }
-
-    public DefaultIRCConfig(IRCServerConfig config, IRCRuntimeConfig runtimeConfig) {
-        this(config.getHost(), config.getPorts(), config.getPassword(), config.getNick(), config.getUsername(),
-                config.getRealname(), config.getEncoding(), runtimeConfig.getTimeout(), runtimeConfig.isAutoPong(),
-                runtimeConfig.isStripColorsEnabled(), new DefaultIRCSSLSupport(runtimeConfig.getSSLSupport()), runtimeConfig.getProxy(),
-                runtimeConfig.getTrafficLogger(), runtimeConfig.getExceptionHandler());
-    }
-
-    public DefaultIRCConfig(String host, int[] ports, String pass, String nick, String username, String realname,
-            String encoding, int timeout, boolean autoPong, boolean stripColorsEnabled, IRCSSLSupport sslSupport,
+    public DefaultIRCRuntimeConfig(int timeout, boolean autoPong, boolean stripColorsEnabled, IRCSSLSupport sslSupport,
             Proxy proxy, IRCTrafficLogger trafficLogger, IRCExceptionHandler exceptionHandler) {
-        super(host, ports, pass, nick, username, realname, encoding);
         this.timeout = timeout;
         this.autoPong = autoPong;
         this.stripColorsEnabled = stripColorsEnabled;
@@ -79,6 +56,10 @@ public class DefaultIRCConfig extends DefaultIRCServerConfig implements IRCConfi
         this.proxy = proxy;
         this.trafficLogger = trafficLogger;
         this.exceptionHandler = exceptionHandler;
+    }
+
+    public IRCExceptionHandler getExceptionHandler() {
+        return exceptionHandler;
     }
 
     /**
@@ -127,10 +108,6 @@ public class DefaultIRCConfig extends DefaultIRCServerConfig implements IRCConfi
     @Override
     public boolean isStripColorsEnabled() {
         return stripColorsEnabled;
-    }
-
-    public IRCExceptionHandler getExceptionHandler() {
-        return exceptionHandler;
     }
 
 }

@@ -16,36 +16,65 @@ package org.schwering.irc.lib;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Proxy.Type;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.schwering.irc.lib.impl.DefaultIRCConfig;
+import org.schwering.irc.lib.util.IRCUtil;
 
 /**
  * A fluent builder for {@link IRCConfig}s.
  *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
-public class IRCConfigBuilder {
+/**
+ * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
+ */
+public final class IRCConfigBuilder {
+
     /** Default {@link #autoPong} is {@value IRCConfigBuilder#DEFAULT_AUTOPONG} */
     public static final boolean DEFAULT_AUTOPONG = true;
+
     /** Default {@link #encoding} is {@value IRCConfigBuilder#DEFAULT_ENCODING} */
     public static final String DEFAULT_ENCODING = "utf-8";
+
     /**
      * Default {@link #stripColors} is
      * {@value IRCConfigBuilder#DEFAULT_STRIP_COLORS}
      */
     public static final boolean DEFAULT_STRIP_COLORS = false;
+
     /**
      * Default {@link #timeout} is {@value IRCConfigBuilder#DEFAULT_TIMEOUT}
      * milliseconds which is 15 minutes
      */
     public static final int DEFAULT_TIMEOUT = 1000 * 60 * 15;
 
+    /**
+     * Creates a new {@link IRCConfigBuilder} initializing the following fields
+     * with defaults:
+     * <ul>
+     * <li>{@link #autoPong(boolean)}</li>
+     * <li>{@link #encoding(String)}</li>
+     * <li>{@link #stripColors(boolean)}</li>
+     * <li>{@link #timeout(int)}</li>
+     * </ul>
+     * Other fields are left {@code null}.
+     *
+     * @return new {@link IRCConfigBuilder}
+     */
+    public static final IRCConfigBuilder newBuilder() {
+        return new IRCConfigBuilder();
+    }
+
     /** @see #autoPong(boolean) */
     private boolean autoPong = DEFAULT_AUTOPONG;
 
     /** @see #encoding(String) */
     private String encoding = DEFAULT_ENCODING;
+
+    /** @see #exceptionHandler(IRCExceptionHandler) */
+    private IRCExceptionHandler exceptionHandler;
 
     /** @see #host(String) */
     private String host;
@@ -54,14 +83,14 @@ public class IRCConfigBuilder {
     private String nick;
 
     /** @see #password(String) */
-    private String pass;
+    private String password;
 
     /**
-     * An array of remote ports to try when connecting.
+     * Remote port numbers to try when connecting.
      *
      * @see #portRange(int, int)
      */
-    private int[] ports;
+    private final List<Integer> ports = new ArrayList<Integer>();
 
     /** @see #socksProxy(String, int) */
     private Proxy proxy;
@@ -78,10 +107,18 @@ public class IRCConfigBuilder {
     /** @see #timeout(int) */
     private int timeout = DEFAULT_TIMEOUT;
 
+    /** @see #trafficLogger(IRCTrafficLogger) */
     private IRCTrafficLogger trafficLogger;
 
     /** @see #username(String) */
     private String username;
+
+    /**
+     * @see #newBuilder()
+     */
+    private IRCConfigBuilder() {
+        super();
+    }
 
     /**
      * Enables or disables the automatic PING? PONG! support. If not set through
@@ -103,14 +140,28 @@ public class IRCConfigBuilder {
      *         stored in fields of this {@link IRCConfigBuilder}.
      */
     public IRCConfig build() {
-        return new DefaultIRCConfig(host, ports == null ? new int[0] : Arrays.copyOf(ports, ports.length), pass, nick,
-                username, realname, timeout, encoding, autoPong, stripColors, sslSupport, proxy, trafficLogger);
+        return new DefaultIRCConfig(host, IRCUtil.toArray(ports), password, nick, username, realname, encoding,
+                timeout, autoPong, stripColors, sslSupport, proxy, trafficLogger, exceptionHandler);
     }
 
     /**
-     * Changes the character encoding used to talk to the server. This can be
-     * ISO-8859-1 or UTF-8 for example. If not set through this method, the
-     * default is {@value #DEFAULT_ENCODING}.
+     * Copies all available fields from the given {@code config} to this
+     * {@link IRCConfigBuilder}.
+     *
+     * @param config
+     *            the {@link IRCConfig} to take the values from
+     * @return this builder
+     */
+    public IRCConfigBuilder config(IRCConfig config) {
+        serverConfig(config);
+        runtimeConfig(config);
+        return this;
+    }
+
+    /**
+     * Changes the character encoding (such as {@code "UTF-8"} or
+     * {@code "ISO-8859-1"}) used to talk to the server. If not set through this
+     * method, the default is {@value #DEFAULT_ENCODING}.
      *
      * @param encoding
      *            The new encoding string, e.g. <code>"UTF-8"</code>
@@ -118,6 +169,19 @@ public class IRCConfigBuilder {
      */
     public IRCConfigBuilder encoding(String encoding) {
         this.encoding = encoding;
+        return this;
+    }
+
+    /**
+     * Sets the {@link IRCExceptionHandler} that should be notified by
+     * {@link IRCConnection} when an exception during send or receive of IRC
+     * messages occurs.
+     *
+     * @param exceptionHandler
+     * @return this builder
+     */
+    public IRCConfigBuilder exceptionHandler(IRCExceptionHandler exceptionHandler) {
+        this.exceptionHandler = exceptionHandler;
         return this;
     }
 
@@ -133,7 +197,7 @@ public class IRCConfigBuilder {
     }
 
     /**
-     * Sets the nick name prefered by the user who is connecting.
+     * Sets the nick name preferred by the user who is connecting.
      *
      * @param nick
      *            the nick name
@@ -151,26 +215,26 @@ public class IRCConfigBuilder {
      * @return this builder
      */
     public IRCConfigBuilder password(String password) {
-        this.pass = password;
+        this.password = password;
         return this;
     }
 
     /**
-     * Replaces the internal ports array with a new singleton array containing
-     * the given {@code port}.
+     * Adds the given {@code port} to the internal list of ports.
      *
      * @param port
      *            the port or the {@link #host(String)} to connect to
      * @return this builder
      */
     public IRCConfigBuilder port(int port) {
-        this.ports = new int[] { port };
+        this.ports.add(port);
         return this;
     }
 
     /**
-     * Populates the internal ports array with port numbers starting with the
-     * given {@code portMin} and ending with (inlc.) the given {@code portMax}.
+     * Adds the port numbers from the given range to the internal list of ports.
+     * {@code portMin} is the first (lowest) port to add whereas {@code portMax}
+     * is the last port to add.
      *
      * @param portMin
      *            The beginning port of the port range.
@@ -184,11 +248,23 @@ public class IRCConfigBuilder {
             portMin = portMax;
             portMax = tmp;
         }
-        int[] ports = new int[portMax - portMin + 1];
-        for (int i = 0; i < ports.length; i++) {
-            ports[i] = portMin + i;
+        for (int port = portMin; port <= portMax; port++) {
+            ports.add(port);
         }
-        this.ports = ports;
+        return this;
+    }
+
+    /**
+     * Adds the given port numbers to the internal list of ports.
+     *
+     * @param port
+     *            the port numbers to add
+     * @return this builder
+     */
+    public IRCConfigBuilder ports(int... port) {
+        for (int p : port) {
+            ports.add(p);
+        }
         return this;
     }
 
@@ -202,6 +278,44 @@ public class IRCConfigBuilder {
      */
     public IRCConfigBuilder realname(String realname) {
         this.realname = realname;
+        return this;
+    }
+
+    /**
+     * Copies all available fields from the given {@code runtimeConfig} to this
+     * {@link IRCConfigBuilder}.
+     *
+     * @param runtimeConfig
+     *            the {@link IRCRuntimeConfig} to take the values from
+     * @return this builder
+     */
+    public IRCConfigBuilder runtimeConfig(IRCRuntimeConfig runtimeConfig) {
+        this.timeout = runtimeConfig.getTimeout();
+        this.autoPong = runtimeConfig.isAutoPong();
+        this.stripColors = runtimeConfig.isStripColorsEnabled();
+        this.sslSupport = runtimeConfig.getSSLSupport();
+        this.proxy = runtimeConfig.getProxy();
+        this.trafficLogger = runtimeConfig.getTrafficLogger();
+        this.exceptionHandler = runtimeConfig.getExceptionHandler();
+        return this;
+    }
+
+    /**
+     * Copies all available fields from the given {@code serverConfig} to this
+     * {@link IRCConfigBuilder}.
+     *
+     * @param serverConfig
+     *            the {@link IRCServerConfig} to take the values from
+     * @return this builder
+     */
+    public IRCConfigBuilder serverConfig(IRCServerConfig serverConfig) {
+        this.host = serverConfig.getHost();
+        ports(serverConfig.getPorts());
+        this.password = serverConfig.getPassword();
+        this.nick = serverConfig.getNick();
+        this.username = serverConfig.getUsername();
+        this.realname = serverConfig.getRealname();
+        this.encoding = serverConfig.getEncoding();
         return this;
     }
 

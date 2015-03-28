@@ -14,6 +14,7 @@
 package org.schwering.irc.lib.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.schwering.irc.lib.IRCEventListener;
@@ -273,5 +274,17 @@ public class IRCUtil implements IRCConstants {
      */
     public static String[] split(String str, int delim) {
         return split(str, delim, null);
+    }
+
+    public static int[] toArray(Collection<Integer> list) {
+        if (list == null || list.isEmpty()) {
+            return new int[0];
+        }
+        int[] result = new int[list.size()];
+        int i = 0;
+        for (int value : list) {
+            result[i++] = value;
+        }
+        return result;
     }
 }
