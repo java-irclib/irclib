@@ -60,7 +60,7 @@ public final class IRCConfigBuilder {
      *
      * @return new {@link IRCConfigBuilder}
      */
-    public static final IRCConfigBuilder newBuilder() {
+    public static IRCConfigBuilder newBuilder() {
         return new IRCConfigBuilder();
     }
 

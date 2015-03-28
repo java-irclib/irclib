@@ -51,21 +51,22 @@ public class DefaultIRCConfig extends DefaultIRCServerConfig implements IRCConfi
     private final int timeout;
     private final IRCTrafficLogger trafficLogger;
     private final IRCExceptionHandler exceptionHandler;
+
     /**
      * @param config
      */
     public DefaultIRCConfig(IRCConfig config) {
-        this(config.getHost(), config.getPorts(), config.getPassword(), config.getNick(), config.getUsername(),
-                config.getRealname(), config.getEncoding(), config.getTimeout(), config.isAutoPong(),
-                config.isStripColorsEnabled(), new DefaultIRCSSLSupport(config.getSSLSupport()), config.getProxy(),
-                config.getTrafficLogger(), config.getExceptionHandler());
+        this(config.getHost(), config.getPorts(), config.getPassword(), config.getNick(), config.getUsername(), config
+                .getRealname(), config.getEncoding(), config.getTimeout(), config.isAutoPong(), config
+                .isStripColorsEnabled(), new DefaultIRCSSLSupport(config.getSSLSupport()), config.getProxy(), config
+                .getTrafficLogger(), config.getExceptionHandler());
     }
 
     public DefaultIRCConfig(IRCServerConfig config, IRCRuntimeConfig runtimeConfig) {
-        this(config.getHost(), config.getPorts(), config.getPassword(), config.getNick(), config.getUsername(),
-                config.getRealname(), config.getEncoding(), runtimeConfig.getTimeout(), runtimeConfig.isAutoPong(),
-                runtimeConfig.isStripColorsEnabled(), new DefaultIRCSSLSupport(runtimeConfig.getSSLSupport()), runtimeConfig.getProxy(),
-                runtimeConfig.getTrafficLogger(), runtimeConfig.getExceptionHandler());
+        this(config.getHost(), config.getPorts(), config.getPassword(), config.getNick(), config.getUsername(), config
+                .getRealname(), config.getEncoding(), runtimeConfig.getTimeout(), runtimeConfig.isAutoPong(),
+                runtimeConfig.isStripColorsEnabled(), new DefaultIRCSSLSupport(runtimeConfig.getSSLSupport()),
+                runtimeConfig.getProxy(), runtimeConfig.getTrafficLogger(), runtimeConfig.getExceptionHandler());
     }
 
     public DefaultIRCConfig(String host, int[] ports, String pass, String nick, String username, String realname,
