@@ -485,7 +485,7 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
      */
     private void handleException(Exception exc) {
         if (exceptionHandler != null) {
-            exceptionHandler.exception(exc);
+            exceptionHandler.exception(this, exc);
         }
     }
 

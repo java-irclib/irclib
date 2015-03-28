@@ -27,6 +27,8 @@ import javax.net.ssl.SSLSocketFactory;
 import org.schwering.irc.lib.IRCSSLSupport;
 
 /**
+ * A factory to create sockets that takes into account things such as {@link #timeout}, {@link #proxy} and SSL support.
+ *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public class SocketFactory {
@@ -36,9 +38,9 @@ public class SocketFactory {
     private final int timeout;
 
     /**
-     * @param timeout
-     * @param proxy
-     * @param sslSupport
+     * @param timeout im milliseconds
+     * @param proxy the proxy
+     * @param sslSupport the SSL support or {@code null} if SSL should not be used
      * @throws KeyManagementException
      * @throws NoSuchAlgorithmException
      */
@@ -57,6 +59,14 @@ public class SocketFactory {
         }
     }
 
+    /**
+     * Creates a new {@link Socket} base on the the specification passed in through the constructor.
+     *
+     * @param host the hostname or IP address to connect to
+     * @param port the port number on the destination host
+     * @return a new {@link Socket}
+     * @throws IOException
+     */
     @SuppressWarnings("resource")
     public Socket createSocket(String host, int port) throws IOException {
         final Socket result;

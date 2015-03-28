@@ -14,17 +14,30 @@
 package org.schwering.irc.lib;
 
 /**
+ * A handler to be notified when there occurs any exception in {@link IRCConnection}.
+ *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public interface IRCExceptionHandler {
 
+    /** A handler that just prints the given exception's stack trace to stderr. */
     IRCExceptionHandler PRINT_STACK_TRACE = new IRCExceptionHandler() {
+        /**
+         * @see org.schwering.irc.lib.IRCExceptionHandler#exception(org.schwering.irc.lib.IRCConnection,
+         *      java.lang.Throwable)
+         */
         @Override
-        public void exception(Throwable e) {
+        public void exception(IRCConnection connection, Throwable e) {
             e.printStackTrace();
         }
     };
 
-    void exception(Throwable e);
+    /**
+     * Notified upon occurence of the given {@code exception} in the given {@code exception}.
+     *
+     * @param connection the connection in which the exception occured
+     * @param exception the exception that occured
+     */
+    void exception(IRCConnection connection, Throwable exception);
 
 }

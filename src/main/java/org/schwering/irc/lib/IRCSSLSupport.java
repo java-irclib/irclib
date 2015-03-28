@@ -17,6 +17,8 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.TrustManager;
 
 /**
+ * A bunch of things necessary to connect using SSL.
+ *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public interface IRCSSLSupport {

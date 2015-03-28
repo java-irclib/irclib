@@ -14,6 +14,8 @@
 package org.schwering.irc.lib;
 
 /**
+ * An IRC user refered to in many IRC relies.
+ *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public interface IRCUser {
@@ -21,8 +23,6 @@ public interface IRCUser {
     String getHost();
 
     String getUsername();
-
-    String getServername();
 
     String getNick();
 

@@ -16,6 +16,10 @@ package org.schwering.irc.lib;
 import java.net.Proxy;
 
 /**
+ * The non-server part of the {@link IRCConnection}'s configuration.
+ *
+ * @see IRCServerConfig
+ * @see IRCConfig
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public interface IRCRuntimeConfig {
