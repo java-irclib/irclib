@@ -11,7 +11,7 @@
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY.
  */
-package org.schwering.irc.lib;
+package org.schwering.irc.lib.util;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ import java.util.Map;
  * An enum of Client-to-client protocol (CTCP) commands.
  * See <a href="http://www.irchelp.org/irchelp/rfc/ctcpspec.html">http://www.irchelp.org/irchelp/rfc/ctcpspec.html</a>
  *
- * @author <a href="mailto:ppalaga@redhat.com">Peter Palaga</a>
+ * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public enum CTCPCommand {
     ACTION,

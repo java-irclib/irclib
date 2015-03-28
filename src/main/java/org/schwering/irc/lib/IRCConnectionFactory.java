@@ -13,17 +13,18 @@
  */
 package org.schwering.irc.lib;
 
+import org.schwering.irc.lib.impl.DefaultIRCConnection;
+
 /**
- * An IRC user refered to in many IRC relies.
+ * A factory to create new {@link IRCConnection}s. For the typical usage, see {@link IRCConnection}.
  *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
-public interface IRCUser {
-
-    String getHost();
-
-    String getUsername();
-
-    String getNick();
-
+public class IRCConnectionFactory {
+    public static IRCConnection newConnection(IRCConfig config) {
+        return new DefaultIRCConnection(config);
+    }
+    public static IRCConnection newConnection(IRCServerConfig serverConfig, IRCRuntimeConfig runtimeConfig) {
+        return new DefaultIRCConnection(serverConfig, runtimeConfig);
+    }
 }

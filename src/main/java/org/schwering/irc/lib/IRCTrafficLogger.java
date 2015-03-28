@@ -16,7 +16,7 @@ package org.schwering.irc.lib;
 /**
  * A logger for both ingoing and outgoing IRC messages that the IRC client sends and receives.
  *
- * @author <a href="mailto:ppalaga@redhat.com">Peter Palaga</a>
+ * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public interface IRCTrafficLogger {
     /** A {@link IRCTrafficLogger} implementation using {@code System.out} to output the traffic */
@@ -31,10 +31,6 @@ public interface IRCTrafficLogger {
             System.out.println("> " + line);
         }
 
-        @Override
-        public void exception(Throwable e) {
-            e.printStackTrace(System.out);
-        }
     };
 
     /**
@@ -48,7 +44,5 @@ public interface IRCTrafficLogger {
      * @param line the line being sent to the server
      */
     void out(String line);
-
-    void exception(Throwable e);
 
 }

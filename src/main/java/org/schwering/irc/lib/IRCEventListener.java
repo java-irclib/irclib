@@ -15,6 +15,9 @@ package org.schwering.irc.lib;
 
 import java.util.EventListener;
 
+import org.schwering.irc.lib.util.IRCConstants;
+import org.schwering.irc.lib.util.IRCModeParser;
+
 /**
  * Used as listener for incoming events like messages.
  * <p>
@@ -45,8 +48,8 @@ import java.util.EventListener;
  * </ul>
  * <p>
  * For other, unkown events there's the <code>unknown</code>-method.
+ *
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
- * @version 1.64
  * @see IRCEventAdapter
  * @see IRCConnection
  */
@@ -63,14 +66,12 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      */
     void onRegistered();
 
-// ------------------------------
 
     /**
      * Fired when the own connection is broken.
      */
     void onDisconnected();
 
-// ------------------------------
 
     /**
      * Fired when an <code>ERROR</code> command is received.
@@ -78,19 +79,17 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      */
     void onError(String msg);
 
-// ------------------------------
 
     /**
      * Fired when a numeric error is received.
      * The server often sends numeric errors (wrong nickname etc.).
      * The <code>msg</code>'s format is different for every reply. All replies'
-     * formats are described in the {@link org.schwering.irc.lib.IRCUtil}.
+     * formats are described in the {@link org.schwering.irc.lib.util.IRCUtil}.
      * @param num The identifier (usually a 3-digit number).
      * @param msg The message of the error.
      */
     void onError(int num, String msg);
 
-// ------------------------------
 
     /**
      * Fired when somebody is invited to a channel.
@@ -101,7 +100,6 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      */
     void onInvite(String chan, IRCUser user, String passiveNick);
 
-// ------------------------------
 
     /**
      * Fired when somebody joins a channel.
@@ -110,7 +108,6 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      */
     void onJoin(String chan, IRCUser user);
 
-// ------------------------------
 
     /**
      * Fired when somebody is kicked from a channel.
@@ -124,7 +121,6 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      */
     void onKick(String chan, IRCUser user, String passiveNick, String msg);
 
-// ------------------------------
 
     /**
      * Fired when an operator changes the modes of a channel.
@@ -139,7 +135,6 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      */
     void onMode(String chan, IRCUser user, IRCModeParser modeParser);
 
-// ------------------------------
 
     /**
      * Fired when somebody changes somebody's usermodes.
@@ -153,7 +148,6 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      */
     void onMode(IRCUser user, String passiveNick, String mode);
 
-// ------------------------------
 
     /**
      * Fired when somebody changes his nickname successfully.
@@ -163,7 +157,6 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      */
     void onNick(IRCUser user, String newNick);
 
-// ------------------------------
 
     /**
      * Fired when somebody sends a <code>NOTICE</code> to a user or a group.
@@ -175,7 +168,6 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      */
     void onNotice(String target, IRCUser user, String msg);
 
-// ------------------------------
 
     /**
      * Fired when somebody parts from a channel.
@@ -187,7 +179,6 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      */
     void onPart(String chan, IRCUser user, String msg);
 
-// ------------------------------
 
     /**
      * Fired when a <code>PING</code> comes in.
@@ -197,7 +188,6 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      */
     void onPing(String ping);
 
-// ------------------------------
 
     /**
      * Fired when a user sends a <code>PRIVMSG</code> to a user or to a
@@ -210,7 +200,6 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      */
     void onPrivmsg(String target, IRCUser user, String msg);
 
-// ------------------------------
 
     /**
      * Fired when somebody quits from the network.
@@ -220,14 +209,13 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      */
     void onQuit(IRCUser user, String msg);
 
-// ------------------------------
 
     /**
      * Fired when a numeric reply is received.
      * For example, <code>WHOIS</code> queries are answered by the server with
      * numeric replies.
      * The <code>msg</code>'s format is different for every reply. All replies'
-     * formats are described in the {@link org.schwering.irc.lib.IRCUtil}.
+     * formats are described in the {@link org.schwering.irc.lib.util.IRCUtil}.
      * The first word in the <code>value</code> is always your own nickname!
      * @param num The numeric reply.
      * @param value The first part of the message.
@@ -235,7 +223,6 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      */
     void onReply(int num, String value, String msg);
 
-// ------------------------------
 
     /**
      * Fired when the topic is changed by operators.
@@ -248,7 +235,6 @@ public interface IRCEventListener extends EventListener, IRCConstants {
      */
     void onTopic(String chan, IRCUser user, String topic);
 
-// ------------------------------
 
     /**
      * This event is fired when the incoming line can not be identified as a known

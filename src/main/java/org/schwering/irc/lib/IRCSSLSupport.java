@@ -13,17 +13,24 @@
  */
 package org.schwering.irc.lib;
 
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.TrustManager;
+
 /**
- * An IRC user refered to in many IRC relies.
+ * A bunch of things necessary to connect using SSL.
  *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
-public interface IRCUser {
+public interface IRCSSLSupport {
 
-    String getHost();
+    /**
+     * @return
+     */
+    KeyManager[] getKeyManagers();
 
-    String getUsername();
-
-    String getNick();
+    /**
+     * @return
+     */
+    TrustManager[] getTrustManagers();
 
 }

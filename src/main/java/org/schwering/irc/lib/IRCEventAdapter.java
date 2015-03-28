@@ -13,33 +13,12 @@
  */
 package org.schwering.irc.lib;
 
+import org.schwering.irc.lib.util.IRCModeParser;
+
 /**
- * Adapts the events of the <code>IRCEventListener</code> interface.
- * <p>
- * Supported events:
- * <ul>
- * <li>Connect</li>
- * <li>Disconnect</li>
- * <li>Error</li>
- * <li>Invite</li>
- * <li>Join</li>
- * <li>Kick</li>
- * <li>Private Message</li>
- * <li>Mode (Chan)</li>
- * <li>Mode (User)</li>
- * <li>Nick</li>
- * <li>Notice</li>
- * <li>Numeric Reply</li>
- * <li>Numeric Error</li>
- * <li>Part</li>
- * <li>Ping</li>
- * <li>Quit</li>
- * <li>Topic</li>
- * </ul>
- * <p>
- * For other, unkown events there's the <code>unknown</code>-method.
+ * A empty implementation if {@link IRCEventListener}.
+ *
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
- * @version 1.63
  * @see IRCEventListener
  */
 public class IRCEventAdapter implements IRCEventListener {
@@ -51,248 +30,182 @@ public class IRCEventAdapter implements IRCEventListener {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * Fired when the own connection is successfully established.
-     * This is the case when the first PING? is received.
-     * This happens between the connection is opened with a socket and the
-     * connection is registered: The client sends his information to the server
-     * (nickname, username). The server says hello to you by sending you
-     * some <code>NOTICE</code>s. And if your nickname is invalid or in use or
-     * anything else is wrong with your nickname, it asks you for a new one.
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#onRegistered()
      */
     public void onRegistered() {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * Fired when the own connection is broken.
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#onDisconnected()
      */
     public void onDisconnected() {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * Fired when an <code>ERROR</code> command is received.
-     * @param msg The message of the error.
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#onError(String)
      */
     public void onError(String msg) {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * Fired when a numeric error is received.
-     * The server often sends numeric errors (wrong nickname etc.).
-     * The <code>msg</code>'s format is different for every reply. All replies'
-     * formats are described in the {@link org.schwering.irc.lib.IRCUtil}.
-     * @param num The identifier (usually a 3-digit number).
-     * @param msg The message of the error.
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#onError(int, String)
      */
     public void onError(int num, String msg) {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * Fired when somebody is invited to a channel.
-     * @param chan The channel the user is invited to.
-     * @param user The user who invites another. Contains nick, username and host.
-     * @param passiveNick The nickname of the user who is invited by another user
-     *                    (passive).
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#onInvite(String, IRCUser, String)
      */
     public void onInvite(String chan, IRCUser user, String passiveNick) {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * Fired when somebody joins a channel.
-     * @param chan The channel the person joins.
-     * @param user The user who joins. Contains nick, username and host.
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#onJoin(String, IRCUser)
      */
     public void onJoin(String chan, IRCUser user) {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * Fired when somebody is kicked from a channel.
-     * @param chan The channel somebody is kicked from.
-     * @param user The user who kicks another user from a channel.
-     *             Contains nick, username and host.
-     * @param passiveNick The nickname of the user who is kicked from a channel
-     *                    (passive).
-     * @param msg The message the active user has set. This is <code>""</code> if
-     *            no message was set.
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#onKick(String, IRCUser, String, String)
      */
     public void onKick(String chan, IRCUser user, String passiveNick,
             String msg) {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * Fired when an operator changes the modes of a channel.
-     * For example, he can set somebody as an operator, too, or take him the
-     * oper-status.
-     * Also keys, moderated and other channelmodes are fired here.
-     * @param chan The channel in which the modes are changed.
-     * @param user The user who changes the modes.
-     *             Contains nick, username and host.
-     * @param modeParser The <code>IRCModeParser</code> object which contains the
-     *                   parsed information about the modes which are changed.
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#onMode(String, IRCUser, IRCModeParser)
      */
     public void onMode(String chan, IRCUser user, IRCModeParser modeParser) {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * Fired when somebody changes somebody's usermodes.
-     * Note that this event is not fired when a channel-mode is set, for example
-     * when someone sets another user as operator or the mode moderated.
-     * @param user The user who changes the modes of another user or himself.
-     *             Contains nick, username and host.
-     * @param passiveNick The nickname of the person whose modes are changed by
-     *                    another user or himself.
-     * @param mode The changed modes which are set.
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#onMode(IRCUser, String, String)
      */
     public void onMode(IRCUser user, String passiveNick, String mode) {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * Fired when somebody changes his nickname successfully.
-     * @param user The user who changes his nickname.
-     *             Contains nick, username and host.
-     * @param newNick The new nickname of the user who changes his nickname.
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#onNick(IRCUser, String)
      */
     public void onNick(IRCUser user, String newNick) {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * Fired when somebody sends a <code>NOTICE</code> to a user or a group.
-     * @param target The channel or nickname the user sent a <code>NOTICE</code>
-     *               to.
-     * @param user The user who notices another person or a group.
-     *             Contains nick, username and host.
-     * @param msg The message.
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#onNotice(String, IRCUser, String)
      */
     public void onNotice(String target, IRCUser user, String msg) {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * Fired when somebody parts from a channel.
-     * @param chan The channel somebody parts from.
-     * @param user The user who parts from a channel.
-     *             Contains nick, username and host.
-     * @param msg The part-message which is optionally.
-     *            If it's empty, msg is <code>""</code>.
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#onPart(String, IRCUser, String)
      */
     public void onPart(String chan, IRCUser user, String msg) {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * Fired when a <code>PING</code> comes in.
-     * The IRC server tests in different periods if the client is still there by
-     * sending PING &lt;ping&gt;. The client must response PONG &lt;ping&gt;.
-     * @param ping The ping which is received from the server.
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#onPing(String)
      */
     public void onPing(String ping) {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * Fired when a user sends a <code>PRIVMSG</code> to a user or to a
-     * group.
-     * @param target The channel or nickname the user sent a <code>PRIVMSG</code>
-     *               to.
-     * @param user The user who sent the <code>PRIVMSG</code>.
-     *             Contains nick, username and host.
-     * @param msg The message the user transmits.
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#onPrivmsg(String, IRCUser, String)
      */
     public void onPrivmsg(String target, IRCUser user, String msg) {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * Fired when somebody quits from the network.
-     * @param user The user who quits. Contains nick, username and host.
-     * @param msg The optional message. <code>""</code> if no message is set by
-     *            the user.
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#onQuit(IRCUser, String)
      */
     public void onQuit(IRCUser user, String msg) {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * Fired when a numeric reply is received.
-     * For example, <code>WHOIS</code> queries are answered by the server with
-     * numeric replies.
-     * The <code>msg</code>'s format is different for every reply. All replies'
-     * formats are described in the {@link org.schwering.irc.lib.IRCUtil}.
-     * The first word in the <code>value</code> is always your own nickname!
-     * @param num The numeric reply.
-     * @param value The first part of the message.
-     * @param msg The main part of the message.
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#onReply(int, String, String)
      */
     public void onReply(int num, String value, String msg) {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * Fired when the topic is changed by operators.
-     * Note that the topic is given as a numeric reply fired in
-     * <code>onReply</code> when you join a channel.
-     * @param chan The channel where the topic is changed.
-     * @param user The user who changes the topic.
-     *             Contains nick, username and host.
-     * @param topic The new topic.
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#onTopic(String, IRCUser, String)
      */
     public void onTopic(String chan, IRCUser user, String topic) {
         // nothing
     }
 
-// ------------------------------
 
     /**
-     * This event is fired when the incoming line can not be identified as a known
-     * event.
-     * @param prefix The prefix of the incoming line.
-     * @param command The command of the incoming line.
-     * @param middle The part until the colon (<code>:</code>).
-     * @param trailing The part behind the colon (<code>:</code>).
+     * Does nothing in this implementation.
+     *
+     * @see IRCEventListener#unknown(String, String, String, String)
      */
     public void unknown(String prefix, String command, String middle,
             String trailing) {

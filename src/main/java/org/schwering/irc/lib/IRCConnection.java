@@ -13,740 +13,38 @@
  */
 package org.schwering.irc.lib;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.Writer;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.Proxy.Type;
-import java.net.Socket;
 import java.net.SocketException;
-
-import org.schwering.irc.lib.ssl.SSLIRCConnection;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
 /**
- * Creates a new connection to an IRC server. It's the main class of the IRClib,
- * the point everything starts.
+ * A connection to an IRC server.
  * <p>
- * The following code of a class which imports org.schwering.irc.lib.* prepares
- * an IRC connection and then tries to establish the connection. The server is
- * &quot;irc.somenetwork.com&quot;, the default portrange (6667 and 6669) is set, no
- * password is used (null). The nickname is &quot;Foo&quot; and the realname is
- * &quot;Mr. Foobar&quot;. The username &quot;foobar&quot;. Because of setDaemon(true), the JVM
- * exits even if this thread is running. An instance of the class MyListener
- * which must implement IRCActionListener is added as only event-listener for
- * the connection. The connection is told to parse out mIRC color codes and to
- * enable automatic PING? PONG! replies.
+ * Typical usage:
  * <pre>
- * IRCConnection conn = new IRCConnection(&quot;irc.somenetwork.com&quot;, 6667, 6669, null, &quot;Foo&quot;,
- *      &quot;Mr. Foobar&quot;, &quot;foo@bar.com&quot;);
- *
- * conn.addIRCEventListener(new MyListener());
- * conn.setDaemon(true);
- * conn.setColors(false);
- * conn.setPong(true);
- *
- * try {
- *     conn.connect(); // Try to connect!!! Don't forget this!!!
- * } catch (IOException ioexc) {
- *     ioexc.printStackTrace();
- * }
+ * IRCConfig config = IRCConfigBuilder.newBuilder()
+ *          .host("irc.freenode.net")
+ *          .port(6667)
+ *          .username(System.getProperty("user.name"))
+ *          .password("secret")
+ *          .realname(System.getProperty("user.name"));
+ * IRCConnection connection = IRCConnectionFactory.newConnection(config);
+ * connection.addIRCEventListener(new IRCEventAdapter() {
+ *     &#x2F* implement whatever you need *&#x2F
+ * });
+ * connection.connect();
+ * connection.doJoin("#test");
+ * connection.doPrivmsg("#test", "Hello World!");
+ * connection.close();
  * </pre>
- * <p>
- * The serverpassword isn't needed in most cases. You can give <code>null</code>
- * or <code>""</code> instead as done in this example.
  *
- * @author Christoph Schwering &lt;schwering@gmail.com&gt;
- * @version 3.05
- * @see IRCEventListener
- * @see IRCParser
- * @see IRCUtil
- * @see SSLIRCConnection
+ * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
-public class IRCConnection extends Thread {
-    /**
-     * A {@link BufferedReader} that sends all read character to its {@link #trafficLogger}.
-     */
-    private static class LoggingReader extends BufferedReader {
-        private final IRCTrafficLogger trafficLogger;
-
-        /**
-         * @param in the reader to read from.
-         * @param trafficLogger a logger to notify about read characters
-         */
-        public LoggingReader(Reader in, IRCTrafficLogger trafficLogger) {
-            super(in);
-            this.trafficLogger = trafficLogger;
-        }
-
-        /**
-         * @see java.io.BufferedReader#readLine()
-         */
-        @Override
-        public String readLine() throws IOException {
-            String line = super.readLine();
-            trafficLogger.in(line);
-            return line;
-        }
-    }
-
-    /**
-     * A {@link PrintWriter} that sends all written character also to its {@link #trafficLogger}.
-     */
-    private static class LoggingWriter extends PrintWriter {
-        private final IRCTrafficLogger trafficLogger;
-
-        /**
-         * @param out the {@link Writer} to write to
-         * @param trafficLogger the logger to notify about the written characters
-         */
-        public LoggingWriter(Writer out, IRCTrafficLogger trafficLogger) {
-            super(out);
-            this.trafficLogger = trafficLogger;
-        }
-
-        /**
-         * @see java.io.PrintWriter#write(java.lang.String)
-         */
-        @Override
-        public void write(String s) {
-            String trimmedLine = s;
-            if (s != null && s.endsWith("\r\n")) {
-                trimmedLine = s.substring(0, s.length() - 2);
-            }
-            trafficLogger.out(trimmedLine);
-            super.write(s);
-        }
-
-    }
-
-    /**
-     * This <code>Socket</code> is a connection to the IRC server.
-     */
-    private Socket socket;
-
-    /**
-     * This is like a UNIX-runlevel. Its value indicates the level of the
-     * <code>IRCConnection</code> object. <code>0</code> means that the object
-     * has not yet been connected, <code>1</code> means that it's connected but
-     * not registered, <code>2</code> means that it's connected and registered
-     * but still waiting to receive the nickname the first time, <code>3</code>
-     * means that it's connected and registered, and <code>-1</code> means that
-     * it was connected but is disconnected. Therefore the default value is
-     * <code>0</code>.
-     */
-    protected byte level = 0;
-
-    /**
-     * The host of the IRC server.
-     */
-    protected String host;
-
-    /**
-     * The <code>int[]</code> contains all ports to which we are going to try to
-     * connect. This can be a portrange from port 6667 to 6669, for example.
-     */
-    protected int[] ports;
-
-    /**
-     * The <code>BufferedReader</code> receives Strings from the IRC server.
-     */
-    private BufferedReader in;
-
-    /**
-     * The <code>PrintWriter</code> sends Strings to the IRC server.
-     */
-    private PrintWriter out;
-
-    /**
-     * The <code>String</code> contains the name of the character encoding used
-     * to talk to the server. This can be ISO-8859-1 or UTF-8 for example. The
-     * default is ISO-8859-1.
-     */
-    protected String encoding = "ISO-8859-1";
-
-    /**
-     * This array contains <code>IRCEventListener</code> objects.
-     */
-    private IRCEventListener[] listeners = new IRCEventListener[0];
-
-    /**
-     * This <code>int</code> is the connection's timeout in milliseconds. It's
-     * used in the <code>Socket.setSoTimeout</code> method. The default is
-     * <code>1000 * 60 * 15</code> millis which are 15 minutes.
-     */
-    private int timeout = 1000 * 60 * 15;
-
-    /**
-     * This <code>boolean</code> stands for enabled (<code>true</code>) or
-     * disabled (<code>false</code>) ColorCodes.
-     * Default is enabled (<code>false</code>).
-     */
-    private boolean colorsEnabled = false;
-
-    /**
-     * This <code>boolean</code> stands for enabled or disabled automatic PING?
-     * PONG! support.
-     * It means, that if the server asks with PING for the ping, the PONG is
-     * automatically sent. Default is automatic PONG enabled (<code>true</code>
-     * ).
-     */
-    private boolean pongAutomatic = true;
-
-    /**
-     * The password, which is needed to get access to the IRC server.
-     */
-    private String pass;
-
-    /**
-     * The user's nickname, which is indispensably to connect.
-     */
-    private String nick;
-
-    /**
-     * The user's realname, which is indispensably to connect.
-     */
-    private String realname;
-
-    /**
-     * The user's username, which is indispensable to connect.
-     */
-    private String username;
-
-    /** SOCKS proxy host name or IP address */
-    private String socksProxyHost;
-
-    /** SOCKS proxy port */
-    private Integer socksProxyPort;
-
-    private IRCTrafficLogger trafficLogger;
-
-    // ------------------------------
-
-    /**
-     * Creates a new IRC connection.
-     * The difference to the other constructor is, that it transmits the ports
-     * in an <code>int[]</code>. Thus, also ports like 1024, 2048, 6667 and 6669
-     * can be selected.
-     *
-     * The constructor prepares a new IRC connection which can be really started
-     * by invoking the <code>connect</code> method. Before invoking it, you
-     * should set the <code>IRCEventListener</code> and other settings.
-     * Note that you do not need to set a password to connect to the large
-     * public IRC networks like QuakeNet, EFNet etc. To use no password in your
-     * IRC connection, use <code>""</code> or <code>null</code> for the password
-     * argument in the constructor.
-     *
-     * @param host
-     *            The hostname of the server we want to connect to.
-     * @param ports
-     *            The portrange to which we want to connect.
-     * @param pass
-     *            The password of the IRC server. If your server isn't secured
-     *            by a password (that's normal), use <code>null</code> or
-     *            <code>""</code>.
-     * @param nick
-     *            The nickname for the connection. Is used to register the
-     *            connection.
-     * @param username
-     *            The username. Is used to register the connection.
-     * @param realname
-     *            The realname. Is used to register the connection.
-     * @param socksProxyHost the socks proxy host name or IP address; can be {@code null}
-     * @param socksProxyPort the socks proxy port; can be {@code null}
-     * @param trafficLogger an {@link IRCTrafficLogger} or {@code null}
-     * @throws IllegalArgumentException
-     *             If the <code>host</code> or <code>ports</code> is
-     *             <code>null</code> or <code>ports</code>' length is
-     *             <code>0</code>.
-     * @see #connect()
-     */
-    public IRCConnection(String host, int[] ports, String pass, String nick, String username, String realname,
-            String socksProxyHost, Integer socksProxyPort, IRCTrafficLogger trafficLogger) {
-        if (host == null || ports == null || ports.length == 0)
-            throw new IllegalArgumentException("Host and ports may not be null.");
-        this.host = host;
-        this.ports = ports;
-        this.pass = (pass != null && pass.length() == 0) ? null : pass;
-        this.nick = nick;
-        this.username = username;
-        this.realname = realname;
-        this.socksProxyHost = socksProxyHost;
-        this.socksProxyPort = socksProxyPort;
-        this.trafficLogger = trafficLogger;
-    }
-
-    // ------------------------------
-
-    /**
-     * Creates a new IRC connection.
-     * The difference to the other constructor is, that it transmits the ports
-     * as two <code>int</code>s. Thus, only a portrange from port <code>x</code>
-     * to port <code>y</code> like from port 6667 to 6669 can be selected.
-     *
-     * The constructor prepares a new IRC connection which can be really started
-     * by invoking the <code>connect</code> method. Before invoking it, you
-     * should set the <code>IRCEventListener</code> and other settings.
-     * Note that you do not need to set a password to connect to the large
-     * public IRC networks like QuakeNet, EFNet etc. To use no password in your
-     * IRC connection, use <code>""</code> or <code>null</code> for the password
-     * argument in the constructor.
-     *
-     * @param host
-     *            The hostname of the server we want to connect to.
-     * @param portMin
-     *            The beginning of the port range we are going to connect to.
-     * @param portMax
-     *            The ending of the port range we are going to connect to.
-     * @param pass
-     *            The password of the IRC server. If your server isn't secured
-     *            by a password (that's normal), use <code>null</code> or
-     *            <code>""</code>.
-     * @param nick
-     *            The nickname for the connection. Is used to register the
-     *            connection.
-     * @param username
-     *            The username. Is used to register the connection.
-     * @param realname
-     *            The realname. Is used to register the connection.
-     * @param socksProxyHost the socks proxy host name or IP address; can be {@code null}
-     * @param socksProxyPort the socks proxy port; can be {@code null}
-     * @param trafficLogger an {@link IRCTrafficLogger} or {@code null}
-     * @throws IllegalArgumentException
-     *             If the <code>host</code> is <code>null</code>.
-     * @see #connect()
-     */
-    public IRCConnection(String host, int portMin, int portMax, String pass, String nick, String username,
-            String realname, String socksProxyHost, Integer socksProxyPort, IRCTrafficLogger trafficLogger) {
-        this(host, portRangeToArray(portMin, portMax), pass, nick, username, realname, socksProxyHost, socksProxyPort,
-                trafficLogger);
-    }
-
-    // ------------------------------
-
-    /**
-     * Converts a portrange which starts with a given <code>int</code> and ends
-     * with a given <code>int</code> into an array which contains all
-     * <code>int</code>s from the beginning to the ending (including beginning
-     * and ending).
-     * If <code>portMin > portMax</code>, the portrange is turned arount
-     * automatically.
-     *
-     * @param portMin
-     *            The beginning port of the portrange.
-     * @param portMax
-     *            The ending port of the portrange.
-     */
-    private static int[] portRangeToArray(int portMin, int portMax) {
-        if (portMin > portMax) {
-            int tmp = portMin;
-            portMin = portMax;
-            portMax = tmp;
-        }
-        int[] ports = new int[portMax - portMin + 1];
-        for (int i = 0; i < ports.length; i++)
-            ports[i] = portMin + i;
-        return ports;
-    }
-
-    // ------------------------------
-
-    /**
-     * Establish a connection to the server.
-     * This method must be invoked to start a connection; the constructor
-     * doesn't do that!
-     * It tries all set ports until one is open. If all ports fail it throws an
-     * <code>IOException</code>.
-     * You can invoke <code>connect</code> only one time.
-     *
-     * @throws IOException
-     *             If an I/O error occurs.
-     * @throws SocketException
-     *             If the <code>connect</code> method was already invoked.
-     * @see #isConnected()
-     * @see #doQuit()
-     * @see #doQuit(String)
-     * @see #close()
-     */
-    public void connect() throws IOException {
-        if (level != 0) // otherwise disconnected or connect
-            throw new SocketException("Socket closed or already open (" + level + ")");
-        IOException exception = null;
-        Socket s = null;
-        Proxy proxy = null;
-        if (socksProxyHost != null && socksProxyPort != null) {
-            proxy = new Proxy(Type.SOCKS, new InetSocketAddress(socksProxyHost, socksProxyPort.intValue()));
-        }
-        for (int i = 0; i < ports.length && s == null; i++) {
-            try {
-                s = proxy != null ? new Socket(proxy) : new Socket();
-                s.connect(new InetSocketAddress(host, ports[i]));
-                exception = null;
-            } catch (IOException exc) {
-                if (s != null)
-                    s.close();
-                s = null;
-                exception = exc;
-            }
-        }
-        if (exception != null)
-            throw exception; // connection wasn't successful at any port
-
-        prepare(s);
-    }
-
-    // ------------------------------
-
-    /**
-     * Invoked by the <code>connect</code> method, this method prepares the
-     * connection.
-     * It initializes the class-vars for the inputstream and the outputstream of
-     * the socket, starts the registration of at the IRC server by calling
-     * <code>register()</code> and starts the receiving of lines from the server
-     * by starting the thread with the <code>start</code> method.
-     *
-     * This method must be protected, because it is used by extending classes,
-     * which override the <code>connect</code> method.
-     *
-     * @param s
-     *            The socket which is used for the connection.
-     * @throws IOException
-     *             If an I/O error occurs.
-     * @see #connect()
-     * @see #run()
-     */
-    protected void prepare(Socket s) throws IOException {
-        if (s == null)
-            throw new SocketException("Socket s is null, not connected");
-        socket = s;
-        level = 1;
-        s.setSoTimeout(timeout);
-        if (trafficLogger != null) {
-            in = new LoggingReader(new InputStreamReader(s.getInputStream(), encoding), trafficLogger);
-            out = new LoggingWriter(new OutputStreamWriter(s.getOutputStream(), encoding), trafficLogger);
-        } else {
-            in = new BufferedReader(new InputStreamReader(s.getInputStream(), encoding));
-            out = new PrintWriter(new OutputStreamWriter(s.getOutputStream(), encoding));
-        }
-        start();
-        register();
-    }
-
-    // ------------------------------
-
-    /**
-     * Registers the connection with the IRC server.
-     * In fact, it sends a password (if set, else nothing), the nickname and the
-     * user, the realname and the host which we're connecting to.
-     * The action synchronizes <code>code> so that no important messages
-     * (like the first PING) come in before this registration is finished.
-     * The <code>USER</code> command's format is:
-     * <code>
-     * &lt;username&gt; &lt;localhost&gt; &lt;irchost&gt; &lt;realname&gt;
-     * </code>
-     */
-    private void register() {
-        if (pass != null)
-            send("PASS " + pass);
-        send("NICK " + nick);
-        send("USER " + username + " " + socket.getLocalAddress().getHostAddress() + " " + host + " :" + realname);
-    }
-
-    // ------------------------------
-
-    /**
-     * The <code>Thread</code> is started by the <code>connect</code> method.
-     * It's task is to receive strings from the IRC server and hand them over to
-     * the <code>get</code> method.
-     *
-     * Possibly occuring <code>IOException</code>s are handled according to the
-     * set exception handling.
-     */
-    public void run() {
-        try {
-            String line;
-            while ((line = in.readLine()) != null) {
-                get(line);
-            }
-        } catch (IOException exc) {
-            if (trafficLogger != null) {
-                trafficLogger.exception(exc);
-            }
-            close();
-        } finally {
-            close();
-        }
-    }
-
-    // ------------------------------
-
-    /**
-     * Sends a String to the server. You should use this method only, if you
-     * must do it. For most purposes, there are <code>do*</code> methods (like
-     * <code>doJoin</code>). A carriage return line feed (<code>\r\n</code>) is
-     * appended automatically.
-     *
-     * @param line
-     *            The line which should be send to the server without the
-     *            trailing carriage return line feed (<code>\r\n</code>).
-     */
-    public void send(String line) {
-        try {
-            out.write(line + "\r\n");
-            out.flush();
-            if (level == 1) { // not registered
-                IRCParser p = new IRCParser(line);
-                if ("NICK".equalsIgnoreCase(p.getCommand()))
-                    nick = p.getParameter(1).trim();
-            }
-        } catch (Exception exc) {
-            if (trafficLogger != null) {
-                trafficLogger.exception(exc);
-            }
-            throw new RuntimeException(exc);
-        }
-    }
-
-    // ------------------------------
-
-    /**
-     * Just parses a String given as the only argument with the help of the
-     * <code>IRCParser</code> class. Then it controls the command and fires
-     * events through the <code>IRCEventListener</code>.
-     *
-     * @param line
-     *            The line which is sent from the server.
-     */
-    private synchronized void get(String line) {
-        IRCParser p;
-        try {
-            p = new IRCParser(line, colorsEnabled);
-        } catch (Exception exc) {
-            return;
-        }
-        String command = p.getCommand();
-        int reply; // 3-digit reply will be parsed in the later if-condition
-
-        if ("PRIVMSG".equalsIgnoreCase(command)) { // MESSAGE
-
-            IRCUser user = p.getUser();
-            String middle = p.getMiddle();
-            String trailing = p.getTrailing();
-            for (int i = listeners.length - 1; i >= 0; i--)
-                listeners[i].onPrivmsg(middle, user, trailing);
-
-        } else if ("MODE".equalsIgnoreCase(command)) { // MODE
-
-            String chan = p.getParameter(1);
-            if (IRCUtil.isChan(chan)) {
-                IRCUser user = p.getUser();
-                String param2 = p.getParameter(2);
-                String paramsFrom3 = p.getParametersFrom(3);
-                for (int i = listeners.length - 1; i >= 0; i--)
-                    listeners[i].onMode(chan, user, new IRCModeParser(param2, paramsFrom3));
-            } else {
-                IRCUser user = p.getUser();
-                String paramsFrom2 = p.getParametersFrom(2);
-                for (int i = listeners.length - 1; i >= 0; i--)
-                    listeners[i].onMode(user, chan, paramsFrom2);
-            }
-
-        } else if ("PING".equalsIgnoreCase(command)) { // PING
-
-            String ping = p.getTrailing(); // no int cause sometimes it's text
-            if (pongAutomatic)
-                doPong(ping);
-            else
-                for (int i = listeners.length - 1; i >= 0; i--)
-                    listeners[i].onPing(ping);
-
-            if (level == 1) { // not registered
-                level = 2; // first PING received -> connection
-                for (int i = listeners.length - 1; i >= 0; i--)
-                    listeners[i].onRegistered();
-            }
-
-        } else if ("JOIN".equalsIgnoreCase(command)) { // JOIN
-
-            IRCUser user = p.getUser();
-            String trailing = p.getTrailing();
-            for (int i = listeners.length - 1; i >= 0; i--)
-                listeners[i].onJoin(trailing, user);
-
-        } else if ("NICK".equalsIgnoreCase(command)) { // NICK
-
-            IRCUser user = p.getUser();
-            String changingNick = p.getNick();
-            String newNick = p.getTrailing();
-            if (changingNick.equalsIgnoreCase(nick))
-                nick = newNick;
-            for (int i = listeners.length - 1; i >= 0; i--)
-                listeners[i].onNick(user, newNick);
-
-        } else if ("QUIT".equalsIgnoreCase(command)) { // QUIT
-
-            IRCUser user = p.getUser();
-            String trailing = p.getTrailing();
-            for (int i = listeners.length - 1; i >= 0; i--)
-                listeners[i].onQuit(user, trailing);
-
-        } else if ("PART".equalsIgnoreCase(command)) { // PART
-
-            IRCUser user = p.getUser();
-            String chan = p.getParameter(1);
-            String msg = p.getParameterCount() > 1 ? p.getTrailing() : "";
-            // not logic: "PART :#zentrum" is without msg,
-            // "PART #zentrum :cjo all"
-            // is with msg. so we cannot use getMiddle and getTrailing :-/
-            for (int i = listeners.length - 1; i >= 0; i--)
-                listeners[i].onPart(chan, user, msg);
-
-        } else if ("NOTICE".equalsIgnoreCase(command)) { // NOTICE
-
-            IRCUser user = p.getUser();
-            String middle = p.getMiddle();
-            String trailing = p.getTrailing();
-            for (int i = listeners.length - 1; i >= 0; i--)
-                listeners[i].onNotice(middle, user, trailing);
-
-        } else if ((reply = IRCUtil.parseInt(command)) >= 1 && reply < 400) { // RPL
-
-            String potNick = p.getParameter(1);
-            if ((level == 1 || level == 2) && nick.length() > potNick.length()
-                    && nick.substring(0, potNick.length()).equalsIgnoreCase(potNick)) {
-                nick = potNick;
-                if (level == 2)
-                    level = 3;
-            }
-
-            if (level == 1 && nick.equals(potNick)) { // not registered
-                level = 2; // if first PING wasn't received, we're
-                for (int i = listeners.length - 1; i >= 0; i--)
-                    listeners[i].onRegistered(); // connected now for sure
-            }
-
-            String middle = p.getMiddle();
-            String trailing = p.getTrailing();
-            for (int i = listeners.length - 1; i >= 0; i--)
-                listeners[i].onReply(reply, middle, trailing);
-
-        } else if (reply >= 400 && reply < 600) { // ERROR
-
-            String trailing = p.getTrailing();
-            for (int i = listeners.length - 1; i >= 0; i--)
-                listeners[i].onError(reply, trailing);
-
-        } else if ("KICK".equalsIgnoreCase(command)) { // KICK
-
-            IRCUser user = p.getUser();
-            String param1 = p.getParameter(1);
-            String param2 = p.getParameter(2);
-            String msg = (p.getParameterCount() > 2) ? p.getTrailing() : "";
-            for (int i = listeners.length - 1; i >= 0; i--)
-                listeners[i].onKick(param1, user, param2, msg);
-
-        } else if ("INVITE".equalsIgnoreCase(command)) { // INVITE
-
-            IRCUser user = p.getUser();
-            String middle = p.getMiddle();
-            String trailing = p.getTrailing();
-            for (int i = listeners.length - 1; i >= 0; i--)
-                listeners[i].onInvite(trailing, user, middle);
-
-        } else if ("TOPIC".equalsIgnoreCase(command)) { // TOPIC
-
-            IRCUser user = p.getUser();
-            String middle = p.getMiddle();
-            String trailing = p.getTrailing();
-            for (int i = listeners.length - 1; i >= 0; i--)
-                listeners[i].onTopic(middle, user, trailing);
-
-        } else if ("ERROR".equalsIgnoreCase(command)) { // ERROR
-
-            String trailing = p.getTrailing();
-            for (int i = listeners.length - 1; i >= 0; i--)
-                listeners[i].onError(trailing);
-
-        } else { // OTHER
-
-            String prefix = p.getPrefix();
-            String middle = p.getMiddle();
-            String trailing = p.getTrailing();
-            for (int i = listeners.length - 1; i >= 0; i--)
-                listeners[i].unknown(prefix, command, middle, trailing);
-
-        }
-    }
-
-    // ------------------------------
-
-    /**
-     * Close down the connection brutally.
-     * It does *NOT* send the proper IRC command <code>QUIT</code>. You should
-     * always use the <code>doQuit</code> methods or <code>send("QUIT")</code>
-     * instead of this method.
-     * You should use this method to close down the connection only when the IRC
-     * server doesn't react to the <code>QUIT</code> command.
-     * Possibly occuring <code>IOException</code>s are handled according to the
-     * set exception handling.
-     *
-     * @see #connect()
-     * @see #doQuit
-     * @see #doQuit(String)
-     */
-    public synchronized void close() {
-        try {
-            if (!isInterrupted())
-                interrupt();
-        } catch (Exception exc) {
-            handleException(exc);
-        }
-        try {
-            if (socket != null)
-                socket.close();
-        } catch (Exception exc) {
-            handleException(exc);
-        }
-        try {
-            if (out != null)
-                out.close();
-        } catch (Exception exc) {
-            handleException(exc);
-        }
-        try {
-            if (in != null)
-                in.close();
-        } catch (Exception exc) {
-            handleException(exc);
-        }
-        if (this.level != -1) {
-            this.level = -1;
-            for (int i = listeners.length - 1; i >= 0; i--)
-                listeners[i].onDisconnected();
-        }
-        socket = null;
-        in = null;
-        out = null;
-        listeners = new IRCEventListener[0];
-    }
-
-    /**
-     * Handles the exception according to the current exception handling mode.
-     */
-    private void handleException(Exception exc) {
-        if (trafficLogger != null) {
-            trafficLogger.exception(exc);
-        } else {
-            throw new RuntimeException(exc);
-        }
-    }
-
-    // ------------------------------
+public interface IRCConnection {
+    /** Value returned when there is no timeout to deliver. */
+    int INVALID_TIMEOUT = -1;
 
     /**
      * Adds a new {@link IRCEventListener} which listens for actions coming from
@@ -757,333 +55,53 @@ public class IRCConnection extends Thread {
      * @throws IllegalArgumentException
      *             If <code>listener</code> is <code>null</code>.
      */
-    public synchronized void addIRCEventListener(IRCEventListener l) {
-        if (l == null)
-            throw new IllegalArgumentException("Listener is null.");
-        int len = listeners.length;
-        IRCEventListener[] oldListeners = listeners;
-        listeners = new IRCEventListener[len + 1];
-        System.arraycopy(oldListeners, 0, listeners, 0, len);
-        listeners[len] = l;
-    }
-
-    // ------------------------------
+    void addIRCEventListener(IRCEventListener l);
 
     /**
-     * Adds a new {@link IRCEventListener} which listens for actions coming from
-     * the IRC server at a given index.
+     * Close the connection forcefully.
+     * <p>
+     * This method does <b>not</b> send <code>QUIT</code> IRC command. Consider
+     * using {@link #doQuit()} or {@link #doQuit(String)} to send the proper
+     * QUIT command to the server.
+     * <p>
+     * This method should be used only when there is a good reason for that,
+     * e.g. that the IRC server does not react to <code>QUIT</code> command.
+     * <p>
+     * Possibly occuring <code>IOException</code>s are handled according to the
+     * set exception handling.
      *
-     * @param l
-     *            An instance of the {@link IRCEventListener} interface.
-     * @param i
-     *            The designated index of the listener.
-     * @throws IllegalArgumentException
-     *             If <code>listener</code> is <code>null</code>.
-     * @throws IndexOutOfBoundsException
-     *             If <code>i</code> is not greater than 0 and less or equal
-     *             than <code>listeners.length</code>.
-     */
-    public synchronized void addIRCEventListener(IRCEventListener l, int i) {
-        if (l == null)
-            throw new IllegalArgumentException("Listener is null.");
-        if (i < 0 || i > listeners.length)
-            throw new IndexOutOfBoundsException("i is not in range");
-        int len = listeners.length;
-        IRCEventListener[] oldListeners = listeners;
-        listeners = new IRCEventListener[len + 1];
-        if (i > 0)
-            System.arraycopy(oldListeners, 0, listeners, 0, i);
-        if (i < listeners.length)
-            System.arraycopy(oldListeners, i, listeners, i + 1, len - i);
-        listeners[i] = l;
-    }
-
-    // ------------------------------
-
-    /**
-     * Removes the first occurence of the given {@link IRCEventListener} from
-     * the listener-vector.
-     *
-     * @param l
-     *            An instance of the {@link IRCEventListener} interface.
-     * @return <code>true</code> if the listener was successfully removed;
-     *         <code>false</code> if it was not found.
-     */
-    public synchronized boolean removeIRCEventListener(IRCEventListener l) {
-        if (l == null)
-            return false;
-        int index = -1;
-        for (int i = 0; i < listeners.length; i++)
-            if (listeners[i].equals(l)) {
-                index = i;
-                break;
-            }
-        if (index == -1)
-            return false;
-        listeners[index] = null;
-        int len = listeners.length - 1;
-        IRCEventListener[] newListeners = new IRCEventListener[len];
-        for (int i = 0, j = 0; i < len; j++)
-            if (listeners[j] != null)
-                newListeners[i++] = listeners[j];
-        listeners = newListeners;
-        return true;
-    }
-
-    // ------------------------------
-
-    /**
-     * Enables or disables the mIRC colorcodes.
-     *
-     * @param colors
-     *            <code>true</code> to enable, <code>false</code> to disable
-     *            colors.
-     */
-    public void setColors(boolean colors) {
-        colorsEnabled = colors;
-    }
-
-    // ------------------------------
-
-    /**
-     * Enables or disables the automatic PING? PONG! support.
-     *
-     * @param pong
-     *            <code>true</code> to enable automatic <code>PONG</code> reply,
-     *            <code>false</code> makes the class fire <code>onPing</code>
-     *            events.
-     */
-    public void setPong(boolean pong) {
-        pongAutomatic = pong;
-    }
-
-    // ------------------------------
-
-    /**
-     * Changes the character encoding used to talk to the server. This can be
-     * ISO-8859-1 or UTF-8 for example. This property must be set before a call
-     * to the <code>connect()</code> method.
-     *
-     * @param encoding
-     *            The new encoding string, e.g. <code>"UTF-8"</code>.
-     */
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
-    }
-
-    // ------------------------------
-
-    /**
-     * Sets the connection's timeout in milliseconds.
-     * The default is <code>1000 * 60 15</code> millis which are 15 minutes.
-     * The possibly occuring <code>IOException</code> are handled according to
-     * the set exception handling.
-     *
-     * @param millis
-     *            The socket's timeout in milliseconds.
-     */
-    public void setTimeout(int millis) {
-        if (socket != null) {
-            try {
-                socket.setSoTimeout(millis);
-            } catch (IOException exc) {
-                handleException(exc);
-            }
-        }
-        timeout = millis;
-    }
-
-    // ------------------------------
-
-    /**
-     * Tells whether there's a connection to the IRC network or not.
-     * If <code>connect</code> wasn't called yet, it returns <code>false</code>.
-     *
-     * @return The status of the connection; <code>true</code> if it's
-     *         connected.
      * @see #connect()
+     * @see #doQuit
+     * @see #doQuit(String)
+     */
+    void close();
+
+    /**
+     * Establish a connection to the server. This method must be invoked to
+     * start a connection as the constructor does not do that.
+     * <p>
+     * It tries all ports from {@link IRCConfig#getPorts()} until the connecting
+     * succeeds. If all ports fail an <code>IOException</code> is thrown.
+     * <p>
+     * This method can be invokde once only.
+     *
+     * @throws IOException
+     *             If an I/O error occurs.
+     * @throws NoSuchAlgorithmException
+     * @throws KeyManagementException
+     * @throws SocketException
+     *             If the <code>connect</code> method was already invoked.
+     * @see #isConnected()
      * @see #doQuit()
      * @see #doQuit(String)
      * @see #close()
      */
-    public boolean isConnected() {
-        return level >= 1;
-    }
-
-    // ------------------------------
-
-    /**
-     * Returns the nickname of this instance.
-     *
-     * @return The nickname.
-     */
-    public String getNick() {
-        return nick;
-    }
-
-    // ------------------------------
-
-    /**
-     * Returns the realname of this instance.
-     *
-     * @return The realname.
-     */
-    public String getRealname() {
-        return realname;
-    }
-
-    // ------------------------------
-
-    /**
-     * Returns the username of this instance.
-     *
-     * @return The username.
-     */
-    public String getUsername() {
-        return username;
-    }
-
-    // ------------------------------
-
-    /**
-     * Returns the server of this instance.
-     *
-     * @return The server's hostname.
-     */
-    public String getHost() {
-        return host;
-    }
-
-    // ------------------------------
-
-    /**
-     * Returns the password of this instance. If no password is set,
-     * <code>null</code> is returned.
-     *
-     * @return The password. If no password is set, <code>null</code> is
-     *         returned.
-     */
-    public String getPassword() {
-        return pass;
-    }
-
-    // ------------------------------
-
-    /**
-     * Returns all ports to which the <code>IRCConnection</code> is going to try
-     * or has tried to connect to.
-     *
-     * @return The ports in an <code>int[]</code> array.
-     */
-    public int[] getPorts() {
-        return ports;
-    }
-
-    // ------------------------------
-
-    /**
-     * Returns the port to which the <code>IRCConnection</code> connected, or
-     * <code>0</code> if the connection failed or wasn't tried yet.
-     *
-     * @return The port to which the <code>IRCConnection</code>, or
-     *         <code>0</code> if the connection failed or wasn't tried yet.
-     */
-    public int getPort() {
-        return (socket != null) ? socket.getPort() : 0;
-    }
-
-    // ------------------------------
-
-    /**
-     * Indicates whether colors are stripped out or not.
-     *
-     * @return <code>true</code> if colors are disabled.
-     */
-    public boolean getColors() {
-        return colorsEnabled;
-    }
-
-    // ------------------------------
-
-    /**
-     * Indicates whether automatic PING? PONG! is enabled or not.
-     *
-     * @return <code>true</code> if PING? PONG! is done automatically.
-     */
-    public boolean getPong() {
-        return pongAutomatic;
-    }
-
-    // ------------------------------
-
-    /**
-     * Returns the encoding of the socket.
-     *
-     * @return The socket's encoding.
-     */
-    public String getEncoding() {
-        return encoding;
-    }
-
-    // ------------------------------
-
-    /**
-     * Returns the timeout of the socket.
-     * If an error occurs, which is never the case, <code>-1</code> is returned.
-     * The possibly occuring <code>IOException</code> are handled according to
-     * the set exception handling.
-     *
-     * @return The timeout.
-     */
-    public int getTimeout() {
-        if (socket != null)
-            try {
-                return socket.getSoTimeout();
-            } catch (IOException exc) {
-                handleException(exc);
-                return -1;
-            }
-        else
-            return timeout;
-    }
-
-    // ------------------------------
-
-    /**
-     * Returns the local address of the connection socket. If the connection is
-     * not yet connected, <code>null</code> is returned.
-     *
-     * @return the local address
-     */
-    public InetAddress getLocalAddress() {
-        return (socket != null) ? socket.getLocalAddress() : null;
-    }
-
-    // ------------------------------
-
-    /**
-     * Generates a <code>String</code> with some information about the instance
-     * of <code>IRCConnection</code>. Its format is: <code>
-     * classname[host,portMin,portMax,username,nick,realname,pass,connected]
-     * </code>.
-     *
-     * @return A <code>String</code> with information about the instance.
-     */
-    public String toString() {
-        return getClass().getName() + "[" + host + "," + getPort() + "," + username + "," + nick + "," + realname + ","
-                + pass + "," + isConnected() + "]";
-    }
-
-    // ------------------------------
+    void connect() throws IOException, KeyManagementException, NoSuchAlgorithmException;
 
     /**
      * Removes away message.
      */
-    public void doAway() {
-        send("AWAY");
-    }
-
-    // ------------------------------
+    void doAway();
 
     /**
      * Sets away message.
@@ -1091,11 +109,7 @@ public class IRCConnection extends Thread {
      * @param msg
      *            The away message.
      */
-    public void doAway(String msg) {
-        send("AWAY :" + msg);
-    }
-
-    // ------------------------------
+    void doAway(String msg);
 
     /**
      * Invites a user to a channel.
@@ -1105,11 +119,7 @@ public class IRCConnection extends Thread {
      * @param chan
      *            The channel the user should be invited to.
      */
-    public void doInvite(String nick, String chan) {
-        send("INVITE " + nick + " " + chan);
-    }
-
-    // ------------------------------
+    void doInvite(String nick, String chan);
 
     /**
      * Checks if one or more nicks are used on the server.
@@ -1117,11 +127,7 @@ public class IRCConnection extends Thread {
      * @param nick
      *            The nickname of the user we search for.
      */
-    public void doIson(String nick) {
-        send("ISON " + nick);
-    }
-
-    // ------------------------------
+    void doIson(String nick);
 
     /**
      * Joins a channel without a key.
@@ -1129,11 +135,7 @@ public class IRCConnection extends Thread {
      * @param chan
      *            The channel which is to join.
      */
-    public void doJoin(String chan) {
-        send("JOIN " + chan);
-    }
-
-    // ------------------------------
+    void doJoin(String chan);
 
     /**
      * Joins a channel with a key.
@@ -1143,11 +145,7 @@ public class IRCConnection extends Thread {
      * @param key
      *            The key of the channel.
      */
-    public void doJoin(String chan, String key) {
-        send("JOIN " + chan + " " + key);
-    }
-
-    // ------------------------------
+    void doJoin(String chan, String key);
 
     /**
      * Kicks a user from a channel.
@@ -1157,11 +155,8 @@ public class IRCConnection extends Thread {
      * @param nick
      *            The nickname of the user who should be kicked.
      */
-    public void doKick(String chan, String nick) {
-        send("KICK " + chan + " " + nick);
-    }
+    void doKick(String chan, String nick);
 
-    // ------------------------------
 
     /**
      * Kicks a user from a channel with a comment.
@@ -1173,20 +168,12 @@ public class IRCConnection extends Thread {
      * @param msg
      *            The optional kickmessage.
      */
-    public void doKick(String chan, String nick, String msg) {
-        send("KICK " + chan + " " + nick + " :" + msg);
-    }
-
-    // ------------------------------
+    void doKick(String chan, String nick, String msg);
 
     /**
      * Lists all channels with their topic and status.
      */
-    public void doList() {
-        send("LIST");
-    }
-
-    // ------------------------------
+    void doList();
 
     /**
      * Lists channel(s) with their topic and status.
@@ -1194,46 +181,7 @@ public class IRCConnection extends Thread {
      * @param chan
      *            The channel the <code>LIST</code> refers to.
      */
-    public void doList(String chan) {
-        send("LIST " + chan);
-    }
-
-    // ------------------------------
-
-    /**
-     * Lists all visible users.
-     */
-    public void doNames() {
-        send("NAMES");
-    }
-
-    // ------------------------------
-
-    /**
-     * Lists all visible users of (a) channel(s).
-     *
-     * @param chan
-     *            The channel the <code>NAMES</code> command is refering to.
-     */
-    public void doNames(String chan) {
-        send("NAMES " + chan);
-    }
-
-    // ------------------------------
-
-    /**
-     * Sends a message to a person or a channel.
-     *
-     * @param target
-     *            The nickname or channel the message should be sent to.
-     * @param msg
-     *            The message which should be transmitted.
-     */
-    public void doPrivmsg(String target, String msg) {
-        send("PRIVMSG " + target + " :" + msg);
-    }
-
-    // ------------------------------
+    void doList(String chan);
 
     /**
      * Requests a Reply 324 for the modes of a given channel.
@@ -1241,11 +189,7 @@ public class IRCConnection extends Thread {
      * @param chan
      *            The channel the <code>MODE</code> request is refering to.
      */
-    public void doMode(String chan) {
-        send("MODE " + chan);
-    }
-
-    // ------------------------------
+    void doMode(String chan);
 
     /**
      * Sends a mode to the server.
@@ -1259,11 +203,20 @@ public class IRCConnection extends Thread {
      * @param mode
      *            The new modes.
      */
-    public void doMode(String target, String mode) {
-        send("MODE " + target + " " + mode);
-    }
+    void doMode(String target, String mode);
 
-    // ------------------------------
+    /**
+     * Lists all visible users.
+     */
+    void doNames();
+
+    /**
+     * Lists all visible users of (a) channel(s).
+     *
+     * @param chan
+     *            The channel the <code>NAMES</code> command is refering to.
+     */
+    void doNames(String chan);
 
     /**
      * Changes the nickname.
@@ -1271,11 +224,7 @@ public class IRCConnection extends Thread {
      * @param nick
      *            The new nickname.
      */
-    public void doNick(String nick) {
-        send("NICK " + nick);
-    }
-
-    // ------------------------------
+    void doNick(String nick);
 
     /**
      * Notices a message to a person or a channel.
@@ -1285,11 +234,7 @@ public class IRCConnection extends Thread {
      * @param msg
      *            The message which should be transmitted.
      */
-    public void doNotice(String target, String msg) {
-        send("NOTICE " + target + " :" + msg);
-    }
-
-    // ------------------------------
+    void doNotice(String target, String msg);
 
     /**
      * Parts from a given channel.
@@ -1297,11 +242,7 @@ public class IRCConnection extends Thread {
      * @param chan
      *            The channel you want to part from.
      */
-    public void doPart(String chan) {
-        send("PART " + chan);
-    }
-
-    // ------------------------------
+    void doPart(String chan);
 
     /**
      * Parts from a given channel with a given parg-msg.
@@ -1311,11 +252,7 @@ public class IRCConnection extends Thread {
      * @param msg
      *            The optional partmessage.
      */
-    public void doPart(String chan, String msg) {
-        send("PART " + chan + " :" + msg);
-    }
-
-    // ------------------------------
+    void doPart(String chan, String msg);
 
     /**
      * Quits from the IRC server with a quit-msg.
@@ -1327,11 +264,17 @@ public class IRCConnection extends Thread {
      *            given as parameter which would throw an Exception if we gave
      *            the ping as long.
      */
-    public void doPong(String ping) {
-        send("PONG :" + ping);
-    }
+    void doPong(String ping);
 
-    // ------------------------------
+    /**
+     * Sends a message to a person or a channel.
+     *
+     * @param target
+     *            The nickname or channel the message should be sent to.
+     * @param msg
+     *            The message which should be transmitted.
+     */
+    void doPrivmsg(String target, String msg);
 
     /**
      * Quits from the IRC server. Calls the <code>disconnect</code>-method which
@@ -1342,11 +285,7 @@ public class IRCConnection extends Thread {
      * @see #doQuit(String)
      * @see #close()
      */
-    public void doQuit() {
-        send("QUIT");
-    }
-
-    // ------------------------------
+    void doQuit();
 
     /**
      * Quits from the IRC server with a quit-msg. Calls the
@@ -1359,11 +298,7 @@ public class IRCConnection extends Thread {
      * @see #doQuit()
      * @see #close()
      */
-    public void doQuit(String msg) {
-        send("QUIT :" + msg);
-    }
-
-    // ------------------------------
+    void doQuit(String msg);
 
     /**
      * Requests the topic of a chan. The topic is given in a numeric reply.
@@ -1371,11 +306,7 @@ public class IRCConnection extends Thread {
      * @param chan
      *            The channel which topic should be requested.
      */
-    public void doTopic(String chan) {
-        send("TOPIC " + chan);
-    }
-
-    // ------------------------------
+    void doTopic(String chan);
 
     /**
      * Changes the topic of a chan.
@@ -1385,48 +316,7 @@ public class IRCConnection extends Thread {
      * @param topic
      *            The new topic.
      */
-    public void doTopic(String chan, String topic) {
-        send("TOPIC " + chan + " :" + topic);
-    }
-
-    // ------------------------------
-
-    /**
-     * Requests information about users matching the given criteric, for example
-     * a channel they are on.
-     *
-     * @param criteric
-     *            The criterics of the <code>WHO</code> query.
-     */
-    public void doWho(String criteric) {
-        send("WHO " + criteric);
-    }
-
-    // ------------------------------
-
-    /**
-     * Requires information about an existing user.
-     *
-     * @param nick
-     *            The nickname of the user the query is refering to.
-     */
-    public void doWhois(String nick) {
-        send("WHOIS " + nick);
-    }
-
-    // ------------------------------
-
-    /**
-     * Requires host-information about a user, who is not connected anymore.
-     *
-     * @param nick
-     *            The nickname of the user the query is refering to.
-     */
-    public void doWhowas(String nick) {
-        send("WHOWAS " + nick);
-    }
-
-    // ------------------------------
+    void doTopic(String chan, String topic);
 
     /**
      * Requires host-information about up to 5 users which must be listed and
@@ -1435,7 +325,106 @@ public class IRCConnection extends Thread {
      * @param nick
      *            The nickname of the user the query is refering to.
      */
-    public void doUserhost(String nick) {
-        send("USERHOST " + nick);
-    }
+    void doUserhost(String nick);
+
+    /**
+     * Requests information about users matching the given criteric, for example
+     * a channel they are on.
+     *
+     * @param criteric
+     *            The criterics of the <code>WHO</code> query.
+     */
+    void doWho(String criteric);
+
+    /**
+     * Requires information about an existing user.
+     *
+     * @param nick
+     *            The nickname of the user the query is refering to.
+     */
+    void doWhois(String nick);
+
+    /**
+     * Requires host-information about a user, who is not connected anymore.
+     *
+     * @param nick
+     *            The nickname of the user the query is refering to.
+     */
+    void doWhowas(String nick);
+
+    /**
+     * Returns the local address of the connection socket. If the connection is
+     * not yet connected, <code>null</code> is returned.
+     *
+     * @return the local address
+     */
+    InetAddress getLocalAddress();
+
+    /**
+     * Returns the nickname of this instance.
+     *
+     * @return The nickname.
+     */
+    String getNick();
+
+    /**
+     * Returns the port to which the <code>IRCConnection</code> connected, or
+     * <code>0</code> if the connection failed or wasn't tried yet.
+     *
+     * @return The port to which the <code>IRCConnection</code>, or
+     *         <code>0</code> if the connection failed or wasn't tried yet.
+     */
+    int getPort();
+
+    /**
+     * Returns the timeout of the socket.
+     * If an error occurs, which is never the case, <code>-1</code> is returned.
+     * The possibly occuring <code>IOException</code> are handled according to
+     * the set exception handling.
+     *
+     * @return The timeout.
+     */
+    int getTimeout();
+
+    /**
+     * Tells whether there's a connection to the IRC network or not.
+     * If <code>connect</code> wasn't called yet, it returns <code>false</code>.
+     *
+     * @return The status of the connection; <code>true</code> if it's
+     *         connected.
+     * @see #connect()
+     * @see #doQuit()
+     * @see #doQuit(String)
+     * @see #close()
+     */
+    boolean isConnected();
+
+    /**
+     * @return {@code true} if the connection is using SSL
+     */
+    boolean isSSL();
+
+    /**
+     * Removes the first occurence of the given {@link IRCEventListener} from
+     * the listener-vector.
+     *
+     * @param l
+     *            An instance of the {@link IRCEventListener} interface.
+     * @return <code>true</code> if the listener was successfully removed;
+     *         <code>false</code> if it was not found.
+     */
+    boolean removeIRCEventListener(IRCEventListener l);
+
+    /**
+     * Sends a String to the server. You should use this method only, if you
+     * must do it. For most purposes, there are <code>do*</code> methods (like
+     * <code>doJoin</code>). A carriage return line feed (<code>\r\n</code>) is
+     * appended automatically.
+     *
+     * @param line
+     *            The line which should be send to the server without the
+     *            trailing carriage return line feed (<code>\r\n</code>).
+     */
+    void send(String line);
+
 }

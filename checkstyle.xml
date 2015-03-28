@@ -30,6 +30,14 @@
     <property name="message" value="Line has trailing spaces." />
   </module>
 
+  <!-- Enforce UNIX line endings. -->
+  <module name="RegexpMultiline">
+    <property name="format" value="\r\n" />
+    <property name="maximum" value="0" />
+    <property name="message"
+        value="Line ends with Windows-style \r\n characters. Please use UNIX-style \n end of lines." />
+  </module>
+
   <module name="TreeWalker">
 
     <property name="cacheFile" value="${checkstyle.cache.file}" />

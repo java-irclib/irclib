@@ -19,7 +19,7 @@
 
     <groupId>org.schwering</groupId>
     <artifactId>irclib</artifactId>
-    <version>2.0.1.Alpha2-SNAPSHOT</version>
+    <version>2.0.0.Alpha3-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>IRClib</name>
@@ -50,6 +50,15 @@
             <email>schwering@gmail.com</email>
         </developer>
     </developers>
+
+    <mailingLists>
+        <mailingList>
+            <name>irclib-dev</name>
+            <subscribe>irclib-dev@googlegroups.com</subscribe>
+            <unsubscribe>irclib-dev-unsubscribe@googlegroups.com</unsubscribe>
+            <archive>http://groups.google.com/group/irclib-dev/</archive>
+        </mailingList>
+    </mailingLists>
 
     <scm>
         <connection>scm:git:https://github.com/schwering/irclib.git</connection>

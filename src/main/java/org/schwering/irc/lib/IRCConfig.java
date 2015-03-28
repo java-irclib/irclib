@@ -14,16 +14,11 @@
 package org.schwering.irc.lib;
 
 /**
- * An IRC user refered to in many IRC relies.
+ * A configuration to use when creating a new {@link IRCConnection}, a union of
+ * {@link IRCServerConfig} and {@link IRCRuntimeConfig}.
  *
+ * @see IRCConnectionFactory#newConnection(IRCConfig)
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
-public interface IRCUser {
-
-    String getHost();
-
-    String getUsername();
-
-    String getNick();
-
+public interface IRCConfig extends IRCServerConfig, IRCRuntimeConfig {
 }
