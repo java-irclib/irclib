@@ -43,7 +43,6 @@ import org.schwering.irc.lib.IRCUser;
  * networks provide more channel-modes. This class can handle all modes; it's
  * not restricted to the rights defined in RFC1459.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
- * @version 1.22
  * @see IRCEventListener#onMode(String, IRCUser, IRCModeParser)
  * @see IRCUser
  */

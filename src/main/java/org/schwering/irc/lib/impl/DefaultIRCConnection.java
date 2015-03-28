@@ -71,7 +71,6 @@ import org.schwering.irc.lib.util.LoggingWriter;
  * or <code>""</code> instead as done in this example.
  *
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
- * @version 3.05
  * @see IRCEventListener
  * @see IRCParser
  * @see IRCUtil

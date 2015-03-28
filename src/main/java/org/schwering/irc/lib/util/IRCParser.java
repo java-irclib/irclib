@@ -82,7 +82,6 @@ import org.schwering.irc.lib.impl.DefaultIRCUser;
  * CR LF
  * </code>
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
- * @version 3.22
  * @see DefaultIRCConnection
  */
 public class IRCParser {

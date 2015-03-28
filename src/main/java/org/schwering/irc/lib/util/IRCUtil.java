@@ -27,7 +27,6 @@ import org.schwering.irc.lib.impl.DefaultIRCConnection;
  * from RFC1459.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
  * @author Normton &lt;normton@latinmail.com&gt;
- * @version 2.03
  * @see DefaultIRCConnection
  * @see IRCEventListener#onError(int, String)
  * @see IRCEventListener#onReply(int, String, String)

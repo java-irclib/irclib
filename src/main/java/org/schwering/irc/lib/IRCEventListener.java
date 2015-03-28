@@ -50,7 +50,6 @@ import org.schwering.irc.lib.util.IRCModeParser;
  * <p>
  * For other, unkown events there's the <code>unknown</code>-method.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
- * @version 1.64
  * @see IRCEventAdapter
  * @see DefaultIRCConnection
  */

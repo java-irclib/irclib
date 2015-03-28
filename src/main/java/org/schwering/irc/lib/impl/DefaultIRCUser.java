@@ -22,7 +22,6 @@ import org.schwering.irc.lib.util.IRCParser;
  * <p>
  * It's used to pack these information in one object.
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
- * @version 1.02
  * @see IRCEventListener
  * @see IRCParser
  */
