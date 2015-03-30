@@ -15,6 +15,8 @@ package org.schwering.irc.lib;
 
 /**
  * A logger for both ingoing and outgoing IRC messages that the IRC client sends and receives.
+ * <p>
+ * {@link #SYSTEM_OUT} is a simple {@link IRCTrafficLogger} implementation printing to {@link System#out}.
  *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */

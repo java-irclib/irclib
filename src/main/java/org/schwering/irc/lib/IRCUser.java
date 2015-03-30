@@ -20,10 +20,19 @@ package org.schwering.irc.lib;
  */
 public interface IRCUser {
 
+    /**
+     * @return The host of the line or {@code null}  if it's not given.
+     */
     String getHost();
 
-    String getUsername();
-
+    /**
+     * @return The nickname or the servername of the line or {@code null} if no nick is given
+     */
     String getNick();
+
+    /**
+     * @return The username of the lineor {@code null} if it's not given.
+     */
+    String getUsername();
 
 }
