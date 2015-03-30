@@ -85,28 +85,28 @@ public class IRCUtil implements IRCConstants {
      * The documentation of the evil color codes is available on
      * <a href="http://www.mirc.co.uk/help/color.txt"
      * target="_blank">http://www.mirc.co.uk/help/color.txt</a>.
-     * This method links to the <code>parseColors(StringBuffer)</code> method.
+     * This method links to the <code>parseColors(StringBuilder)</code> method.
      * @param str The line which should be parsed.
      * @return A line cleaned from any mIRC colorcodes.
-     * @see #parseColors(StringBuffer)
+     * @see #parseColors(StringBuilder)
      */
     public static String stripColors(String str) {
-        return parseColors(new StringBuffer(str), false).toString();
+        return parseColors(new StringBuilder(str), false).toString();
     }
 
 
 
     /**
-     * Erases the mIRC colorcodes from a StringBuffer.
+     * Erases the mIRC colorcodes from a StringBuilder.
      * The documentation of the evil color codes is available on
      * <a href="http://www.mirc.co.uk/help/color.txt"
      * target="_blank">http://www.mirc.co.uk/help/color.txt</a>.
-     * This method links to the <code>parseColors(StringBuffer)</code> method.
+     * This method links to the <code>parseColors(StringBuilder)</code> method.
      * @param buf The line which should be parsed.
      * @return A line cleaned from any mIRC colorcodes.
-     * @see #parseColors(StringBuffer)
+     * @see #parseColors(StringBuilder)
      */
-    public static StringBuffer stripColors(StringBuffer buf) {
+    public static StringBuilder stripColors(StringBuilder buf) {
         return parseColors(buf, false);
     }
 
@@ -117,7 +117,7 @@ public class IRCUtil implements IRCConstants {
      * The documentation of the evil color codes is available on
      * <a href="http://www.mirc.co.uk/help/color.txt"
      * target="_blank">http://www.mirc.co.uk/help/color.txt</a>.
-     * This method links to the <code>parseColors(StringBuffer)</code> method.
+     * This method links to the <code>parseColors(StringBuilder)</code> method.
      * <p>
      * <b>Note:</b> This method also removed <code>CTCP_DELIMITER</code>s,
      *             which are not part of mIRC color codes. You probably want
@@ -126,16 +126,16 @@ public class IRCUtil implements IRCConstants {
      *             the way you want.
      * @param str The line which should be parsed.
      * @return A line cleaned from any mIRC colorcodes.
-     * @see #parseColors(StringBuffer)
+     * @see #parseColors(StringBuilder)
      */
     public static String parseColors(String str) {
-        return parseColors(new StringBuffer(str)).toString();
+        return parseColors(new StringBuilder(str)).toString();
     }
 
 
 
     /**
-     * Erases the mIRC colorcodes and CTCP delimiters from a StringBuffer.
+     * Erases the mIRC colorcodes and CTCP delimiters from a StringBuilder.
      * The documentation of the evil color codes is available on
      * <a href="http://www.mirc.co.uk/help/color.txt"
      * target="_blank">http://www.mirc.co.uk/help/color.txt</a>.
@@ -146,10 +146,10 @@ public class IRCUtil implements IRCConstants {
      *             <code>CTCP_DELIMITER</code>s so that you can deal with them
      *             the way you want.
      * @param buf The line which should be parsed.
-     * @return A line as <code>StringBuffer</code> object which is cleaned from
+     * @return A line as <code>StringBuilder</code> object which is cleaned from
      *         any mIRC colorcodes.
      */
-    public static StringBuffer parseColors(StringBuffer buf) {
+    public static StringBuilder parseColors(StringBuilder buf) {
         return parseColors(buf, true);
     }
 
@@ -166,10 +166,10 @@ public class IRCUtil implements IRCConstants {
      * @param buf The line which should be parsed.
      * @param removeCTCP If <code>false</code>, <code>CTCP_DELIMITER</code>s
      *                   are left untouched in the string.
-     * @return A line as <code>StringBuffer</code> object which is cleaned from
+     * @return A line as <code>StringBuilder</code> object which is cleaned from
      *         any mIRC colorcodes.
      */
-    static StringBuffer parseColors(StringBuffer buf,
+    static StringBuilder parseColors(StringBuilder buf,
             boolean removeCTCP) {
         int len = buf.length();
         char c;

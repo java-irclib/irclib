@@ -87,9 +87,9 @@ import org.schwering.irc.lib.impl.DefaultIRCUser;
 public class IRCParser {
 
     /**
-     * The <code>StringBuffer</code> contains the line which was analyzed.
+     * The <code>StringBuilder</code> contains the line which was analyzed.
      */
-    private StringBuffer buf;
+    private StringBuilder buf;
 
     /**
      * The length of the line.
@@ -147,7 +147,7 @@ public class IRCParser {
         int index = 0;
         int trail;
 
-        buf = new StringBuffer(line);
+        buf = new StringBuilder(line);
         if (!stripColors)
             buf = IRCUtil.parseColors(buf);
         len = buf.length();
@@ -185,7 +185,7 @@ public class IRCParser {
 
 
     /**
-     * Searches for a char in the <code>StringBuffer buf</code> from a given index
+     * Searches for a char in the <code>StringBuilder buf</code> from a given index
      * and returns its index.
      * @param c The char to search.
      * @param i The index the method will start searching at.
@@ -200,7 +200,7 @@ public class IRCParser {
 
 
     /**
-     * Searches for a string in the <code>StringBuffer buf</code> from a given
+     * Searches for a string in the <code>StringBuilder buf</code> from a given
      * index and returns its beginning index.
      * @param str The string to search.
      * @param i The index the method will start searching at.
@@ -221,7 +221,7 @@ public class IRCParser {
 
 
     /**
-     * Searches for a given char in the <code>StringBuffer buf</code>.
+     * Searches for a given char in the <code>StringBuilder buf</code>.
      * It starts at the end.
      * Note: The method expects a character which is not <code>c</code> before
      * it can return an index. Thus in a string like "<code>nick moor&nbsp;&nbsp;
@@ -498,7 +498,7 @@ public class IRCParser {
     public String getParametersFrom(int i) {
         if (parameters == null)
             initParameters();
-        StringBuffer params = new StringBuffer();
+        StringBuilder params = new StringBuilder();
         for (i--; i < parameters.length; i++)
             params.append(parameters[i] +" ");
         return params.toString();
@@ -518,7 +518,7 @@ public class IRCParser {
     public String getParametersTo(int i) {
         if (parameters == null)
             initParameters();
-        StringBuffer params = new StringBuffer();
+        StringBuilder params = new StringBuilder();
         int max = (i < parameters.length) ? i : parameters.length;
         for (i = 0; i < max; i++)
             params.append(parameters[i] +" ");
