@@ -13,20 +13,40 @@
  */
 package org.schwering.irc.lib.impl;
 
+import java.security.SecureRandom;
+import java.util.Arrays;
+
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.TrustManager;
 
 import org.schwering.irc.lib.IRCSSLSupport;
 
 /**
+ * A default {@link IRCSSLSupport} with configurable {@link KeyManager}s,
+ * {@link TrustManager}s and {@link SecureRandom}.
+ *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public class DefaultIRCSSLSupport implements IRCSSLSupport {
 
+    private final KeyManager[] keyManagers;
+    private final SecureRandom secureRandom;
+    private final TrustManager[] trustManagers;
+
     /**
-     * @param sslSupport
+     * @param keyManagers
+     * @param trustManagers
+     * @param secureRandom
      */
+    public DefaultIRCSSLSupport(KeyManager[] keyManagers, TrustManager[] trustManagers, SecureRandom secureRandom) {
+        super();
+        this.keyManagers = Arrays.copyOf(keyManagers, keyManagers.length);
+        this.trustManagers = Arrays.copyOf(trustManagers, trustManagers.length);
+        this.secureRandom = secureRandom;
+    }
+
     public DefaultIRCSSLSupport(IRCSSLSupport sslSupport) {
+        this(sslSupport.getKeyManagers(), sslSupport.getTrustManagers(), sslSupport.getSecureRandom());
     }
 
     /**
@@ -34,8 +54,15 @@ public class DefaultIRCSSLSupport implements IRCSSLSupport {
      */
     @Override
     public KeyManager[] getKeyManagers() {
-        // TODO Auto-generated method stub
-        return null;
+        return Arrays.copyOf(this.keyManagers, this.keyManagers.length);
+    }
+
+    /**
+     * @see org.schwering.irc.lib.IRCSSLSupport#getSecureRandom()
+     */
+    @Override
+    public SecureRandom getSecureRandom() {
+        return this.secureRandom;
     }
 
     /**
@@ -43,8 +70,7 @@ public class DefaultIRCSSLSupport implements IRCSSLSupport {
      */
     @Override
     public TrustManager[] getTrustManagers() {
-        // TODO Auto-generated method stub
-        return null;
+        return Arrays.copyOf(this.trustManagers, this.trustManagers.length);
     }
 
 }

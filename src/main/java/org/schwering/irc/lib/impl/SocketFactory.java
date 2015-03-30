@@ -52,7 +52,7 @@ public class SocketFactory {
         if (sslSupport != null) {
             SSLContext sslContext = SSLContext.getInstance("SSL");
             sslContext.init(sslSupport.getKeyManagers(), sslSupport.getTrustManagers(),
-                    new java.security.SecureRandom());
+                    sslSupport.getSecureRandom());
             this.sslSocketFactory = sslContext.getSocketFactory();
         } else {
             this.sslSocketFactory = null;
