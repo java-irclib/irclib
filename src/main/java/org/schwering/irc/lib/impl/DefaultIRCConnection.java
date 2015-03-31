@@ -24,7 +24,6 @@ import java.net.SocketException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
-import org.schwering.irc.lib.IRCConfig;
 import org.schwering.irc.lib.IRCConnection;
 import org.schwering.irc.lib.IRCEventListener;
 import org.schwering.irc.lib.IRCExceptionHandler;
@@ -44,16 +43,16 @@ import org.schwering.irc.lib.util.LoggingWriter;
  * <p>
  * The following code of a class which imports org.schwering.irc.lib.* prepares
  * an IRC connection and then tries to establish the connection. The server is
- * &quot;irc.somenetwork.com&quot;, the default portrange (6667 and 6669) is set, no
- * password is used (null). The nickname is &quot;Foo&quot; and the realname is
- * &quot;Mr. Foobar&quot;. The username &quot;foobar&quot;. Because of setDaemon(true), the JVM
- * exits even if this thread is running. An instance of the class MyListener
- * which must implement IRCActionListener is added as only event-listener for
- * the connection. The connection is told to parse out mIRC color codes and to
- * enable automatic PING? PONG! replies.
+ * &quot;irc.somenetwork.com&quot;, the default portrange (6667 and 6669) is
+ * set, no password is used (null). The nickname is &quot;Foo&quot; and the
+ * realname is &quot;Mr. Foobar&quot;. The username &quot;foobar&quot;. Because
+ * of setDaemon(true), the JVM exits even if this thread is running. An instance
+ * of the class MyListener which must implement IRCActionListener is added as
+ * only event-listener for the connection. The connection is told to parse out
+ * mIRC color codes and to enable automatic PING? PONG! replies.
+ *
  * <pre>
- * IRCConnection conn = new IRCConnection(&quot;irc.somenetwork.com&quot;, 6667, 6669, null, &quot;Foo&quot;,
- *      &quot;Mr. Foobar&quot;, &quot;foo@bar.com&quot;);
+ * IRCConnection conn = new IRCConnection(&quot;irc.somenetwork.com&quot;, 6667, 6669, null, &quot;Foo&quot;, &quot;Mr. Foobar&quot;, &quot;foo@bar.com&quot;);
  *
  * conn.addIRCEventListener(new MyListener());
  * conn.setDaemon(true);
@@ -92,7 +91,7 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
      * it was connected but is disconnected. Therefore the default value is
      * <code>0</code>.
      */
-    protected byte level = 0;
+    private byte level = 0;
 
     /**
      * The <code>BufferedReader</code> receives Strings from the IRC server.
@@ -112,31 +111,30 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     private final IRCTrafficLogger trafficLogger;
     private final IRCExceptionHandler exceptionHandler;
 
-    protected final IRCConfig config;
+    private final IRCServerConfig serverConfig;
+    private final IRCRuntimeConfig runtimeConfig;
 
-    protected String nick;
-
-    /**
-     * @param config
-     */
-    public DefaultIRCConnection(IRCConfig config) {
-        int[] ports = config.getPorts();
-        if (config.getHost() == null || ports == null || ports.length == 0) {
-            throw new IllegalArgumentException("Host and ports may not be null.");
-        }
-        /* we trust only our own DefaultIRCConfig that it is immutable */
-        this.config = config instanceof DefaultIRCConfig ? config : new DefaultIRCConfig(config);
-        this.nick = config.getNick();
-        this.trafficLogger = config.getTrafficLogger();
-        this.exceptionHandler = config.getExceptionHandler();
-    }
+    private String nick;
 
     /**
      * @param serverConfig
      * @param runtimeConfig
      */
     public DefaultIRCConnection(IRCServerConfig serverConfig, IRCRuntimeConfig runtimeConfig) {
-        this(new DefaultIRCConfig(serverConfig, runtimeConfig));
+        int[] ports = serverConfig.getPorts();
+        if (serverConfig.getHost() == null || ports == null || ports.length == 0) {
+            throw new IllegalArgumentException("Host and ports may not be null.");
+        }
+        /* we trust only our own DefaultIRC*Config implementations that they are immutable */
+        this.serverConfig = serverConfig instanceof DefaultIRCConfig
+                    || serverConfig instanceof DefaultIRCServerConfig ? serverConfig
+                : new DefaultIRCServerConfig(serverConfig);
+        this.runtimeConfig = runtimeConfig instanceof DefaultIRCConfig
+                || runtimeConfig instanceof DefaultIRCRuntimeConfig ? runtimeConfig : new DefaultIRCRuntimeConfig(
+                runtimeConfig);
+        this.nick = serverConfig.getNick();
+        this.trafficLogger = runtimeConfig.getTrafficLogger();
+        this.exceptionHandler = runtimeConfig.getExceptionHandler();
     }
 
     /**
@@ -148,14 +146,15 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     public void connect() throws IOException, KeyManagementException, NoSuchAlgorithmException {
         if (level != 0) // otherwise disconnected or connect
             throw new SocketException("Socket closed or already open (" + level + ")");
-        SocketFactory socketFactory = new SocketFactory(config.getTimeout(), config.getProxy(), config.getSSLSupport());
+        SocketFactory socketFactory = new SocketFactory(runtimeConfig.getTimeout(), runtimeConfig.getProxy(),
+                runtimeConfig.getSSLSupport());
 
         IOException exception = null;
         Socket socket = null;
-        final String host = config.getHost();
-        for (int i = 0; i < config.getPortsCount() && socket == null; i++) {
+        final String host = serverConfig.getHost();
+        for (int i = 0; i < serverConfig.getPortsCount() && socket == null; i++) {
             try {
-                int port = config.getPortAt(i);
+                int port = serverConfig.getPortAt(i);
                 socket = socketFactory.createSocket(host, port);
                 exception = null;
             } catch (IOException exc) {
@@ -176,11 +175,10 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
 
     /**
      * Invoked by the <code>connect</code> method, this method prepares the
-     * connection.
-     * It initializes the class-vars for the inputstream and the outputstream of
-     * the socket, starts the registration of at the IRC server by calling
-     * <code>register()</code> and starts the receiving of lines from the server
-     * by starting the thread with the <code>start</code> method.
+     * connection. It initializes the class-vars for the inputstream and the
+     * outputstream of the socket, starts the registration of at the IRC server
+     * by calling <code>register()</code> and starts the receiving of lines from
+     * the server by starting the thread with the <code>start</code> method.
      *
      * This method must be protected, because it is used by extending classes,
      * which override the <code>connect</code> method.
@@ -197,7 +195,7 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
             throw new SocketException("Socket s is null, not connected");
         socket = s;
         level = 1;
-        String encoding = config.getEncoding();
+        String encoding = serverConfig.getEncoding();
         if (trafficLogger != null) {
             in = new LoggingReader(new InputStreamReader(s.getInputStream(), encoding), trafficLogger);
             out = new LoggingWriter(new OutputStreamWriter(s.getOutputStream(), encoding), trafficLogger);
@@ -210,24 +208,23 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     }
 
     /**
-     * Registers the connection with the IRC server.
-     * In fact, it sends a password (if set, else nothing), the nickname and the
-     * user, the realname and the host which we're connecting to.
-     * The action synchronizes <code>code> so that no important messages
+     * Registers the connection with the IRC server. In fact, it sends a
+     * password (if set, else nothing), the nickname and the user, the realname
+     * and the host which we're connecting to. The action synchronizes
+     * <code>code> so that no important messages
      * (like the first PING) come in before this registration is finished.
-     * The <code>USER</code> command's format is:
-     * <code>
+     * The <code>USER</code> command's format is: <code>
      * &lt;username&gt; &lt;localhost&gt; &lt;irchost&gt; &lt;realname&gt;
      * </code>
      */
     private void register() {
-        String pass = config.getPassword();
+        String pass = serverConfig.getPassword();
         if (pass != null)
             send("PASS " + pass);
 
-        send("NICK " + config.getNick());
-        send("USER " + config.getUsername() + " " + socket.getLocalAddress().getHostAddress() + " "
-                + config.getHost() + " :" + config.getRealname());
+        send("NICK " + serverConfig.getNick());
+        send("USER " + serverConfig.getUsername() + " " + socket.getLocalAddress().getHostAddress() + " "
+                + serverConfig.getHost() + " :" + serverConfig.getRealname());
     }
 
     /**
@@ -282,7 +279,7 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     private synchronized void get(String line) {
         IRCParser p;
         try {
-            p = new IRCParser(line, config.isStripColorsEnabled());
+            p = new IRCParser(line, runtimeConfig.isStripColorsEnabled());
         } catch (Exception exc) {
             return;
         }
@@ -316,7 +313,7 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
         } else if ("PING".equalsIgnoreCase(command)) { // PING
 
             String ping = p.getTrailing(); // no int cause sometimes it's text
-            if (config.isAutoPong())
+            if (runtimeConfig.isAutoPong())
                 doPong(ping);
             else
                 for (int i = listeners.length - 1; i >= 0; i--)
@@ -591,10 +588,9 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
         return (socket != null) ? socket.getLocalAddress() : null;
     }
 
-
     @Override
     public String toString() {
-        return "DefaultIRCConnection [nick=" + nick + ", config=" + config + "]";
+        return "DefaultIRCConnection [nick=" + nick + ", config=" + serverConfig + "]";
     }
 
     /**
@@ -614,7 +610,8 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     }
 
     /**
-     * @see org.schwering.irc.lib.IRCConnection#doInvite(java.lang.String, java.lang.String)
+     * @see org.schwering.irc.lib.IRCConnection#doInvite(java.lang.String,
+     *      java.lang.String)
      */
     @Override
     public void doInvite(String nick, String chan) {
@@ -638,7 +635,8 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     }
 
     /**
-     * @see org.schwering.irc.lib.IRCConnection#doJoin(java.lang.String, java.lang.String)
+     * @see org.schwering.irc.lib.IRCConnection#doJoin(java.lang.String,
+     *      java.lang.String)
      */
     @Override
     public void doJoin(String chan, String key) {
@@ -646,7 +644,8 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     }
 
     /**
-     * @see org.schwering.irc.lib.IRCConnection#doKick(java.lang.String, java.lang.String)
+     * @see org.schwering.irc.lib.IRCConnection#doKick(java.lang.String,
+     *      java.lang.String)
      */
     @Override
     public void doKick(String chan, String nick) {
@@ -654,7 +653,8 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     }
 
     /**
-     * @see org.schwering.irc.lib.IRCConnection#doKick(java.lang.String, java.lang.String, java.lang.String)
+     * @see org.schwering.irc.lib.IRCConnection#doKick(java.lang.String,
+     *      java.lang.String, java.lang.String)
      */
     @Override
     public void doKick(String chan, String nick, String msg) {
@@ -694,7 +694,8 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     }
 
     /**
-     * @see org.schwering.irc.lib.IRCConnection#doPrivmsg(java.lang.String, java.lang.String)
+     * @see org.schwering.irc.lib.IRCConnection#doPrivmsg(java.lang.String,
+     *      java.lang.String)
      */
     @Override
     public void doPrivmsg(String target, String msg) {
@@ -710,7 +711,8 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     }
 
     /**
-     * @see org.schwering.irc.lib.IRCConnection#doMode(java.lang.String, java.lang.String)
+     * @see org.schwering.irc.lib.IRCConnection#doMode(java.lang.String,
+     *      java.lang.String)
      */
     @Override
     public void doMode(String target, String mode) {
@@ -726,7 +728,8 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     }
 
     /**
-     * @see org.schwering.irc.lib.IRCConnection#doNotice(java.lang.String, java.lang.String)
+     * @see org.schwering.irc.lib.IRCConnection#doNotice(java.lang.String,
+     *      java.lang.String)
      */
     @Override
     public void doNotice(String target, String msg) {
@@ -742,7 +745,8 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     }
 
     /**
-     * @see org.schwering.irc.lib.IRCConnection#doPart(java.lang.String, java.lang.String)
+     * @see org.schwering.irc.lib.IRCConnection#doPart(java.lang.String,
+     *      java.lang.String)
      */
     @Override
     public void doPart(String chan, String msg) {
@@ -782,7 +786,8 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     }
 
     /**
-     * @see org.schwering.irc.lib.IRCConnection#doTopic(java.lang.String, java.lang.String)
+     * @see org.schwering.irc.lib.IRCConnection#doTopic(java.lang.String,
+     *      java.lang.String)
      */
     @Override
     public void doTopic(String chan, String topic) {
@@ -826,7 +831,7 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
      */
     @Override
     public boolean isSSL() {
-        return config.getSSLSupport() != null;
+        return runtimeConfig.getSSLSupport() != null;
     }
 
 }

@@ -47,6 +47,13 @@ public class DefaultIRCRuntimeConfig implements IRCRuntimeConfig {
      */
     private final int timeout;
     private final IRCTrafficLogger trafficLogger;
+
+    public DefaultIRCRuntimeConfig(IRCRuntimeConfig runtimeConfig) {
+        this(runtimeConfig.getTimeout(), runtimeConfig.isAutoPong(), runtimeConfig.isStripColorsEnabled(),
+                runtimeConfig.getSSLSupport(), runtimeConfig.getProxy(), runtimeConfig.getTrafficLogger(),
+                runtimeConfig.getExceptionHandler());
+    }
+
     public DefaultIRCRuntimeConfig(int timeout, boolean autoPong, boolean stripColorsEnabled, IRCSSLSupport sslSupport,
             Proxy proxy, IRCTrafficLogger trafficLogger, IRCExceptionHandler exceptionHandler) {
         this.timeout = timeout;
