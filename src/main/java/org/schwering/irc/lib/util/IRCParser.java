@@ -141,7 +141,7 @@ public class IRCParser {
      * Parses prefix, command, middle and trailing.
      * @param line The line which will be parsed.
      * @param stripColors If <code>false</code>, mIRC color codes are parsed out
-     *                      by using <code>IRCUtil.parseColors</code> method.
+     *                      by using {@link IRCUtil#stripColorsAndCTCPDelimiters(StringBuilder)} method.
      */
     public IRCParser(String line, boolean stripColors) {
         int index = 0;
@@ -149,7 +149,7 @@ public class IRCParser {
 
         buf = new StringBuilder(line);
         if (!stripColors)
-            buf = IRCUtil.parseColors(buf);
+            buf = IRCUtil.stripColorsAndCTCPDelimiters(buf);
         len = buf.length();
 
         // prefix
@@ -300,8 +300,8 @@ public class IRCParser {
 
     /**
      * Returns the unparsed line. It looks exacttly as the server sent it, but
-     * if colors are disabled and therefore already parsed out by
-     * IRCUtil.parseColors, the colors are not included in here.
+     * if colors are disabled and therefore already stripped away out by
+     * {@link IRCUtil#stripColorsAndCTCPDelimiters(StringBuilder)}, the colors are not included in here.
      * @return The line.
      */
     public String getLine() {
