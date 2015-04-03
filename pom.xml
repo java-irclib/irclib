@@ -61,13 +61,13 @@
     </mailingLists>
 
     <scm>
-        <connection>scm:git:https://github.com/schwering/irclib.git</connection>
-        <developerConnection>scm:git:git@github.com:schwering/irclib.git</developerConnection>
-        <url>https://github.com/schwering/irclib</url>
+        <connection>scm:git:https://github.com/java-irclib/irclib.git</connection>
+        <developerConnection>scm:git:git@github.com:java-irclib/irclib.git</developerConnection>
+        <url>https://github.com/java-irclib/irclib</url>
         <tag>head</tag>
     </scm>
     <issueManagement>
-        <url>https://github.com/schwering/irclib/issues</url>
+        <url>https://github.com/java-irclib/irclib/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
     <distributionManagement>
