@@ -76,7 +76,35 @@ import org.schwering.irc.lib.util.LoggingWriter;
  * @see IRCUtil
  * @see SSLIRCConnection
  */
-public class DefaultIRCConnection extends Thread implements IRCConnection {
+public class DefaultIRCConnection implements IRCConnection {
+
+    protected class Consumer implements Runnable {
+
+        /**
+         * The <code>Thread</code> is started by the <code>connect</code>
+         * method. It's task is to receive strings from the IRC server and hand
+         * them over to the <code>get</code> method.
+         *
+         * Possibly occuring <code>IOException</code>s are handled according to
+         * the set exception handling.
+         */
+        @Override
+        public void run() {
+            try {
+                String line;
+                while ((line = in.readLine()) != null) {
+                    get(line);
+                }
+            } catch (IOException exc) {
+                handleException(exc);
+                close();
+            } finally {
+                close();
+            }
+        }
+
+    }
+
     /**
      * This <code>Socket</code> is a connection to the IRC server.
      */
@@ -117,6 +145,10 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
 
     private String nick;
 
+    private Thread thread;
+
+    private int remotePort;
+
     /**
      * @param serverConfig
      * @param runtimeConfig
@@ -126,10 +158,13 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
         if (serverConfig.getHost() == null || ports == null || ports.length == 0) {
             throw new IllegalArgumentException("Host and ports may not be null.");
         }
-        /* we trust only our own DefaultIRC*Config implementations that they are immutable */
+        /*
+         * we trust only our own DefaultIRC*Config implementations that they are
+         * immutable
+         */
         this.serverConfig = serverConfig instanceof DefaultIRCConfig
                     || serverConfig instanceof DefaultIRCServerConfig ? serverConfig
-                : new DefaultIRCServerConfig(serverConfig);
+                            : new DefaultIRCServerConfig(serverConfig);
         this.runtimeConfig = runtimeConfig instanceof DefaultIRCConfig
                 || runtimeConfig instanceof DefaultIRCRuntimeConfig ? runtimeConfig : new DefaultIRCRuntimeConfig(
                 runtimeConfig);
@@ -151,18 +186,18 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
                 runtimeConfig.getSSLSupport());
 
         IOException exception = null;
-        Socket socket = null;
         final String host = serverConfig.getHost();
         for (int i = 0; i < serverConfig.getPortsCount() && socket == null; i++) {
             try {
                 int port = serverConfig.getPortAt(i);
-                socket = socketFactory.createSocket(host, port);
+                this.socket = socketFactory.createSocket(host, port);
+                this.remotePort = port;
                 exception = null;
             } catch (IOException exc) {
-                if (socket != null) {
-                    socket.close();
+                if (this.socket != null) {
+                    this.socket.close();
                 }
-                socket = null;
+                this.socket = null;
                 exception = exc;
             }
         }
@@ -171,41 +206,31 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
             throw exception;
         }
 
-        prepare(socket);
-    }
-
-    /**
-     * Invoked by the <code>connect</code> method, this method prepares the
-     * connection. It initializes the class-vars for the inputstream and the
-     * outputstream of the socket, starts the registration of at the IRC server
-     * by calling <code>register()</code> and starts the receiving of lines from
-     * the server by starting the thread with the <code>start</code> method.
-     *
-     * This method must be protected, because it is used by extending classes,
-     * which override the <code>connect</code> method.
-     *
-     * @param s
-     *            The socket which is used for the connection.
-     * @throws IOException
-     *             If an I/O error occurs.
-     * @see #connect()
-     * @see #run()
-     */
-    protected void prepare(Socket s) throws IOException {
-        if (s == null)
-            throw new SocketException("Socket s is null, not connected");
-        socket = s;
         level = 1;
         String encoding = serverConfig.getEncoding();
         if (trafficLogger != null) {
-            in = new LoggingReader(new InputStreamReader(s.getInputStream(), encoding), trafficLogger);
-            out = new LoggingWriter(new OutputStreamWriter(s.getOutputStream(), encoding), trafficLogger);
+            in = new LoggingReader(new InputStreamReader(this.socket.getInputStream(), encoding), trafficLogger);
+            out = new LoggingWriter(new OutputStreamWriter(this.socket.getOutputStream(), encoding), trafficLogger);
         } else {
-            in = new BufferedReader(new InputStreamReader(s.getInputStream(), encoding));
-            out = new PrintWriter(new OutputStreamWriter(s.getOutputStream(), encoding));
+            in = new BufferedReader(new InputStreamReader(this.socket.getInputStream(), encoding));
+            out = new PrintWriter(new OutputStreamWriter(this.socket.getOutputStream(), encoding));
         }
-        start();
+
+        this.thread = createThread();
+        this.thread.start();
         register();
+    }
+
+    /**
+     * @return
+     */
+    protected Thread createThread() {
+        return new Thread(createConsumer(), "irc://" + serverConfig.getUsername() + "@" + serverConfig.getHost() + ":"
+                + remotePort);
+    }
+
+    protected Runnable createConsumer() {
+        return new Consumer();
     }
 
     /**
@@ -226,28 +251,6 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
         send("NICK " + serverConfig.getNick());
         send("USER " + serverConfig.getUsername() + " " + socket.getLocalAddress().getHostAddress() + " "
                 + serverConfig.getHost() + " :" + serverConfig.getRealname());
-    }
-
-    /**
-     * The <code>Thread</code> is started by the <code>connect</code> method.
-     * It's task is to receive strings from the IRC server and hand them over to
-     * the <code>get</code> method.
-     *
-     * Possibly occuring <code>IOException</code>s are handled according to the
-     * set exception handling.
-     */
-    public void run() {
-        try {
-            String line;
-            while ((line = in.readLine()) != null) {
-                get(line);
-            }
-        } catch (IOException exc) {
-            handleException(exc);
-            close();
-        } finally {
-            close();
-        }
     }
 
     /**
@@ -444,8 +447,8 @@ public class DefaultIRCConnection extends Thread implements IRCConnection {
     @Override
     public synchronized void close() {
         try {
-            if (!isInterrupted())
-                interrupt();
+            if (!this.thread.isInterrupted())
+                this.thread.interrupt();
         } catch (Exception exc) {
             handleException(exc);
         }

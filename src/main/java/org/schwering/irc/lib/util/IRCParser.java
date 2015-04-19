@@ -140,7 +140,7 @@ public class IRCParser {
      * The main constructor.
      * Parses prefix, command, middle and trailing.
      * @param line The line which will be parsed.
-     * @param stripColors If <code>false</code>, mIRC color codes are parsed out
+     * @param stripColors If <code>true</code>, mIRC color codes are parsed out
      *                      by using {@link IRCUtil#stripColorsAndCTCPDelimiters(StringBuilder)} method.
      */
     public IRCParser(String line, boolean stripColors) {
@@ -148,7 +148,7 @@ public class IRCParser {
         int trail;
 
         buf = new StringBuilder(line);
-        if (!stripColors)
+        if (stripColors)
             buf = IRCUtil.stripColorsAndCTCPDelimiters(buf);
         len = buf.length();
 
