@@ -52,7 +52,8 @@ import org.schwering.irc.lib.util.LoggingWriter;
  * mIRC color codes and to enable automatic PING? PONG! replies.
  *
  * <pre>
- * IRCConnection conn = new IRCConnection(&quot;irc.somenetwork.com&quot;, 6667, 6669, null, &quot;Foo&quot;, &quot;Mr. Foobar&quot;, &quot;foo@bar.com&quot;);
+ * IRCConnection conn = new IRCConnection(&quot;irc.somenetwork.com&quot;, 6667, 6669, null, &quot;Foo&quot;,
+ * &quot;Mr. Foobar&quot;, &quot;foo@bar.com&quot;);
  *
  * conn.addIRCEventListener(new MyListener());
  * conn.setDaemon(true);

@@ -13,11 +13,15 @@
  */
 package org.schwering.irc.lib.impl;
 
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.schwering.irc.lib.IRCSSLSupport;
 
@@ -29,9 +33,45 @@ import org.schwering.irc.lib.IRCSSLSupport;
  */
 public class DefaultIRCSSLSupport implements IRCSSLSupport {
 
+    protected static final X509Certificate[] EMPTY_X509_CERTIFICATES = new X509Certificate[0];
+
+    public static IRCSSLSupport INSECURE;
+    public static final X509TrustManager INSECURE_TRUST_MANAGER;
+
+    static {
+        INSECURE_TRUST_MANAGER = new X509TrustManager() {
+
+            @Override
+            public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            }
+
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return EMPTY_X509_CERTIFICATES;
+            }
+        };
+        try {
+            INSECURE = new DefaultIRCSSLSupport(new KeyManager[0], new TrustManager[] { INSECURE_TRUST_MANAGER },
+                    SecureRandom.getInstanceStrong());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     private final KeyManager[] keyManagers;
     private final SecureRandom secureRandom;
+
     private final TrustManager[] trustManagers;
+
+    public DefaultIRCSSLSupport(IRCSSLSupport sslSupport) {
+        this(sslSupport.getKeyManagers(), sslSupport.getTrustManagers(), sslSupport.getSecureRandom());
+    }
 
     /**
      * @param keyManagers
@@ -43,10 +83,6 @@ public class DefaultIRCSSLSupport implements IRCSSLSupport {
         this.keyManagers = Arrays.copyOf(keyManagers, keyManagers.length);
         this.trustManagers = Arrays.copyOf(trustManagers, trustManagers.length);
         this.secureRandom = secureRandom;
-    }
-
-    public DefaultIRCSSLSupport(IRCSSLSupport sslSupport) {
-        this(sslSupport.getKeyManagers(), sslSupport.getTrustManagers(), sslSupport.getSecureRandom());
     }
 
     /**
