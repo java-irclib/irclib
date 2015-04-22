@@ -25,6 +25,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
 import org.schwering.irc.lib.IRCConnection;
+import org.schwering.irc.lib.IRCConnectionFactory;
 import org.schwering.irc.lib.IRCEventListener;
 import org.schwering.irc.lib.IRCExceptionHandler;
 import org.schwering.irc.lib.IRCRuntimeConfig;
@@ -38,55 +39,32 @@ import org.schwering.irc.lib.util.LoggingReader;
 import org.schwering.irc.lib.util.LoggingWriter;
 
 /**
- * Creates a new connection to an IRC server. It's the main class of the IRClib,
- * the point everything starts.
- * <p>
- * The following code of a class which imports org.schwering.irc.lib.* prepares
- * an IRC connection and then tries to establish the connection. The server is
- * &quot;irc.somenetwork.com&quot;, the default portrange (6667 and 6669) is
- * set, no password is used (null). The nickname is &quot;Foo&quot; and the
- * realname is &quot;Mr. Foobar&quot;. The username &quot;foobar&quot;. Because
- * of setDaemon(true), the JVM exits even if this thread is running. An instance
- * of the class MyListener which must implement IRCActionListener is added as
- * only event-listener for the connection. The connection is told to parse out
- * mIRC color codes and to enable automatic PING? PONG! replies.
- *
- * <pre>
- * IRCConnection conn = new IRCConnection(&quot;irc.somenetwork.com&quot;, 6667, 6669, null, &quot;Foo&quot;,
- * &quot;Mr. Foobar&quot;, &quot;foo@bar.com&quot;);
- *
- * conn.addIRCEventListener(new MyListener());
- * conn.setDaemon(true);
- * conn.setColors(false);
- * conn.setPong(true);
- *
- * try {
- *     conn.connect(); // Try to connect!!! Don't forget this!!!
- * } catch (IOException ioexc) {
- *     ioexc.printStackTrace();
- * }
- * </pre>
- * <p>
- * The serverpassword isn't needed in most cases. You can give <code>null</code>
- * or <code>""</code> instead as done in this example.
+ * The default implementation of {@link IRCConnection}. Typically created via
+ * {@link IRCConnectionFactory#newConnection(org.schwering.irc.lib.IRCConfig)}
+ * or
+ * {@link IRCConnectionFactory#newConnection(IRCServerConfig, IRCRuntimeConfig)}
+ * . Creates a new connection to an IRC server. It's the main class of the
+ * IRClib, the point everything starts.
  *
  * @author Christoph Schwering &lt;schwering@gmail.com&gt;
- * @see IRCEventListener
- * @see IRCParser
- * @see IRCUtil
- * @see SSLIRCConnection
+ * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public class DefaultIRCConnection implements IRCConnection {
 
+    /**
+     * The {@link Runnable} used in the {@link Thread} for parsing incoming IRC
+     * stream.
+     *
+     * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
+     */
     protected class Consumer implements Runnable {
 
         /**
-         * The <code>Thread</code> is started by the <code>connect</code>
-         * method. It's task is to receive strings from the IRC server and hand
-         * them over to the <code>get</code> method.
+         * Receives strings from the IRC server and hands them over to
+         * {@link DefaultIRCConnection#get(String)}.
          *
-         * Possibly occuring <code>IOException</code>s are handled according to
-         * the set exception handling.
+         * Possibly occuring <code>IOException</code>s are handled by
+         * {@link DefaultIRCConnection#exceptionHandler}.
          */
         @Override
         public void run() {
@@ -106,7 +84,7 @@ public class DefaultIRCConnection implements IRCConnection {
     }
 
     /**
-     * This <code>Socket</code> is a connection to the IRC server.
+     * The socket for the communication with the IRC server.
      */
     private Socket socket;
 
@@ -123,33 +101,51 @@ public class DefaultIRCConnection implements IRCConnection {
     private byte level = 0;
 
     /**
-     * The <code>BufferedReader</code> receives Strings from the IRC server.
+     * The <code>BufferedReader</code> receives messages from the IRC server.
      */
     private BufferedReader in;
 
     /**
-     * The <code>PrintWriter</code> sends Strings to the IRC server.
+     * The <code>PrintWriter</code> sends messages to the IRC server.
      */
     private PrintWriter out;
 
     /**
-     * This array contains <code>IRCEventListener</code> objects.
+     * An array of {@link IRCEventListener}s
      */
     private IRCEventListener[] listeners = new IRCEventListener[0];
 
+    /** A traffic logger, usually for debugging purposses. Can be {@code null}. */
     private final IRCTrafficLogger trafficLogger;
+    /** An {@link IRCExceptionHandler} to notify if something goe wrong. */
     private final IRCExceptionHandler exceptionHandler;
 
+    /** The IRC server to connect */
     private final IRCServerConfig serverConfig;
+
+    /** A couple of runtime settings like timeout, pong behavior, etc. */
     private final IRCRuntimeConfig runtimeConfig;
 
+    /** The nick accepted by the server. */
     private String nick;
 
+    /**
+     * The worker {@link Thread} for parsing the incoming IRC messages and
+     * emitting events to {@link #listeners}.
+     */
     private Thread thread;
 
+    /**
+     * The port actually used in this connection (as opposed to the port
+     * interval in {@link #serverConfig})
+     */
     private int remotePort;
 
     /**
+     * Creates a new {@link DefaultIRCConnection} out of the given
+     * {@link IRCServerConfig} and {@link IRCRuntimeConfig}. DO not forget to
+     * call {@link #connect()} after you have prepared the connection.
+     *
      * @param serverConfig
      * @param runtimeConfig
      */
@@ -162,9 +158,8 @@ public class DefaultIRCConnection implements IRCConnection {
          * we trust only our own DefaultIRC*Config implementations that they are
          * immutable
          */
-        this.serverConfig = serverConfig instanceof DefaultIRCConfig
-                    || serverConfig instanceof DefaultIRCServerConfig ? serverConfig
-                            : new DefaultIRCServerConfig(serverConfig);
+        this.serverConfig = serverConfig instanceof DefaultIRCConfig || serverConfig instanceof DefaultIRCServerConfig ? serverConfig
+                : new DefaultIRCServerConfig(serverConfig);
         this.runtimeConfig = runtimeConfig instanceof DefaultIRCConfig
                 || runtimeConfig instanceof DefaultIRCRuntimeConfig ? runtimeConfig : new DefaultIRCRuntimeConfig(
                 runtimeConfig);
@@ -222,13 +217,16 @@ public class DefaultIRCConnection implements IRCConnection {
     }
 
     /**
-     * @return
+     * @return the consumer thread
      */
     protected Thread createThread() {
         return new Thread(createConsumer(), "irc://" + serverConfig.getUsername() + "@" + serverConfig.getHost() + ":"
                 + remotePort);
     }
 
+    /**
+     * @return a new {@link Consumer}.
+     */
     protected Runnable createConsumer() {
         return new Consumer();
     }

@@ -26,8 +26,8 @@ import javax.net.ssl.X509TrustManager;
 import org.schwering.irc.lib.IRCSSLSupport;
 
 /**
- * A default {@link IRCSSLSupport} with configurable {@link KeyManager}s,
- * {@link TrustManager}s and {@link SecureRandom}.
+ * An immutable {@link IRCSSLSupport} with {@link KeyManager}s,
+ * {@link TrustManager}s and {@link SecureRandom} configurable at creation time.
  *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
@@ -35,7 +35,12 @@ public class DefaultIRCSSLSupport implements IRCSSLSupport {
 
     protected static final X509Certificate[] EMPTY_X509_CERTIFICATES = new X509Certificate[0];
 
+    /** An insecure {@link IRCSSLSupport} instance affirming all trust requests. */
     public static IRCSSLSupport INSECURE;
+    /**
+     * An insecure {@link X509TrustManager} instance affirming all trust
+     * requests.
+     */
     public static final X509TrustManager INSECURE_TRUST_MANAGER;
 
     static {
@@ -64,9 +69,19 @@ public class DefaultIRCSSLSupport implements IRCSSLSupport {
 
     }
 
+    /**
+     * @see org.schwering.irc.lib.IRCSSLSupport#getKeyManagers()
+     */
     private final KeyManager[] keyManagers;
+
+    /**
+     * @see org.schwering.irc.lib.IRCSSLSupport#getSecureRandom()
+     */
     private final SecureRandom secureRandom;
 
+    /**
+     * @see org.schwering.irc.lib.IRCSSLSupport#getTrustManagers()
+     */
     private final TrustManager[] trustManagers;
 
     public DefaultIRCSSLSupport(IRCSSLSupport sslSupport) {
