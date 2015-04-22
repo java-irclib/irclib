@@ -23,7 +23,7 @@ import org.schwering.irc.lib.impl.DefaultIRCConfig;
 import org.schwering.irc.lib.util.IRCUtil;
 
 /**
- * A fluent builder for {@link IRCConfig}s.
+ * A fluent builder for {@link IRCConfig}s. For the typical usage, see {@link IRCConnection}.
  *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */

@@ -33,13 +33,16 @@ import org.schwering.irc.lib.IRCSSLSupport;
  */
 public class SocketFactory {
 
+    /** The {@link Proxy} to use when creating the socket. Use {@link Proxy#NO_PROXY} reather than {@code null}. */
     private final Proxy proxy;
+    /** The {@link SSLSocketFactory} to use when creating the socket. */
     private SSLSocketFactory sslSocketFactory;
+    /** Socket timeout in milliseconds. */
     private final int timeout;
 
     /**
      * @param timeout im milliseconds
-     * @param proxy the proxy
+     * @param proxy the proxy or {@code  null} if no proxy is to be used
      * @param sslSupport the SSL support or {@code null} if SSL should not be used
      * @throws KeyManagementException
      * @throws NoSuchAlgorithmException
@@ -52,7 +55,7 @@ public class SocketFactory {
         if (sslSupport != null) {
             SSLContext sslContext = SSLContext.getInstance("SSL");
             sslContext.init(sslSupport.getKeyManagers(), sslSupport.getTrustManagers(),
-                    new java.security.SecureRandom());
+                    sslSupport.getSecureRandom());
             this.sslSocketFactory = sslContext.getSocketFactory();
         } else {
             this.sslSocketFactory = null;

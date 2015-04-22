@@ -15,38 +15,61 @@ package org.schwering.irc.lib.impl;
 
 import java.net.Proxy;
 
+import org.schwering.irc.lib.IRCConfigBuilder;
 import org.schwering.irc.lib.IRCExceptionHandler;
 import org.schwering.irc.lib.IRCRuntimeConfig;
 import org.schwering.irc.lib.IRCSSLSupport;
 import org.schwering.irc.lib.IRCTrafficLogger;
 
 /**
+ * An immutable {@link IRCRuntimeConfig}. Typically created via
+ * {@link IRCConfigBuilder}.
+ *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public class DefaultIRCRuntimeConfig implements IRCRuntimeConfig {
     /**
-     * This <code>boolean</code> stands for enabled or disabled automatic PING?
-     * PONG! support. It means, that if the server asks with PING for the ping,
-     * the PONG is automatically sent. Default is automatic PONG enabled (
-     * <code>true</code> ).
+     * @see org.schwering.irc.lib.IRCConfig#isAutoPong()
      */
     private final boolean autoPong;
+    /**
+     * @see org.schwering.irc.lib.IRCRuntimeConfig#getExceptionHandler()
+     */
     private final IRCExceptionHandler exceptionHandler;
+    /**
+     * @see org.schwering.irc.lib.IRCConfig#getProxy()
+     */
     private final Proxy proxy;
+    /**
+     * @see org.schwering.irc.lib.IRCConfig#getSSLSupport()
+     */
     private final IRCSSLSupport sslSupport;
     /**
-     * This <code>boolean</code> stands for enabled (<code>true</code>) or
-     * disabled (<code>false</code>) ColorCodes. Default is enabled (
-     * <code>false</code>).
+     * @see org.schwering.irc.lib.IRCConfig#isStripColorsEnabled()
      */
     private final boolean stripColorsEnabled;
     /**
-     * This <code>int</code> is the connection's timeout in milliseconds. It's
-     * used in the <code>Socket.setSoTimeout</code> method. The default is
-     * <code>1000 * 60 * 15</code> millis which are 15 minutes.
+     * @see org.schwering.irc.lib.IRCConfig#getTimeout()
      */
     private final int timeout;
+    /**
+     * @see org.schwering.irc.lib.IRCConfig#getTrafficLogger()
+     */
     private final IRCTrafficLogger trafficLogger;
+
+    /**
+     * Creates a new {@link DefaultIRCRuntimeConfig} out of the individual field
+     * values. For meanings of the parameters, see the the respective getter
+     * methods in {@link IRCRuntimeConfig}.
+     *
+     * @param timeout
+     * @param autoPong
+     * @param stripColorsEnabled
+     * @param sslSupport
+     * @param proxy
+     * @param trafficLogger
+     * @param exceptionHandler
+     */
     public DefaultIRCRuntimeConfig(int timeout, boolean autoPong, boolean stripColorsEnabled, IRCSSLSupport sslSupport,
             Proxy proxy, IRCTrafficLogger trafficLogger, IRCExceptionHandler exceptionHandler) {
         this.timeout = timeout;
@@ -58,6 +81,22 @@ public class DefaultIRCRuntimeConfig implements IRCRuntimeConfig {
         this.exceptionHandler = exceptionHandler;
     }
 
+    /**
+     * Creates a new {@link DefaultIRCRuntimeConfig} using data from the given
+     * {@link IRCRuntimeConfig}.
+     *
+     * @param config
+     *            the {@link IRCRuntimeConfig} to read field values from
+     */
+    public DefaultIRCRuntimeConfig(IRCRuntimeConfig runtimeConfig) {
+        this(runtimeConfig.getTimeout(), runtimeConfig.isAutoPong(), runtimeConfig.isStripColorsEnabled(),
+                runtimeConfig.getSSLSupport(), runtimeConfig.getProxy(), runtimeConfig.getTrafficLogger(),
+                runtimeConfig.getExceptionHandler());
+    }
+
+    /**
+     * @see org.schwering.irc.lib.IRCRuntimeConfig#getExceptionHandler()
+     */
     public IRCExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }

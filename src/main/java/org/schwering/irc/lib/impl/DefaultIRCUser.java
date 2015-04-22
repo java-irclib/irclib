@@ -57,7 +57,7 @@ public class DefaultIRCUser implements IRCUser {
 
 
     /**
-     * @return The nickname or the servername of the line or {@code null} if no nick is given
+     * @see org.schwering.irc.lib.IRCUser#getNick()
      */
     @Override
     public String getNick() {
@@ -65,7 +65,7 @@ public class DefaultIRCUser implements IRCUser {
     }
 
     /**
-     * @return The username of the lineor {@code null} if it's not given.
+     * @see org.schwering.irc.lib.IRCUser#getUsername()
      */
     @Override
     public String getUsername() {
@@ -74,7 +74,7 @@ public class DefaultIRCUser implements IRCUser {
 
 
     /**
-     * @return The host of the lineor {@code null}  if it's not given.
+     * @see org.schwering.irc.lib.IRCUser#getHost()
      */
     @Override
     public String getHost() {

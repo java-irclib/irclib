@@ -22,7 +22,7 @@ import org.schwering.irc.lib.impl.DefaultIRCConnection;
  */
 public class IRCConnectionFactory {
     public static IRCConnection newConnection(IRCConfig config) {
-        return new DefaultIRCConnection(config);
+        return new DefaultIRCConnection(config, config);
     }
     public static IRCConnection newConnection(IRCServerConfig serverConfig, IRCRuntimeConfig runtimeConfig) {
         return new DefaultIRCConnection(serverConfig, runtimeConfig);

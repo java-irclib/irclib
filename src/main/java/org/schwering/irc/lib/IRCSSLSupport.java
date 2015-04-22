@@ -13,7 +13,10 @@
  */
 package org.schwering.irc.lib;
 
+import java.security.SecureRandom;
+
 import javax.net.ssl.KeyManager;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
 /**
@@ -24,13 +27,18 @@ import javax.net.ssl.TrustManager;
 public interface IRCSSLSupport {
 
     /**
-     * @return
+     * @return the {@link KeyManager}s to initialize {@link SSLContext} with.
      */
     KeyManager[] getKeyManagers();
 
     /**
-     * @return
+     * @return the {@link TrustManager}s to initialize {@link SSLContext} with.
      */
     TrustManager[] getTrustManagers();
+
+    /**
+     * @return the {@link SecureRandom} to initialize {@link SSLContext} with.
+     */
+    SecureRandom getSecureRandom();
 
 }

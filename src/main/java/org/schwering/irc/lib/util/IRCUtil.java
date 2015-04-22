@@ -85,91 +85,68 @@ public class IRCUtil implements IRCConstants {
      * The documentation of the evil color codes is available on
      * <a href="http://www.mirc.co.uk/help/color.txt"
      * target="_blank">http://www.mirc.co.uk/help/color.txt</a>.
-     * This method links to the <code>parseColors(StringBuffer)</code> method.
+     * <p>
+     * Calling this method is equivalent to
+     * {@code IRCUtil.stripColors(new StringBuilder(str), false).toString()}.
+     *
      * @param str The line which should be parsed.
      * @return A line cleaned from any mIRC colorcodes.
-     * @see #parseColors(StringBuffer)
+     * @see #stripColorsAndCTCPDelimiters(StringBuilder)
      */
     public static String stripColors(String str) {
-        return parseColors(new StringBuffer(str), false).toString();
+        return stripColors(new StringBuilder(str), false).toString();
     }
 
 
 
     /**
-     * Erases the mIRC colorcodes from a StringBuffer.
-     * The documentation of the evil color codes is available on
-     * <a href="http://www.mirc.co.uk/help/color.txt"
-     * target="_blank">http://www.mirc.co.uk/help/color.txt</a>.
-     * This method links to the <code>parseColors(StringBuffer)</code> method.
-     * @param buf The line which should be parsed.
-     * @return A line cleaned from any mIRC colorcodes.
-     * @see #parseColors(StringBuffer)
-     */
-    public static StringBuffer stripColors(StringBuffer buf) {
-        return parseColors(buf, false);
-    }
-
-
-
-    /**
-     * Erases the mIRC colorcodes and CTCP delimiters from a String.
-     * The documentation of the evil color codes is available on
-     * <a href="http://www.mirc.co.uk/help/color.txt"
-     * target="_blank">http://www.mirc.co.uk/help/color.txt</a>.
-     * This method links to the <code>parseColors(StringBuffer)</code> method.
-     * <p>
-     * <b>Note:</b> This method also removed <code>CTCP_DELIMITER</code>s,
-     *             which are not part of mIRC color codes. You probably want
-     *             to use {@link #stripColors(String)}, which leaves these
-     *             <code>CTCP_DELIMITER</code>s so that you can deal with them
-     *             the way you want.
-     * @param str The line which should be parsed.
-     * @return A line cleaned from any mIRC colorcodes.
-     * @see #parseColors(StringBuffer)
-     */
-    public static String parseColors(String str) {
-        return parseColors(new StringBuffer(str)).toString();
-    }
-
-
-
-    /**
-     * Erases the mIRC colorcodes and CTCP delimiters from a StringBuffer.
+     * Erases the mIRC colorcodes from a StringBuilder.
      * The documentation of the evil color codes is available on
      * <a href="http://www.mirc.co.uk/help/color.txt"
      * target="_blank">http://www.mirc.co.uk/help/color.txt</a>.
      * <p>
-     * <b>Note:</b> This method also removed <code>CTCP_DELIMITER</code>s,
-     *             which are not part of mIRC color codes. You probably want
-     *             to use {@link #stripColors(String)}, which leaves these
-     *             <code>CTCP_DELIMITER</code>s so that you can deal with them
-     *             the way you want.
+     * Calling this method is equivalent to
+     * {@code IRCUtil.stripColors(buf, false)}.
+     *
      * @param buf The line which should be parsed.
-     * @return A line as <code>StringBuffer</code> object which is cleaned from
+     * @return A line cleaned from any mIRC colorcodes.
+     * @see #stripColorsAndCTCPDelimiters(StringBuilder)
+     */
+    public static StringBuilder stripColors(StringBuilder buf) {
+        return stripColors(buf, false);
+    }
+
+    /**
+     * Erases the mIRC colorcodes and CTCP delimiters from a StringBuilder.
+     * The documentation of the evil color codes is available on
+     * <a href="http://www.mirc.co.uk/help/color.txt"
+     * target="_blank">http://www.mirc.co.uk/help/color.txt</a>.
+     * <p>
+     * Calling this method is equivalent to
+     * {@code IRCUtil.stripColors(buf, true)}.
+     *
+     * @param buf The line which should be parsed.
+     * @return A line as <code>StringBuilder</code> object which is cleaned from
      *         any mIRC colorcodes.
      */
-    public static StringBuffer parseColors(StringBuffer buf) {
-        return parseColors(buf, true);
+    public static StringBuilder stripColorsAndCTCPDelimiters(StringBuilder buf) {
+        return stripColors(buf, true);
     }
 
 
     /**
-     * Erases the mIRC colorcodes from a String.
+     * Erases the mIRC colorcodes and optionally also CTCP delimiters from a String.
      * The documentation of the evil color codes is available on
      * <a href="http://www.mirc.co.uk/help/color.txt"
      * target="_blank">http://www.mirc.co.uk/help/color.txt</a>.
-     * <p>
-     * This method is the old version of <code>parseColors</code> modified
-     * so that with <code>removeCTCP</code> the treatment of
-     * <code>CTCP_DELIMITER</code>s can be controlled.
+     *
      * @param buf The line which should be parsed.
      * @param removeCTCP If <code>false</code>, <code>CTCP_DELIMITER</code>s
      *                   are left untouched in the string.
-     * @return A line as <code>StringBuffer</code> object which is cleaned from
+     * @return A line as <code>StringBuilder</code> object which is cleaned from
      *         any mIRC colorcodes.
      */
-    static StringBuffer parseColors(StringBuffer buf,
+    private static StringBuilder stripColors(StringBuilder buf,
             boolean removeCTCP) {
         int len = buf.length();
         char c;
