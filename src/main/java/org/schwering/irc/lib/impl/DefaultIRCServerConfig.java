@@ -77,13 +77,13 @@ public class DefaultIRCServerConfig implements IRCServerConfig {
      * values. For meanings of the parameters, see the the respective getter
      * methods in {@link IRCServerConfig}.
      *
-     * @param encoding
-     * @param host
-     * @param nick
-     * @param pass
-     * @param ports
-     * @param realname
-     * @param username
+     * @param host the host name or IP address
+     * @param ports the ports to try on {@code host}
+     * @param pass the password
+     * @param nick the preferred nick name
+     * @param username the username
+     * @param realname the real name
+     * @param encoding the encoding
      */
     public DefaultIRCServerConfig(String host, int[] ports, String pass, String nick, String username, String realname,
             String encoding) {

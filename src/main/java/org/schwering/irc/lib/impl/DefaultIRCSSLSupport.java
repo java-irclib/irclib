@@ -89,9 +89,9 @@ public class DefaultIRCSSLSupport implements IRCSSLSupport {
     }
 
     /**
-     * @param keyManagers
-     * @param trustManagers
-     * @param secureRandom
+     * @param keyManagers the {@link KeyManager}s
+     * @param trustManagers the {@link TrustManager}s
+     * @param secureRandom the {@link SecureRandom}
      */
     public DefaultIRCSSLSupport(KeyManager[] keyManagers, TrustManager[] trustManagers, SecureRandom secureRandom) {
         super();

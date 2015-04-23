@@ -146,8 +146,8 @@ public class DefaultIRCConnection implements IRCConnection {
      * {@link IRCServerConfig} and {@link IRCRuntimeConfig}. DO not forget to
      * call {@link #connect()} after you have prepared the connection.
      *
-     * @param serverConfig
-     * @param runtimeConfig
+     * @param serverConfig the {@link IRCServerConfig}
+     * @param runtimeConfig the {@link IRCRuntimeConfig}
      */
     public DefaultIRCConnection(IRCServerConfig serverConfig, IRCRuntimeConfig runtimeConfig) {
         int[] ports = serverConfig.getPorts();
@@ -158,7 +158,8 @@ public class DefaultIRCConnection implements IRCConnection {
          * we trust only our own DefaultIRC*Config implementations that they are
          * immutable
          */
-        this.serverConfig = serverConfig instanceof DefaultIRCConfig || serverConfig instanceof DefaultIRCServerConfig ? serverConfig
+        this.serverConfig = serverConfig instanceof DefaultIRCConfig || serverConfig instanceof DefaultIRCServerConfig
+                ? serverConfig
                 : new DefaultIRCServerConfig(serverConfig);
         this.runtimeConfig = runtimeConfig instanceof DefaultIRCConfig
                 || runtimeConfig instanceof DefaultIRCRuntimeConfig ? runtimeConfig : new DefaultIRCRuntimeConfig(
@@ -169,8 +170,6 @@ public class DefaultIRCConnection implements IRCConnection {
     }
 
     /**
-     * @throws NoSuchAlgorithmException
-     * @throws KeyManagementException
      * @see org.schwering.irc.lib.IRCConnection#connect()
      */
     @Override

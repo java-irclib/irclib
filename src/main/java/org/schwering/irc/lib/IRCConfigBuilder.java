@@ -176,7 +176,7 @@ public final class IRCConfigBuilder {
      * {@link IRCConnection} when an exception during send or receive of IRC
      * messages occurs.
      *
-     * @param exceptionHandler
+     * @param exceptionHandler the {@link IRCExceptionHandler}
      * @return this builder
      */
     public IRCConfigBuilder exceptionHandler(IRCExceptionHandler exceptionHandler) {
@@ -187,7 +187,7 @@ public final class IRCConfigBuilder {
     /**
      * Sets the hostname or IP address of the IRC server to connect to.
      *
-     * @param host
+     * @param host the host name or IP address
      * @return this builder
      */
     public IRCConfigBuilder host(String host) {
@@ -210,7 +210,7 @@ public final class IRCConfigBuilder {
     /**
      * Sets the password of the user who is connecting.
      *
-     * @param password
+     * @param password the password
      * @return this builder
      */
     public IRCConfigBuilder password(String password) {

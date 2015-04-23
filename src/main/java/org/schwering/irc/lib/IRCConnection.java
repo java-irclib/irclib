@@ -32,7 +32,7 @@ import java.security.NoSuchAlgorithmException;
  *          .realname(System.getProperty("user.name"));
  * IRCConnection connection = IRCConnectionFactory.newConnection(config);
  * connection.addIRCEventListener(new IRCEventAdapter() {
- *     &#x2F* implement whatever you need *&#x2F
+ *     &#x2F;* implement whatever you need *&#x2F;
  * });
  * connection.connect();
  * connection.doJoin("#test");
@@ -87,8 +87,8 @@ public interface IRCConnection {
      *
      * @throws IOException
      *             If an I/O error occurs.
-     * @throws NoSuchAlgorithmException
-     * @throws KeyManagementException
+     * @throws NoSuchAlgorithmException rethrown from the SSL layer
+     * @throws KeyManagementException rethrown from the SSL layer
      * @throws SocketException
      *             If the <code>connect</code> method was already invoked.
      * @see #isConnected()
