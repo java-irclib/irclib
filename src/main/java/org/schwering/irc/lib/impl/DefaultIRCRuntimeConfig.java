@@ -62,13 +62,13 @@ public class DefaultIRCRuntimeConfig implements IRCRuntimeConfig {
      * values. For meanings of the parameters, see the the respective getter
      * methods in {@link IRCRuntimeConfig}.
      *
-     * @param timeout
-     * @param autoPong
-     * @param stripColorsEnabled
-     * @param sslSupport
-     * @param proxy
-     * @param trafficLogger
-     * @param exceptionHandler
+     * @param timeout the timeout
+     * @param autoPong {@code PONG} will be sent authomatically if {@code true}
+     * @param stripColorsEnabled if {@code true} color codes will be stripped
+     * @param sslSupport the {@link IRCSSLSupport}
+     * @param proxy the {@link Proxy}
+     * @param trafficLogger the {@code IRCTrafficLogger}
+     * @param exceptionHandler the {@link IRCExceptionHandler}
      */
     public DefaultIRCRuntimeConfig(int timeout, boolean autoPong, boolean stripColorsEnabled, IRCSSLSupport sslSupport,
             Proxy proxy, IRCTrafficLogger trafficLogger, IRCExceptionHandler exceptionHandler) {
@@ -85,7 +85,7 @@ public class DefaultIRCRuntimeConfig implements IRCRuntimeConfig {
      * Creates a new {@link DefaultIRCRuntimeConfig} using data from the given
      * {@link IRCRuntimeConfig}.
      *
-     * @param config
+     * @param runtimeConfig
      *            the {@link IRCRuntimeConfig} to read field values from
      */
     public DefaultIRCRuntimeConfig(IRCRuntimeConfig runtimeConfig) {

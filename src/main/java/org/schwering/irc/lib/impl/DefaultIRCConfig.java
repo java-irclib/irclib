@@ -96,20 +96,20 @@ public class DefaultIRCConfig extends DefaultIRCServerConfig implements IRCConfi
      * values. For meanings of the parameters, see the the respective getter
      * methods in {@link IRCConfig}.
      *
-     * @param host
-     * @param ports
-     * @param pass
-     * @param nick
-     * @param username
-     * @param realname
-     * @param encoding
-     * @param timeout
-     * @param autoPong
-     * @param stripColorsEnabled
-     * @param sslSupport
-     * @param proxy
-     * @param trafficLogger
-     * @param exceptionHandler
+     * @param host the host name or IP address
+     * @param ports the ports to try on {@code host}
+     * @param pass the password
+     * @param nick the preferred nick name
+     * @param username the username
+     * @param realname the real name
+     * @param encoding the encoding
+     * @param timeout the timeout
+     * @param autoPong {@code PONG} will be sent authomatically if {@code true}
+     * @param stripColorsEnabled if {@code true} color codes will be stripped
+     * @param sslSupport the {@link IRCSSLSupport}
+     * @param proxy the {@link Proxy}
+     * @param trafficLogger the {@code IRCTrafficLogger}
+     * @param exceptionHandler the {@link IRCExceptionHandler}
      */
     public DefaultIRCConfig(String host, int[] ports, String pass, String nick, String username, String realname,
             String encoding, int timeout, boolean autoPong, boolean stripColorsEnabled, IRCSSLSupport sslSupport,

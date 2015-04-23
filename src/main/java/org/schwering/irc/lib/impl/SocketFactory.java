@@ -27,13 +27,17 @@ import javax.net.ssl.SSLSocketFactory;
 import org.schwering.irc.lib.IRCSSLSupport;
 
 /**
- * A factory to create sockets that takes into account things such as {@link #timeout}, {@link #proxy} and SSL support.
+ * A factory to create sockets that takes into account things such as
+ * {@link #timeout}, {@link #proxy} and SSL support.
  *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
 public class SocketFactory {
 
-    /** The {@link Proxy} to use when creating the socket. Use {@link Proxy#NO_PROXY} reather than {@code null}. */
+    /**
+     * The {@link Proxy} to use when creating the socket. Use
+     * {@link Proxy#NO_PROXY} reather than {@code null}.
+     */
     private final Proxy proxy;
     /** The {@link SSLSocketFactory} to use when creating the socket. */
     private SSLSocketFactory sslSocketFactory;
@@ -41,11 +45,17 @@ public class SocketFactory {
     private final int timeout;
 
     /**
-     * @param timeout im milliseconds
-     * @param proxy the proxy or {@code  null} if no proxy is to be used
-     * @param sslSupport the SSL support or {@code null} if SSL should not be used
+     * @param timeout
+     *            im milliseconds
+     * @param proxy
+     *            the proxy or {@code  null} if no proxy is to be used
+     * @param sslSupport
+     *            the SSL support or {@code null} if SSL should not be used
      * @throws KeyManagementException
-     * @throws NoSuchAlgorithmException
+     *             rethrown from
+     *             {@link SSLContext#init(javax.net.ssl.KeyManager[], javax.net.ssl.TrustManager[],
+     *             java.security.SecureRandom)}
+     * @throws NoSuchAlgorithmException rethrown from {@link SSLContext#getInstance(String)}
      */
     public SocketFactory(int timeout, Proxy proxy, IRCSSLSupport sslSupport) throws KeyManagementException,
             NoSuchAlgorithmException {
@@ -54,8 +64,7 @@ public class SocketFactory {
         this.proxy = proxy == null ? Proxy.NO_PROXY : proxy;
         if (sslSupport != null) {
             SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(sslSupport.getKeyManagers(), sslSupport.getTrustManagers(),
-                    sslSupport.getSecureRandom());
+            sslContext.init(sslSupport.getKeyManagers(), sslSupport.getTrustManagers(), sslSupport.getSecureRandom());
             this.sslSocketFactory = sslContext.getSocketFactory();
         } else {
             this.sslSocketFactory = null;
@@ -63,12 +72,15 @@ public class SocketFactory {
     }
 
     /**
-     * Creates a new {@link Socket} base on the the specification passed in through the constructor.
+     * Creates a new {@link Socket} base on the the specification passed in
+     * through the constructor.
      *
-     * @param host the hostname or IP address to connect to
-     * @param port the port number on the destination host
+     * @param host
+     *            the hostname or IP address to connect to
+     * @param port
+     *            the port number on the destination host
      * @return a new {@link Socket}
-     * @throws IOException
+     * @throws IOException rethrown from several {@link Socket} methods
      */
     @SuppressWarnings("resource")
     public Socket createSocket(String host, int port) throws IOException {
