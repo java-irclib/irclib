@@ -70,8 +70,10 @@ public class DefaultIRCConnection implements IRCConnection {
         public void run() {
             try {
                 String line;
-                while ((line = in.readLine()) != null) {
-                    get(line);
+                if (in != null) {
+                    while ((line = in.readLine()) != null) {
+                        get(line);
+                    }
                 }
             } catch (IOException exc) {
                 handleException(exc);
