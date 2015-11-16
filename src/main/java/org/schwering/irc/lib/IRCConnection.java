@@ -29,7 +29,8 @@ import java.security.NoSuchAlgorithmException;
  *          .port(6667)
  *          .username(System.getProperty("user.name"))
  *          .password("secret")
- *          .realname(System.getProperty("user.name"));
+ *          .realname(System.getProperty("user.name"))
+ *          .build();
  * IRCConnection connection = IRCConnectionFactory.newConnection(config);
  * connection.addIRCEventListener(new IRCEventAdapter() {
  *     &#x2F;* implement whatever you need *&#x2F;
