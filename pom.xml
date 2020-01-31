@@ -98,7 +98,7 @@
         <irclib.osgi.exclude.dependencies>false</irclib.osgi.exclude.dependencies>
 
         <!-- Checkstyle and maven-checkstyle-plugin -->
-        <version.com.puppycrawl.tools.checkstyle>6.1.1</version.com.puppycrawl.tools.checkstyle>
+        <version.com.puppycrawl.tools.checkstyle>8.29</version.com.puppycrawl.tools.checkstyle>
         <!-- the default value pointing at checkstyle.xml in hawkular-build-tools -->
         <checkstyle.configLocation>checkstyle.xml</checkstyle.configLocation>
         <checkstyle.consoleOutput>true</checkstyle.consoleOutput>
